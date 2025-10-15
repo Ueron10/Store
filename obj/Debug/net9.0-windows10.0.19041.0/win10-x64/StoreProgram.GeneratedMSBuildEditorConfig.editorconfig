@@ -8,7 +8,7 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StoreProgram
-build_property.ProjectDir = D:\Kampus\Pemograman Visual\UTS\StoreProgram\
+build_property.ProjectDir = C:\Users\Niomasio\Source\Repos\Store\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTAotOptimizerEnabled = true
@@ -22,73 +22,73 @@ build_property.CsWinRTUseWindowsUIXamlProjections = false
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/App.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/App.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.App.xaml
 build_metadata.AdditionalFiles.TargetPath = App.xaml
 build_metadata.AdditionalFiles.RelativePath = App.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/AppShell.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/AppShell.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
 build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/MainPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.MainPage.xaml
 build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
 build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/EmployeeDashboardPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/EmployeeDashboardPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.EmployeeDashboardPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\EmployeeDashboardPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\EmployeeDashboardPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/FinancialPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/FinancialPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.FinancialPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\FinancialPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\FinancialPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/LoginPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/LoginPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.LoginPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\LoginPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\LoginPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/NotificationsPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/NotificationsPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.NotificationsPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\NotificationsPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\NotificationsPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/OwnerDashboardPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/OwnerDashboardPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.OwnerDashboardPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\OwnerDashboardPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\OwnerDashboardPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/ReportsPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/ReportsPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.ReportsPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\ReportsPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\ReportsPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Pages/StockManagementPage.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Pages/StockManagementPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.StockManagementPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Pages\StockManagementPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\StockManagementPage.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Resources/Styles/Colors.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Resources.Styles.Colors.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
 
-[D:/Kampus/Pemograman Visual/UTS/StoreProgram/Resources/Styles/Styles.xaml]
+[C:/Users/Niomasio/Source/Repos/Store/Resources/Styles/Styles.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
