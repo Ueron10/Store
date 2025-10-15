@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.FinancialPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Manajemen Keuangan">
+    
+    <ScrollView Padding="20">
+        <StackLayout Spacing="20">
+            
+            <!-- Daily Summary -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="💰 Ringkasan Hari Ini" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        
+                        <!-- Pendapatan -->
+                        <Frame Grid.Column="0" 
+                               BackgroundColor="Green" 
+                               CornerRadius="10" 
+                               Padding="12" 
+                               HasShadow="False">
+                            <StackLayout>
+                                <Label Text="Pendapatan" 
+                                       FontSize="10" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Rp 2.450.000" 
+                                       FontSize="12" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                        
+                        <!-- Pengeluaran -->
+                        <Frame Grid.Column="1" 
+                               BackgroundColor="Red" 
+                               CornerRadius="10" 
+                               Padding="12" 
+                               HasShadow="False">
+                            <StackLayout>
+                                <Label Text="Pengeluaran" 
+                                       FontSize="10" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Rp 1.600.000" 
+                                       FontSize="12" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                        
+                        <!-- Keuntungan -->
+                        <Frame Grid.Column="2" 
+                               BackgroundColor="Orange" 
+                               CornerRadius="10" 
+                               Padding="12" 
+                               HasShadow="False">
+                            <StackLayout>
+                                <Label Text="Keuntungan" 
+                                       FontSize="10" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                                <Label Text="Rp 850.000" 
+                                       FontSize="12" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                        
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Quick Actions -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="🚀 Aksi Cepat" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        
+                        <Button Grid.Column="0" 
+                                Text="🛒 Transaksi Baru" 
+                                BackgroundColor="{StaticResource Primary}" 
+                                TextColor="White" 
+                                CornerRadius="10" 
+                                HeightRequest="60" 
+                                FontAttributes="Bold" 
+                                Clicked="OnNewTransactionClicked"/>
+                        
+                        <Button Grid.Column="1" 
+                                Text="💸 Input Pengeluaran" 
+                                BackgroundColor="Red" 
+                                TextColor="White" 
+                                CornerRadius="10" 
+                                HeightRequest="60" 
+                                FontAttributes="Bold" 
+                                Clicked="OnAddExpenseClicked"/>
+                        
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Transaction Form (Initially Hidden) -->
+            <Frame x:Name="TransactionFormFrame" 
+                   BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True" 
+                   IsVisible="False">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" 
+                               Text="🛒 Transaksi Baru" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Column="1" 
+                                Text="✕" 
+                                BackgroundColor="Transparent" 
+                                TextColor="{StaticResource Gray600}" 
+                                FontSize="18" 
+                                Clicked="OnCloseTransactionFormClicked"/>
+                    </Grid>
+                    
+                    <!-- Product Selection -->
+                    <StackLayout Spacing="5">
+                        <Label Text="Pilih Produk" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Gray900}"/>
+                        <Picker x:Name="ProductPicker" 
+                                Title="Pilih produk..." 
+                                BackgroundColor="{StaticResource Gray100}">
+                            <Picker.Items>
+                                <x:String>Indomie Goreng - Rp 3.000</x:String>
+                                <x:String>Aqua 600ml - Rp 4.000</x:String>
+                                <x:String>Roti Tawar - Rp 12.000</x:String>
+                                <x:String>Susu Ultra - Rp 8.500</x:String>
+                                <x:String>Kopi Sachet - Rp 2.500</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </StackLayout>
+                    
+                    <!-- Quantity -->
+                    <StackLayout Spacing="5">
+                        <Label Text="Jumlah" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Gray900}"/>
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Button Grid.Column="0" 
+                                    Text="-" 
+                                    BackgroundColor="{StaticResource Gray200}" 
+                                    TextColor="{StaticResource Gray900}" 
+                                    WidthRequest="40" 
+                                    HeightRequest="40" 
+                                    CornerRadius="5" 
+                                    Clicked="OnDecreaseQuantityClicked"/>
+                            <Entry Grid.Column="1" 
+                                   x:Name="QuantityEntry" 
+                                   Text="1" 
+                                   Keyboard="Numeric" 
+                                   HorizontalTextAlignment="Center" 
+                                   BackgroundColor="{StaticResource Gray100}" 
+                                   Margin="10,0"/>
+                            <Button Grid.Column="2" 
+                                    Text="+" 
+                                    BackgroundColor="{StaticResource Gray200}" 
+                                    TextColor="{StaticResource Gray900}" 
+                                    WidthRequest="40" 
+                                    HeightRequest="40" 
+                                    CornerRadius="5" 
+                                    Clicked="OnIncreaseQuantityClicked"/>
+                        </Grid>
+                    </StackLayout>
+                    
+                    <!-- Payment Method -->
+                    <StackLayout Spacing="5">
+                        <Label Text="Metode Pembayaran" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Gray900}"/>
+                        <StackLayout Orientation="Horizontal" Spacing="20">
+                            <RadioButton x:Name="CashRadio" 
+                                         Content="💵 Tunai" 
+                                         IsChecked="True"/>
+                            <RadioButton x:Name="QrisRadio" 
+                                         Content="📱 QRIS"/>
+                        </StackLayout>
+                    </StackLayout>
+                    
+                    <!-- Total -->
+                    <Frame BackgroundColor="{StaticResource Gray100}" 
+                           CornerRadius="10" 
+                           Padding="15" 
+                           HasShadow="False">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" 
+                                   Text="Total Pembayaran" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource Gray900}"/>
+                            <Label Grid.Column="1" 
+                                   x:Name="TotalLabel" 
+                                   Text="Rp 3.000" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource Primary}"/>
+                        </Grid>
+                    </Frame>
+                    
+                    <!-- Process Button -->
+                    <Button Text="💳 Proses Transaksi" 
+                            BackgroundColor="Green" 
+                            TextColor="White" 
+                            CornerRadius="10" 
+                            HeightRequest="50" 
+                            FontAttributes="Bold" 
+                            Clicked="OnProcessTransactionClicked"/>
+                    
+                </StackLayout>
+            </Frame>
+            
+            <!-- Recent Transactions -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" 
+                               Text="💳 Transaksi Terbaru" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Gray900}"/>
+                        <Label Grid.Column="1" 
+                               Text="Hari ini" 
+                               FontSize="12" 
+                               TextColor="{StaticResource Gray600}" 
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    
+                    <StackLayout Spacing="12">
+                        
+                        <!-- Transaction Item 1 -->
+                        <Frame BackgroundColor="{StaticResource Gray100}" 
+                               CornerRadius="8" 
+                               Padding="15" 
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                <Label Grid.Column="0" 
+                                       Text="🛒" 
+                                       FontSize="16" 
+                                       VerticalOptions="Center"/>
+                                <StackLayout Grid.Column="1">
+                                    <Label Text="Transaksi #001" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource Gray900}"/>
+                                    <Label Text="Indomie x2, Aqua x1" 
+                                           FontSize="12" 
+                                           TextColor="{StaticResource Gray600}"/>
+                                    <Label Text="QRIS - 10:30 AM" 
+                                           FontSize="10" 
+                                           TextColor="{StaticResource Gray500}"/>
+                                </StackLayout>
+                                <Label Grid.Column="2" 
+                                       Text="Rp 15.000" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="Green" 
+                                       VerticalOptions="Center"/>
+                                <Button Grid.Column="3" 
+                                        Text="📄" 
+                                        BackgroundColor="Transparent" 
+                                        TextColor="{StaticResource Primary}" 
+                                        FontSize="16" 
+                                        Clicked="OnViewReceiptClicked"/>
+                            </Grid>
+                        </Frame>
+                        
+                        <!-- Transaction Item 2 -->
+                        <Frame BackgroundColor="{StaticResource Gray100}" 
+                               CornerRadius="8" 
+                               Padding="15" 
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                <Label Grid.Column="0" 
+                                       Text="🛒" 
+                                       FontSize="16" 
+                                       VerticalOptions="Center"/>
+                                <StackLayout Grid.Column="1">
+                                    <Label Text="Transaksi #002" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource Gray900}"/>
+                                    <Label Text="Roti Tawar x1, Susu x2" 
+                                           FontSize="12" 
+                                           TextColor="{StaticResource Gray600}"/>
+                                    <Label Text="Tunai - 11:15 AM" 
+                                           FontSize="10" 
+                                           TextColor="{StaticResource Gray500}"/>
+                                </StackLayout>
+                                <Label Grid.Column="2" 
+                                       Text="Rp 29.000" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="Green" 
+                                       VerticalOptions="Center"/>
+                                <Button Grid.Column="3" 
+                                        Text="📄" 
+                                        BackgroundColor="Transparent" 
+                                        TextColor="{StaticResource Primary}" 
+                                        FontSize="16" 
+                                        Clicked="OnViewReceiptClicked"/>
+                            </Grid>
+                        </Frame>
+                        
+                        <!-- Expense Item -->
+                        <Frame BackgroundColor="{StaticResource Gray100}" 
+                               CornerRadius="8" 
+                               Padding="15" 
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                <Label Grid.Column="0" 
+                                       Text="💸" 
+                                       FontSize="16" 
+                                       VerticalOptions="Center"/>
+                                <StackLayout Grid.Column="1">
+                                    <Label Text="Pembelian Stok" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold" 
+                                           TextColor="{StaticResource Gray900}"/>
+                                    <Label Text="Restock Indomie, Aqua" 
+                                           FontSize="12" 
+                                           TextColor="{StaticResource Gray600}"/>
+                                    <Label Text="Tunai - 09:00 AM" 
+                                           FontSize="10" 
+                                           TextColor="{StaticResource Gray500}"/>
+                                </StackLayout>
+                                <Label Grid.Column="2" 
+                                       Text="Rp 500.000" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="Red" 
+                                       VerticalOptions="Center"/>
+                                <Button Grid.Column="3" 
+                                        Text="📝" 
+                                        BackgroundColor="Transparent" 
+                                        TextColor="{StaticResource Primary}" 
+                                        FontSize="16" 
+                                        Clicked="OnEditExpenseClicked"/>
+                            </Grid>
+                        </Frame>
+                        
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            
+        </StackLayout>
+    </ScrollView>
+    
+</ContentPage>

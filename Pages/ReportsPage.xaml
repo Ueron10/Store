@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.ReportsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Laporan dan Analisis">
+    
+    <ScrollView Padding="20">
+        <StackLayout Spacing="20">
+            
+            <!-- Period Selection -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="📊 Pilih Periode Laporan" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        
+                        <Button Grid.Column="0" 
+                                x:Name="DailyButton" 
+                                Text="Harian" 
+                                BackgroundColor="{StaticResource Primary}" 
+                                TextColor="White" 
+                                CornerRadius="8" 
+                                HeightRequest="40" 
+                                FontSize="14" 
+                                Clicked="OnDailyReportClicked"/>
+                        
+                        <Button Grid.Column="1" 
+                                x:Name="WeeklyButton" 
+                                Text="Mingguan" 
+                                BackgroundColor="{StaticResource Gray200}" 
+                                TextColor="{StaticResource Gray700}" 
+                                CornerRadius="8" 
+                                HeightRequest="40" 
+                                FontSize="14" 
+                                Clicked="OnWeeklyReportClicked"/>
+                        
+                        <Button Grid.Column="2" 
+                                x:Name="MonthlyButton" 
+                                Text="Bulanan" 
+                                BackgroundColor="{StaticResource Gray200}" 
+                                TextColor="{StaticResource Gray700}" 
+                                CornerRadius="8" 
+                                HeightRequest="40" 
+                                FontSize="14" 
+                                Clicked="OnMonthlyReportClicked"/>
+                        
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Summary Cards -->
+            <Grid ColumnDefinitions="*,*" 
+                  RowDefinitions="*,*" 
+                  ColumnSpacing="10" 
+                  RowSpacing="10">
+                
+                <!-- Total Penjualan -->
+                <Frame Grid.Row="0" 
+                       Grid.Column="0" 
+                       BackgroundColor="Green" 
+                       CornerRadius="15" 
+                       Padding="15" 
+                       HasShadow="True">
+                    <StackLayout>
+                        <Label Text="💰" 
+                               FontSize="28" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Total Penjualan" 
+                               FontSize="12" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="TotalSalesLabel" 
+                               Text="Rp 2.450.000" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Hari ini" 
+                               FontSize="10" 
+                               TextColor="White" 
+                               Opacity="0.8" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Total Pengeluaran -->
+                <Frame Grid.Row="0" 
+                       Grid.Column="1" 
+                       BackgroundColor="Red" 
+                       CornerRadius="15" 
+                       Padding="15" 
+                       HasShadow="True">
+                    <StackLayout>
+                        <Label Text="💸" 
+                               FontSize="28" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Total Pengeluaran" 
+                               FontSize="12" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="TotalExpensesLabel" 
+                               Text="Rp 1.600.000" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Hari ini" 
+                               FontSize="10" 
+                               TextColor="White" 
+                               Opacity="0.8" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Keuntungan Bersih -->
+                <Frame Grid.Row="1" 
+                       Grid.Column="0" 
+                       BackgroundColor="Orange" 
+                       CornerRadius="15" 
+                       Padding="15" 
+                       HasShadow="True">
+                    <StackLayout>
+                        <Label Text="📈" 
+                               FontSize="28" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Keuntungan Bersih" 
+                               FontSize="12" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="NetProfitLabel" 
+                               Text="Rp 850.000" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Hari ini" 
+                               FontSize="10" 
+                               TextColor="White" 
+                               Opacity="0.8" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Total Transaksi -->
+                <Frame Grid.Row="1" 
+                       Grid.Column="1" 
+                       BackgroundColor="Blue" 
+                       CornerRadius="15" 
+                       Padding="15" 
+                       HasShadow="True">
+                    <StackLayout>
+                        <Label Text="🧾" 
+                               FontSize="28" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Total Transaksi" 
+                               FontSize="12" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="TotalTransactionsLabel" 
+                               Text="47 Transaksi" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               TextColor="White" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="Hari ini" 
+                               FontSize="10" 
+                               TextColor="White" 
+                               Opacity="0.8" 
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Frame>
+                
+            </Grid>
+            
+            <!-- Chart Placeholder -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="📈 Grafik Penjualan" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <!-- Mock Chart -->
+                    <Frame BackgroundColor="{StaticResource Gray100}" 
+                           CornerRadius="10" 
+                           Padding="20" 
+                           HasShadow="False" 
+                           HeightRequest="200">
+                        <Grid>
+                            <Label Text="📊" 
+                                   FontSize="60" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center" 
+                                   Opacity="0.3"/>
+                            <StackLayout HorizontalOptions="Center" 
+                                         VerticalOptions="Center">
+                                <Label Text="Grafik Penjualan Harian" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       HorizontalOptions="Center" 
+                                       TextColor="{StaticResource Gray700}"/>
+                                <Label Text="Data ditampilkan dalam bentuk grafik" 
+                                       FontSize="12" 
+                                       HorizontalOptions="Center" 
+                                       TextColor="{StaticResource Gray600}"/>
+                            </StackLayout>
+                        </Grid>
+                    </Frame>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Top Products -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="🏆 Produk Terlaris" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <StackLayout Spacing="12">
+                        
+                        <!-- Top Product 1 -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                            <Frame Grid.Column="0" 
+                                   BackgroundColor="Gold" 
+                                   CornerRadius="20" 
+                                   Padding="8,4" 
+                                   HasShadow="False">
+                                <Label Text="1" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"/>
+                            </Frame>
+                            <StackLayout Grid.Column="1">
+                                <Label Text="Indomie Goreng" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Gray900}"/>
+                                <Label Text="45 pcs terjual" 
+                                       FontSize="12" 
+                                       TextColor="{StaticResource Gray600}"/>
+                            </StackLayout>
+                            <Label Grid.Column="2" 
+                                   Text="Rp 135.000" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold" 
+                                   TextColor="Green" 
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        
+                        <BoxView BackgroundColor="{StaticResource Gray200}" 
+                                 HeightRequest="1"/>
+                        
+                        <!-- Top Product 2 -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                            <Frame Grid.Column="0" 
+                                   BackgroundColor="Silver" 
+                                   CornerRadius="20" 
+                                   Padding="8,4" 
+                                   HasShadow="False">
+                                <Label Text="2" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"/>
+                            </Frame>
+                            <StackLayout Grid.Column="1">
+                                <Label Text="Aqua 600ml" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Gray900}"/>
+                                <Label Text="32 btl terjual" 
+                                       FontSize="12" 
+                                       TextColor="{StaticResource Gray600}"/>
+                            </StackLayout>
+                            <Label Grid.Column="2" 
+                                   Text="Rp 128.000" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold" 
+                                   TextColor="Green" 
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        
+                        <BoxView BackgroundColor="{StaticResource Gray200}" 
+                                 HeightRequest="1"/>
+                        
+                        <!-- Top Product 3 -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                            <Frame Grid.Column="0" 
+                                   BackgroundColor="#CD7F32" 
+                                   CornerRadius="20" 
+                                   Padding="8,4" 
+                                   HasShadow="False">
+                                <Label Text="3" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"/>
+                            </Frame>
+                            <StackLayout Grid.Column="1">
+                                <Label Text="Kopi Sachet" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{StaticResource Gray900}"/>
+                                <Label Text="28 sachet terjual" 
+                                       FontSize="12" 
+                                       TextColor="{StaticResource Gray600}"/>
+                            </StackLayout>
+                            <Label Grid.Column="2" 
+                                   Text="Rp 70.000" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold" 
+                                   TextColor="Green" 
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Export Options -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="15" 
+                   Padding="20" 
+                   HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label Text="💾 Export Laporan" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource Gray900}"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        
+                        <Button Grid.Column="0" 
+                                Text="📄 Export PDF" 
+                                BackgroundColor="Red" 
+                                TextColor="White" 
+                                CornerRadius="10" 
+                                HeightRequest="50" 
+                                FontAttributes="Bold" 
+                                Clicked="OnExportPdfClicked"/>
+                        
+                        <Button Grid.Column="1" 
+                                Text="📊 Export Excel" 
+                                BackgroundColor="Green" 
+                                TextColor="White" 
+                                CornerRadius="10" 
+                                HeightRequest="50" 
+                                FontAttributes="Bold" 
+                                Clicked="OnExportExcelClicked"/>
+                        
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            
+        </StackLayout>
+    </ScrollView>
+    
+</ContentPage>

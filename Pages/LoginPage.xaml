@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Login - Store Management System"
+             BackgroundColor="{StaticResource Primary}">
+    
+    <ScrollView>
+        <Grid RowDefinitions="*,Auto,*" Padding="40,0">
+            
+            <!-- Logo Section -->
+            <StackLayout Grid.Row="1" Spacing="30">
+                
+                <!-- App Logo -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="50" 
+                       WidthRequest="100" 
+                       HeightRequest="100" 
+                       HorizontalOptions="Center"
+                       HasShadow="True">
+                    <Label Text="🏪" 
+                           FontSize="50" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"/>
+                </Frame>
+                
+                <!-- App Title -->
+                <Label Text="Store Management System" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       TextColor="White" 
+                       HorizontalOptions="Center"/>
+                
+                <Label Text="Masuk untuk melanjutkan" 
+                       FontSize="16" 
+                       TextColor="White" 
+                       HorizontalOptions="Center" 
+                       Opacity="0.8"/>
+                
+                <!-- Login Form -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="15" 
+                       Padding="30" 
+                       HasShadow="True">
+                    
+                    <StackLayout Spacing="20">
+                        
+                        <!-- Username Field -->
+                        <StackLayout Spacing="5">
+                            <Label Text="Username" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource Gray900}"/>
+                            <Frame BackgroundColor="{StaticResource Gray100}" 
+                                   CornerRadius="10" 
+                                   Padding="0" 
+                                   HasShadow="False">
+                                <Entry x:Name="UsernameEntry" 
+                                       Placeholder="Masukkan username" 
+                                       BackgroundColor="Transparent" 
+                                       TextColor="{StaticResource Gray900}"
+                                       PlaceholderColor="{StaticResource Gray600}"/>
+                            </Frame>
+                        </StackLayout>
+                        
+                        <!-- Password Field -->
+                        <StackLayout Spacing="5">
+                            <Label Text="Password" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{StaticResource Gray900}"/>
+                            <Frame BackgroundColor="{StaticResource Gray100}" 
+                                   CornerRadius="10" 
+                                   Padding="0" 
+                                   HasShadow="False">
+                                <Entry x:Name="PasswordEntry" 
+                                       Placeholder="Masukkan password" 
+                                       IsPassword="True" 
+                                       BackgroundColor="Transparent" 
+                                       TextColor="{StaticResource Gray900}"
+                                       PlaceholderColor="{StaticResource Gray600}"/>
+                            </Frame>
+                        </StackLayout>
+                        
+                        <!-- Error Message -->
+                        <Label x:Name="ErrorLabel" 
+                               Text="Username atau password salah!" 
+                               TextColor="Red" 
+                               FontSize="14" 
+                               HorizontalOptions="Center" 
+                               IsVisible="False"/>
+                        
+                        <!-- Login Button -->
+                        <Button x:Name="LoginButton" 
+                                Text="Masuk" 
+                                BackgroundColor="{StaticResource Primary}" 
+                                TextColor="White" 
+                                CornerRadius="10" 
+                                FontAttributes="Bold" 
+                                HeightRequest="50" 
+                                Clicked="OnLoginClicked"/>
+                        
+                        <!-- Role Selection -->
+                        <StackLayout Spacing="10">
+                            <Label Text="Login sebagai:" 
+                                   FontSize="14" 
+                                   TextColor="{StaticResource Gray600}" 
+                                   HorizontalOptions="Center"/>
+                            
+                            <StackLayout Orientation="Horizontal" 
+                                         HorizontalOptions="Center" 
+                                         Spacing="20">
+                                <RadioButton x:Name="OwnerRadio" 
+                                             Content="Pemilik" 
+                                             IsChecked="True" 
+                                             TextColor="{StaticResource Gray900}"/>
+                                <RadioButton x:Name="EmployeeRadio" 
+                                             Content="Pegawai" 
+                                             TextColor="{StaticResource Gray900}"/>
+                            </StackLayout>
+                        </StackLayout>
+                        
+                    </StackLayout>
+                    
+                </Frame>
+                
+            </StackLayout>
+            
+        </Grid>
+    </ScrollView>
+    
+</ContentPage>

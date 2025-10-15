@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="StoreProgram.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:StoreProgram"
+    xmlns:pages="clr-namespace:StoreProgram.Pages"
+    Title="StoreProgram">
+
+    <!-- Login Page (No Shell Navigation) -->
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate pages:LoginPage}"
+        Route="login" />
+
+    <!-- Owner Dashboard -->
+    <TabBar Route="ownerdashboard">
+        <Tab Title="Dashboard" Icon="home.png">
+            <ShellContent
+                Title="Dashboard"
+                ContentTemplate="{DataTemplate pages:OwnerDashboardPage}"
+                Route="dashboard" />
+        </Tab>
+        <Tab Title="Stok" Icon="package.png">
+            <ShellContent
+                Title="Manajemen Stok"
+                ContentTemplate="{DataTemplate pages:StockManagementPage}"
+                Route="stock" />
+        </Tab>
+        <Tab Title="Keuangan" Icon="money.png">
+            <ShellContent
+                Title="Keuangan"
+                ContentTemplate="{DataTemplate pages:FinancialPage}"
+                Route="financial" />
+        </Tab>
+        <Tab Title="Laporan" Icon="chart.png">
+            <ShellContent
+                Title="Laporan"
+                ContentTemplate="{DataTemplate pages:ReportsPage}"
+                Route="reports" />
+        </Tab>
+        <Tab Title="Notifikasi" Icon="bell.png">
+            <ShellContent
+                Title="Notifikasi"
+                ContentTemplate="{DataTemplate pages:NotificationsPage}"
+                Route="notifications" />
+        </Tab>
+    </TabBar>
+
+    <!-- Employee Dashboard -->
+    <TabBar Route="employeedashboard">
+        <Tab Title="Dashboard" Icon="home.png">
+            <ShellContent
+                Title="Dashboard Pegawai"
+                ContentTemplate="{DataTemplate pages:EmployeeDashboardPage}"
+                Route="dashboard" />
+        </Tab>
+        <Tab Title="Stok" Icon="package.png">
+            <ShellContent
+                Title="Lihat Stok"
+                ContentTemplate="{DataTemplate pages:StockManagementPage}"
+                Route="stock" />
+        </Tab>
+        <Tab Title="Transaksi" Icon="money.png">
+            <ShellContent
+                Title="Transaksi"
+                ContentTemplate="{DataTemplate pages:FinancialPage}"
+                Route="financial" />
+        </Tab>
+        <Tab Title="Notifikasi" Icon="bell.png">
+            <ShellContent
+                Title="Notifikasi"
+                ContentTemplate="{DataTemplate pages:NotificationsPage}"
+                Route="notifications" />
+        </Tab>
+    </TabBar>
+
+</Shell>
