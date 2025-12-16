@@ -2084,3 +2084,13 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\ClosedXML.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\ClosedXML.Parser.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\DocumentFormat.OpenXml.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\DocumentFormat.OpenXml.Framework.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\ExcelNumberFormat.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\QuestPDF.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\RBush.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\SixLabors.Fonts.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\System.IO.Packaging.dll
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\QuestPdfSkia.dll

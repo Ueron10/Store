@@ -67,6 +67,10 @@
         "net9.0-android35.0": {
           "targetAlias": "net9.0-android",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[9.0.5, )"
@@ -85,9 +89,13 @@
               "target": "Package",
               "version": "[9.5.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.3.0, )"
+            },
             "sqlite-net-pcl": {
               "target": "Package",
-              "version": "[1.9.171, )"
+              "version": "[1.9.172, )"
             }
           },
           "imports": [
@@ -114,6 +122,10 @@
         "net9.0-ios26.0": {
           "targetAlias": "net9.0-ios",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[9.0.5, )"
@@ -132,9 +144,13 @@
               "target": "Package",
               "version": "[9.5.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.3.0, )"
+            },
             "sqlite-net-pcl": {
               "target": "Package",
-              "version": "[1.9.171, )"
+              "version": "[1.9.172, )"
             }
           },
           "imports": [
@@ -161,6 +177,10 @@
         "net9.0-maccatalyst26.0": {
           "targetAlias": "net9.0-maccatalyst",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[9.0.5, )"
@@ -179,9 +199,13 @@
               "target": "Package",
               "version": "[9.5.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.3.0, )"
+            },
             "sqlite-net-pcl": {
               "target": "Package",
-              "version": "[1.9.171, )"
+              "version": "[1.9.172, )"
             }
           },
           "imports": [
@@ -209,6 +233,10 @@
         "net9.0-windows10.0.19041": {
           "targetAlias": "net9.0-windows10.0.19041.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[9.0.5, )"
@@ -221,9 +249,13 @@
               "target": "Package",
               "version": "[9.5.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2024.3.0, )"
+            },
             "sqlite-net-pcl": {
               "target": "Package",
-              "version": "[1.9.171, )"
+              "version": "[1.9.172, )"
             }
           },
           "imports": [
