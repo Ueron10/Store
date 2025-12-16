@@ -7,17 +7,15 @@ namespace StoreProgram
         public AppShell()
         {
             InitializeComponent();
-            
-            // Register page routes for navigation
+
+            // NOTE:
+            // Jangan register route yang namanya sama dengan Route milik TabBar/ShellContent di AppShell.xaml
+            // (mis. "ownerdashboard", "employeedashboard", "stock", "financial", dll.) karena bisa bikin Shell
+            // menganggap itu sebagai halaman biasa (push ke stack) bukan pindah tab.
+            // Cukup register halaman yang *bukan* bagian dari TabBar.
+
             Routing.RegisterRoute("login", typeof(LoginPage));
-            Routing.RegisterRoute("ownerdashboard", typeof(OwnerDashboardPage));
-            Routing.RegisterRoute("employeedashboard", typeof(EmployeeDashboardPage));
-            Routing.RegisterRoute("stock", typeof(StockManagementPage));
-            Routing.RegisterRoute("financial", typeof(FinancialPage));
-            Routing.RegisterRoute("reports", typeof(ReportsPage));
-            Routing.RegisterRoute("notifications", typeof(NotificationsPage));
             Routing.RegisterRoute("stockopname", typeof(StockOpnamePage));
-            Routing.RegisterRoute("discounts", typeof(DiscountsPage));
             Routing.RegisterRoute("users", typeof(UserManagementPage));
         }
     }
