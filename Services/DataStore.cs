@@ -4,6 +4,7 @@ namespace StoreProgram.Services;
 
 public static class DataStore
 {
+    public record SalePreview(IReadOnlyList<SaleItem> Items, decimal TotalAmount);
     public static List<Product> Products { get; } = new();
     public static List<StockBatch> StockBatches { get; } = new();
     public static List<StockMovement> StockMovements { get; } = new();
@@ -47,7 +48,12 @@ public static class DataStore
     }
 
     public static StockBatch AddPurchase(Guid productId, int quantity, decimal unitCost, DateOnly expiryDate, string reason)
+        => AddPurchase(productId, quantity, unitCost, expiryDate, reason, timestamp: null);
+
+    public static StockBatch AddPurchase(Guid productId, int quantity, decimal unitCost, DateOnly expiryDate, string reason, DateTime? timestamp)
     {
+        var ts = timestamp ?? DateTime.Now;
+
         var batch = new StockBatch
         {
             ProductId = productId,
@@ -61,6 +67,7 @@ public static class DataStore
         var movement = new StockMovement
         {
             ProductId = productId,
+            Timestamp = ts,
             Quantity = quantity,
             UnitCost = unitCost,
             TotalCost = unitCost * quantity,
@@ -73,6 +80,7 @@ public static class DataStore
         // Catat sebagai pengeluaran operasional pembelian stok
         var expense = new Expense
         {
+            Timestamp = ts,
             Description = $"Pembelian stok {GetProductName(productId)}",
             Amount = movement.TotalCost,
             Type = ExpenseType.Operational
@@ -87,23 +95,69 @@ public static class DataStore
         => Products.FirstOrDefault(p => p.Id == productId)?.Name ?? "Produk";
 
     /// <summary>
-    /// Proses penjualan 1 jenis produk sederhana (sesuai UI FinancialPage sekarang).
-    /// Jika ke depan ingin multi-item, bisa dikembangkan dari sini.
+    /// Preview perhitungan transaksi berdasarkan FIFO batch (termasuk diskon per batch).
+    /// Dipakai untuk menampilkan total yang akurat sebelum transaksi diproses.
+    /// </summary>
+    public static SalePreview PreviewSale(Guid productId, int quantity)
+    {
+        if (quantity <= 0)
+            return new SalePreview(Array.Empty<SaleItem>(), 0m);
+
+        var product = Products.First(p => p.Id == productId);
+
+        int remaining = quantity;
+        var items = new List<SaleItem>();
+
+        var batches = StockBatches
+            .Where(b => b.ProductId == productId && b.Quantity > 0)
+            .OrderBy(b => b.ExpiryDate)
+            .ToList();
+
+        foreach (var batch in batches)
+        {
+            if (remaining <= 0) break;
+
+            int take = Math.Min(remaining, batch.Quantity);
+            remaining -= take;
+
+            decimal percent = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
+            decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
+
+            // Gabungkan kalau unitPrice sama (biar ringkas)
+            var last = items.LastOrDefault();
+            if (last != null && last.ProductId == productId && last.UnitPrice == unitPrice)
+            {
+                last.Quantity += take;
+            }
+            else
+            {
+                items.Add(new SaleItem
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    Quantity = take,
+                    UnitPrice = unitPrice
+                });
+            }
+        }
+
+        if (remaining > 0)
+            throw new InvalidOperationException("Stok tidak mencukupi untuk transaksi ini.");
+
+        return new SalePreview(items, items.Sum(i => i.LineTotal));
+    }
+
+    /// <summary>
+    /// Proses penjualan 1 produk (UI FinancialPage). Harga dihitung per batch (diskon per batch).
     /// </summary>
     public static SaleTransaction ProcessSingleItemSale(Guid productId, int quantity, string paymentMethod)
     {
         var product = Products.First(p => p.Id == productId);
 
-        // Hitung harga jual (perhatikan diskon jika ada)
-        decimal unitPrice = product.SellPrice;
-        if (product.DiscountPercent is > 0 and <= 100)
-        {
-            unitPrice = unitPrice * (100 - product.DiscountPercent.Value) / 100m;
-        }
-
         // Kurangi stok dengan FIFO dari batch yang paling dekat kadaluarsa
         int remaining = quantity;
         decimal totalCost = 0;
+        var saleItems = new List<SaleItem>();
 
         var batches = StockBatches
             .Where(b => b.ProductId == productId && b.Quantity > 0)
@@ -121,6 +175,26 @@ public static class DataStore
 
             totalCost += take * batch.UnitCost;
 
+            decimal percent = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
+            decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
+
+            // Gabungkan kalau unitPrice sama
+            var last = saleItems.LastOrDefault();
+            if (last != null && last.ProductId == productId && last.UnitPrice == unitPrice)
+            {
+                last.Quantity += take;
+            }
+            else
+            {
+                saleItems.Add(new SaleItem
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    Quantity = take,
+                    UnitPrice = unitPrice
+                });
+            }
+
             var movement = new StockMovement
             {
                 ProductId = productId,
@@ -135,21 +209,11 @@ public static class DataStore
         }
 
         if (remaining > 0)
-        {
             throw new InvalidOperationException("Stok tidak mencukupi untuk penjualan ini.");
-        }
-
-        var item = new SaleItem
-        {
-            ProductId = productId,
-            ProductName = product.Name,
-            Quantity = quantity,
-            UnitPrice = unitPrice
-        };
 
         var sale = new SaleTransaction
         {
-            Items = new List<SaleItem> { item },
+            Items = saleItems,
             PaymentMethod = paymentMethod,
             TotalCost = totalCost
         };
@@ -249,11 +313,15 @@ public static class DataStore
     }
 
     public static void AddOperationalExpense(string description, decimal amount)
+        => AddOperationalExpense(description, amount, DateTime.Now);
+
+    public static void AddOperationalExpense(string description, decimal amount, DateTime timestamp)
     {
         if (amount <= 0) return;
 
         var expense = new Expense
         {
+            Timestamp = timestamp,
             Description = description,
             Amount = amount,
             Type = ExpenseType.Operational
@@ -263,11 +331,15 @@ public static class DataStore
     }
 
     public static void AddPrive(string description, decimal amount)
+        => AddPrive(description, amount, DateTime.Now);
+
+    public static void AddPrive(string description, decimal amount, DateTime timestamp)
     {
         if (amount <= 0) return;
 
         var expense = new Expense
         {
+            Timestamp = timestamp,
             Description = description,
             Amount = amount,
             Type = ExpenseType.Prive

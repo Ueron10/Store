@@ -168,34 +168,34 @@ public partial class OwnerDashboardPage : ContentPage
         await Shell.Current.GoToAsync("users");
     }
 
-    private async void OnViewStockAlertsClicked(object sender, EventArgs e)
+    private void OnViewStockAlertsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/notifications");
+        ShellNav.TrySelectTab("ownerdashboard", "notifications");
     }
 
-    private async void OnViewAllTransactionsClicked(object sender, EventArgs e)
+    private void OnViewAllTransactionsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/financial");
+        ShellNav.TrySelectTab("ownerdashboard", "financial");
     }
 
-    private async void OnReportsClicked(object sender, EventArgs e)
+    private void OnReportsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/reports");
+        ShellNav.TrySelectTab("ownerdashboard", "reports");
     }
 
-    private async void OnManageStockClicked(object sender, EventArgs e)
+    private void OnManageStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/stock");
+        ShellNav.TrySelectTab("ownerdashboard", "stock");
     }
 
-    private async void OnFinancialClicked(object sender, EventArgs e)
+    private void OnFinancialClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/financial");
+        ShellNav.TrySelectTab("ownerdashboard", "financial");
     }
 
-    private async void OnNotificationsClicked(object sender, EventArgs e)
+    private void OnNotificationsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//ownerdashboard/notifications");
+        ShellNav.TrySelectTab("ownerdashboard", "notifications");
     }
 
     private async void OnStockOpnameClicked(object sender, EventArgs e)

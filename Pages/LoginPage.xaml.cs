@@ -32,13 +32,15 @@ public partial class LoginPage : ContentPage
             // Tentukan role berdasarkan data user (bukan radio button)
             if (string.Equals(user.Role, "Owner", StringComparison.OrdinalIgnoreCase))
             {
-                // Masuk ke TabBar owner, lalu pilih tab Dashboard (ShellContent Route="dashboard")
-                await Shell.Current.GoToAsync("//ownerdashboard/dashboard");
+                // Pindah ke TabBar owner dan pastikan tab Dashboard terpilih.
+                if (!ShellNav.TrySelectTab("ownerdashboard", "dashboard"))
+                    await Shell.Current.GoToAsync("//ownerdashboard");
             }
             else
             {
-                // Masuk ke TabBar employee, lalu pilih tab Dashboard (ShellContent Route="dashboard")
-                await Shell.Current.GoToAsync("//employeedashboard/dashboard");
+                // Pindah ke TabBar employee dan pastikan tab Dashboard terpilih.
+                if (!ShellNav.TrySelectTab("employeedashboard", "dashboard"))
+                    await Shell.Current.GoToAsync("//employeedashboard");
             }
         }
         else

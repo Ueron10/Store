@@ -76,15 +76,16 @@ public partial class FinancialPage : ContentPage
             if (ProductPicker.SelectedIndex >= 0 && ProductPicker.SelectedIndex < _products.Count)
             {
                 var product = _products[ProductPicker.SelectedIndex];
-                decimal unitPrice = product.SellPrice;
 
-                if (product.DiscountPercent is > 0 and <= 100)
+                try
                 {
-                    unitPrice = unitPrice * (100 - product.DiscountPercent.Value) / 100m;
+                    var preview = DataStore.PreviewSale(product.Id, quantity);
+                    TotalLabel.Text = $"Rp {preview.TotalAmount:N0}";
                 }
-
-                var total = unitPrice * quantity;
-                TotalLabel.Text = $"Rp {total:N0}";
+                catch
+                {
+                    TotalLabel.Text = "Stok tidak cukup";
+                }
             }
             else
             {
@@ -148,37 +149,83 @@ public partial class FinancialPage : ContentPage
         }
     }
 
-    private async void OnAddExpenseClicked(object sender, EventArgs e)
+    private void OnAddExpenseClicked(object sender, EventArgs e)
     {
-        string description = await DisplayPromptAsync("Input Pengeluaran", "Deskripsi pengeluaran:");
-        if (!string.IsNullOrWhiteSpace(description))
-        {
-            string amountText = await DisplayPromptAsync("Input Pengeluaran", "Jumlah pengeluaran (Rp):", keyboard: Keyboard.Numeric);
-            if (decimal.TryParse(amountText, out var amount) && amount > 0)
-            {
-                DataStore.AddOperationalExpense(description, amount);
-                await DisplayAlert("Sukses", $"Pengeluaran '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
-                UpdateSummary();
-                BuildRecentTransactions();
-            }
-        }
+        ExpenseFormFrame.IsVisible = true;
+        PriveFormFrame.IsVisible = false;
+
+        ExpenseDatePicker.Date = DateTime.Today;
+        ExpenseDescriptionEntry.Text = string.Empty;
+        ExpenseAmountEntry.Text = string.Empty;
     }
 
-    private async void OnPriveClicked(object sender, EventArgs e)
+    private void OnCancelExpenseClicked(object sender, EventArgs e)
     {
-        string description = await DisplayPromptAsync("Input Prive", "Keterangan pengambilan (opsional):", initialValue: "Prive pemilik");
-        string amountText = await DisplayPromptAsync("Input Prive", "Jumlah yang diambil (Rp):", keyboard: Keyboard.Numeric);
+        ExpenseFormFrame.IsVisible = false;
+    }
 
-        if (decimal.TryParse(amountText, out var amount) && amount > 0)
+    private async void OnSaveExpenseClicked(object sender, EventArgs e)
+    {
+        string description = ExpenseDescriptionEntry.Text?.Trim() ?? string.Empty;
+        string amountText = ExpenseAmountEntry.Text?.Trim() ?? string.Empty;
+        var date = ExpenseDatePicker.Date.Date;
+
+        if (string.IsNullOrWhiteSpace(description))
         {
-            if (string.IsNullOrWhiteSpace(description))
-                description = "Prive pemilik";
-
-            DataStore.AddPrive(description, amount);
-            await DisplayAlert("Sukses", $"Prive '{description}' sebesar Rp {amount:N0} berhasil dicatat!\n(Pengeluaran ini tidak dihitung sebagai biaya operasional.)", "OK");
-            UpdateSummary();
-            BuildRecentTransactions();
+            await DisplayAlert("Error", "Deskripsi pengeluaran harus diisi.", "OK");
+            return;
         }
+
+        if (!decimal.TryParse(amountText, out var amount) || amount <= 0)
+        {
+            await DisplayAlert("Error", "Jumlah pengeluaran tidak valid.", "OK");
+            return;
+        }
+
+        DataStore.AddOperationalExpense(description, amount, date);
+        await DisplayAlert("Sukses", $"Pengeluaran '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
+
+        ExpenseFormFrame.IsVisible = false;
+        UpdateSummary();
+        BuildRecentTransactions();
+    }
+
+    private void OnPriveClicked(object sender, EventArgs e)
+    {
+        PriveFormFrame.IsVisible = true;
+        ExpenseFormFrame.IsVisible = false;
+
+        PriveDatePicker.Date = DateTime.Today;
+        PriveDescriptionEntry.Text = "Prive pemilik";
+        PriveAmountEntry.Text = string.Empty;
+    }
+
+    private void OnCancelPriveClicked(object sender, EventArgs e)
+    {
+        PriveFormFrame.IsVisible = false;
+    }
+
+    private async void OnSavePriveClicked(object sender, EventArgs e)
+    {
+        string description = PriveDescriptionEntry.Text?.Trim() ?? string.Empty;
+        string amountText = PriveAmountEntry.Text?.Trim() ?? string.Empty;
+        var date = PriveDatePicker.Date.Date;
+
+        if (string.IsNullOrWhiteSpace(description))
+            description = "Prive pemilik";
+
+        if (!decimal.TryParse(amountText, out var amount) || amount <= 0)
+        {
+            await DisplayAlert("Error", "Jumlah prive tidak valid.", "OK");
+            return;
+        }
+
+        DataStore.AddPrive(description, amount, date);
+        await DisplayAlert("Sukses", $"Prive '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
+
+        PriveFormFrame.IsVisible = false;
+        UpdateSummary();
+        BuildRecentTransactions();
     }
 
     private async void OnViewReceiptClicked(object sender, EventArgs e)

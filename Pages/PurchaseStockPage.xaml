@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.PurchaseStockPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Barang Masuk">
+
+    <ScrollView Padding="20">
+        <Frame BackgroundColor="White"
+               CornerRadius="15"
+               Padding="20"
+               HasShadow="True">
+            <StackLayout Spacing="12">
+                <Label x:Name="TitleLabel"
+                       Text="📥 Barang Masuk"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Gray900}"/>
+
+                <Label Text="Jumlah" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                <Entry x:Name="QtyEntry" Keyboard="Numeric" Placeholder="0" BackgroundColor="{StaticResource Gray100}" />
+
+                <Label Text="Harga Modal / Satuan (Rp)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                <Entry x:Name="UnitCostEntry" Keyboard="Numeric" Placeholder="0" BackgroundColor="{StaticResource Gray100}" />
+
+                <Label Text="Tanggal Masuk" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                <DatePicker x:Name="PurchaseDatePicker" />
+
+                <Label Text="Tanggal Kadaluarsa" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                <DatePicker x:Name="ExpiryDatePicker" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Batal"
+                            BackgroundColor="{StaticResource Gray200}"
+                            TextColor="{StaticResource Gray900}"
+                            Clicked="OnCancelClicked" />
+                    <Button Grid.Column="1"
+                            Text="Simpan"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            Clicked="OnSaveClicked" />
+                </Grid>
+            </StackLayout>
+        </Frame>
+    </ScrollView>
+</ContentPage>

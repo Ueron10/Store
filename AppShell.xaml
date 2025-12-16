@@ -15,37 +15,37 @@
 
     <!-- Owner Dashboard -->
     <TabBar Route="ownerdashboard">
-        <Tab Title="Dashboard" Icon="home.png">
+        <Tab Title="Dashboard" Icon="home.png" Route="dashboard">
             <ShellContent
                 Title="Dashboard"
                 ContentTemplate="{DataTemplate pages:OwnerDashboardPage}"
                 Route="dashboard" />
         </Tab>
-        <Tab Title="Stok" Icon="package.png">
+        <Tab Title="Stok" Icon="package.png" Route="stock">
             <ShellContent
                 Title="Manajemen Stok"
                 ContentTemplate="{DataTemplate pages:StockManagementPage}"
                 Route="stock" />
         </Tab>
-        <Tab Title="Keuangan" Icon="money.png">
+        <Tab Title="Keuangan" Icon="money.png" Route="financial">
             <ShellContent
                 Title="Keuangan"
                 ContentTemplate="{DataTemplate pages:FinancialPage}"
                 Route="financial" />
         </Tab>
-        <Tab Title="Laporan" Icon="chart.png">
+        <Tab Title="Laporan" Icon="chart.png" Route="reports">
             <ShellContent
                 Title="Laporan"
                 ContentTemplate="{DataTemplate pages:ReportsPage}"
                 Route="reports" />
         </Tab>
-        <Tab Title="Diskon" Icon="package.png">
+        <Tab Title="Diskon" Icon="package.png" Route="discounts">
             <ShellContent
                 Title="Diskon Kadaluarsa"
                 ContentTemplate="{DataTemplate pages:DiscountsPage}"
                 Route="discounts" />
         </Tab>
-        <Tab Title="Notifikasi" Icon="bell.png">
+        <Tab Title="Notifikasi" Icon="bell.png" Route="notifications">
             <ShellContent
                 Title="Notifikasi"
                 ContentTemplate="{DataTemplate pages:NotificationsPage}"
@@ -55,25 +55,25 @@
 
     <!-- Employee Dashboard -->
     <TabBar Route="employeedashboard">
-        <Tab Title="Dashboard" Icon="home.png">
+        <Tab Title="Dashboard" Icon="home.png" Route="dashboard">
             <ShellContent
                 Title="Dashboard Pegawai"
                 ContentTemplate="{DataTemplate pages:EmployeeDashboardPage}"
                 Route="dashboard" />
         </Tab>
-        <Tab Title="Stok" Icon="package.png">
+        <Tab Title="Stok" Icon="package.png" Route="stock">
             <ShellContent
                 Title="Lihat Stok"
                 ContentTemplate="{DataTemplate pages:StockManagementPage}"
                 Route="stock" />
         </Tab>
-        <Tab Title="Transaksi" Icon="money.png">
+        <Tab Title="Transaksi" Icon="money.png" Route="financial">
             <ShellContent
                 Title="Transaksi"
                 ContentTemplate="{DataTemplate pages:FinancialPage}"
                 Route="financial" />
         </Tab>
-        <Tab Title="Notifikasi" Icon="bell.png">
+        <Tab Title="Notifikasi" Icon="bell.png" Route="notifications">
             <ShellContent
                 Title="Notifikasi"
                 ContentTemplate="{DataTemplate pages:NotificationsPage}"

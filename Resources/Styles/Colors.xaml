@@ -23,6 +23,17 @@
     <Color x:Key="Danger">#EF4444</Color>
     <Color x:Key="Info">#3B82F6</Color>
 
+    <!-- Semantic (tinted) backgrounds + darker foregrounds (biar tidak "nabrak") -->
+    <Color x:Key="SuccessBg">#DCFCE7</Color>
+    <Color x:Key="WarningBg">#FFEDD5</Color>
+    <Color x:Key="DangerBg">#FEE2E2</Color>
+    <Color x:Key="InfoBg">#DBEAFE</Color>
+
+    <Color x:Key="SuccessText">#166534</Color>
+    <Color x:Key="WarningText">#9A3412</Color>
+    <Color x:Key="DangerText">#991B1B</Color>
+    <Color x:Key="InfoText">#1E40AF</Color>
+
     <!-- Surfaces / text -->
     <Color x:Key="PageBackground">#F8FAFC</Color> <!-- Slate 50 -->
     <Color x:Key="CardBackground">#FFFFFF</Color>

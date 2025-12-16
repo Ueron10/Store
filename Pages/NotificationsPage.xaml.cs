@@ -23,6 +23,8 @@ public partial class NotificationsPage : ContentPage
 
         var (nearing, expired) = DataStore.GetExpiryAlerts();
 
+        var today = DateOnly.FromDateTime(DateTime.Today);
+
         if (!expired.Any())
         {
             ExpiredContainer.Children.Add(new Label
@@ -34,21 +36,12 @@ public partial class NotificationsPage : ContentPage
         }
         else
         {
-            var expiredGroups = expired
-                .GroupBy(b => b.ProductId)
-                .Select(g => new
-                {
-                    Product = DataStore.Products.FirstOrDefault(p => p.Id == g.Key),
-                    TotalQty = g.Sum(b => b.Quantity),
-                    LastExpiry = g.Min(b => b.ExpiryDate)
-                })
-                .Where(x => x.Product != null)
-                .OrderBy(x => x.LastExpiry)
-                .ToList();
-
-            foreach (var item in expiredGroups)
+            // Tampilkan per batch agar produk yang sama tapi expiry berbeda tetap terlihat.
+            foreach (var batch in expired.OrderBy(b => b.ExpiryDate))
             {
-                var product = item.Product!;
+                var product = DataStore.Products.FirstOrDefault(p => p.Id == batch.ProductId);
+                if (product == null) continue;
+
                 var frame = new Frame
                 {
                     BackgroundColor = Colors.White,
@@ -73,26 +66,27 @@ public partial class NotificationsPage : ContentPage
                     Text = product.Name,
                     FontSize = 16,
                     FontAttributes = FontAttributes.Bold,
-                    TextColor = Colors.Red
+                    TextColor = Color.FromArgb("#111827")
                 });
                 textStack.Children.Add(new Label
                 {
-                    Text = $"Stok: {item.TotalQty} {product.Unit}",
+                    Text = $"Batch: {batch.Quantity} {product.Unit}",
                     FontSize = 13,
                     TextColor = Color.FromArgb("#6B7280")
                 });
                 textStack.Children.Add(new Label
                 {
-                    Text = $"Kadaluarsa: {item.LastExpiry:dd MMM yyyy}",
+                    Text = $"Kadaluarsa: {batch.ExpiryDate:dd MMM yyyy}",
                     FontSize = 12,
                     TextColor = Colors.Red
                 });
 
                 grid.Add(textStack, 0, 0);
 
+                // Hapus semua stok expired untuk produk ini (lebih aman daripada per-batch removal)
                 var removeButton = new Button
                 {
-                    Text = "Hapus Stok",
+                    Text = "Hapus Stok Expired",
                     BackgroundColor = Colors.Red,
                     TextColor = Colors.White,
                     CornerRadius = 8,
@@ -113,28 +107,21 @@ public partial class NotificationsPage : ContentPage
         {
             NearingContainer.Children.Add(new Label
             {
-                Text = "Tidak ada produk yang mendekati kadaluarsa.",
+                Text = "Tidak ada produk yang mendekati kadaluarsa (≤ 14 hari).",
                 FontSize = 14,
                 TextColor = Color.FromArgb("#6B7280")
             });
         }
         else
         {
-            var nearGroups = nearing
-                .GroupBy(b => b.ProductId)
-                .Select(g => new
-                {
-                    Product = DataStore.Products.FirstOrDefault(p => p.Id == g.Key),
-                    TotalQty = g.Sum(b => b.Quantity),
-                    NearestExpiry = g.Min(b => b.ExpiryDate)
-                })
-                .Where(x => x.Product != null)
-                .OrderBy(x => x.NearestExpiry)
-                .ToList();
-
-            foreach (var item in nearGroups)
+            foreach (var batch in nearing.OrderBy(b => b.ExpiryDate))
             {
-                var product = item.Product!;
+                var product = DataStore.Products.FirstOrDefault(p => p.Id == batch.ProductId);
+                if (product == null) continue;
+
+                int daysLeft = batch.ExpiryDate.DayNumber - today.DayNumber;
+                string daysLeftText = daysLeft <= 0 ? "Hari ini" : $"{daysLeft} hari lagi";
+
                 var frame = new Frame
                 {
                     BackgroundColor = Colors.White,
@@ -159,19 +146,19 @@ public partial class NotificationsPage : ContentPage
                     Text = product.Name,
                     FontSize = 16,
                     FontAttributes = FontAttributes.Bold,
-                    TextColor = Colors.Orange
+                    TextColor = Color.FromArgb("#111827")
                 });
                 textStack.Children.Add(new Label
                 {
-                    Text = $"Stok: {item.TotalQty} {product.Unit}",
+                    Text = $"Batch: {batch.Quantity} {product.Unit}",
                     FontSize = 13,
                     TextColor = Color.FromArgb("#6B7280")
                 });
                 textStack.Children.Add(new Label
                 {
-                    Text = $"Kadaluarsa: {item.NearestExpiry:dd MMM yyyy}",
+                    Text = $"Kadaluarsa: {batch.ExpiryDate:dd MMM yyyy} • {daysLeftText}",
                     FontSize = 12,
-                    TextColor = Colors.OrangeRed
+                    TextColor = Color.FromArgb("#F97316") // orange
                 });
 
                 grid.Add(textStack, 0, 0);
@@ -187,11 +174,10 @@ public partial class NotificationsPage : ContentPage
                 };
                 discountButton.Clicked += async (_, __) =>
                 {
-                    // Diskon hanya ada di tab Owner.
                     if (DataStore.CurrentUser != null &&
                         string.Equals(DataStore.CurrentUser.Role, "Owner", StringComparison.OrdinalIgnoreCase))
                     {
-                        await Shell.Current.GoToAsync("//ownerdashboard/discounts");
+                        ShellNav.TrySelectTab("ownerdashboard", "discounts");
                     }
                     else
                     {

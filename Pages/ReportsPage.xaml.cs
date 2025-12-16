@@ -1,3 +1,5 @@
+using Microsoft.Maui.ApplicationModel;
+using StoreProgram.Components;
 using StoreProgram.Models;
 using StoreProgram.Services;
 
@@ -14,9 +16,15 @@ public partial class ReportsPage : ContentPage
 
     private ReportPeriod _activePeriod = ReportPeriod.Daily;
 
+    private DateRange _currentRange;
+
     public ReportsPage()
     {
         InitializeComponent();
+
+        var today = DateTime.Today;
+        _currentRange = new DateRange(today, today.AddDays(1).AddTicks(-1));
+
         // Default tampilkan laporan harian saat halaman pertama kali dibuka
         SetActiveButton(DailyButton);
         LoadDailyData();
@@ -107,6 +115,8 @@ public partial class ReportsPage : ContentPage
 
     private void LoadSummary(DateRange range)
     {
+        _currentRange = range;
+
         var summary = DataStore.GetSummary(range);
 
         TotalSalesLabel.Text = $"Rp {summary.TotalSales:N0}";
@@ -116,6 +126,77 @@ public partial class ReportsPage : ContentPage
         TotalTransactionsLabel.Text = $"{summary.TotalTransactions} Transaksi";
 
         BuildTopProducts(summary.TopProducts);
+        BuildSalesChart(range);
+    }
+
+    private void BuildSalesChart(DateRange range)
+    {
+        var salesInRange = DataStore.Sales
+            .Where(s => s.Timestamp >= range.Start && s.Timestamp <= range.End)
+            .OrderBy(s => s.Timestamp)
+            .ToList();
+
+        List<ChartPoint> points;
+        string subtitle;
+
+        switch (_activePeriod)
+        {
+            case ReportPeriod.Daily:
+            {
+                subtitle = $"Harian • {range.Start:dd MMM yyyy}";
+
+                // per jam (00-23)
+                var map = salesInRange
+                    .GroupBy(s => s.Timestamp.Hour)
+                    .ToDictionary(g => g.Key, g => (double)g.Sum(x => x.GrossAmount));
+
+                points = Enumerable.Range(0, 24)
+                    .Select(h => new ChartPoint(h.ToString("00"), map.TryGetValue(h, out var v) ? v : 0))
+                    .ToList();
+                break;
+            }
+            case ReportPeriod.Weekly:
+            {
+                subtitle = $"Mingguan • {range.Start:dd MMM} - {range.End:dd MMM yyyy}";
+                var days = EachDay(range.Start.Date, range.End.Date);
+
+                var map = salesInRange
+                    .GroupBy(s => s.Timestamp.Date)
+                    .ToDictionary(g => g.Key, g => (double)g.Sum(x => x.GrossAmount));
+
+                points = days
+                    .Select(d => new ChartPoint(d.ToString("dd/MM"), map.TryGetValue(d, out var v) ? v : 0))
+                    .ToList();
+                break;
+            }
+            case ReportPeriod.Monthly:
+            default:
+            {
+                subtitle = $"Bulanan • {range.Start:MMMM yyyy}";
+                var days = EachDay(range.Start.Date, range.End.Date);
+
+                var map = salesInRange
+                    .GroupBy(s => s.Timestamp.Date)
+                    .ToDictionary(g => g.Key, g => (double)g.Sum(x => x.GrossAmount));
+
+                points = days
+                    .Select(d => new ChartPoint(d.Day.ToString(), map.TryGetValue(d, out var v) ? v : 0))
+                    .ToList();
+                break;
+            }
+        }
+
+        ChartSubtitleLabel.Text = subtitle;
+        SalesChartView.Drawable = new SalesBarChartDrawable(points);
+        SalesChartView.Invalidate();
+    }
+
+    private static List<DateTime> EachDay(DateTime start, DateTime end)
+    {
+        var days = new List<DateTime>();
+        for (var dt = start.Date; dt <= end.Date; dt = dt.AddDays(1))
+            days.Add(dt);
+        return days;
     }
 
     private void BuildTopProducts(List<TopProduct> topProducts)
@@ -197,7 +278,7 @@ public partial class ReportsPage : ContentPage
                 Text = $"Rp {p.TotalSales:N0}",
                 FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Colors.Green,
+                TextColor = Color.FromArgb("#166534"), // SuccessText
                 VerticalOptions = LayoutOptions.Center
             };
             row.Add(totalLabel, 2, 0);
@@ -219,11 +300,58 @@ public partial class ReportsPage : ContentPage
 
     private async void OnExportPdfClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Export PDF", "Laporan berhasil diekspor ke PDF", "OK");
+        try
+        {
+            var periodName = _activePeriod switch
+            {
+                ReportPeriod.Daily => "Harian",
+                ReportPeriod.Weekly => "Mingguan",
+                _ => "Bulanan"
+            };
+
+            var filePath = await ReportExportService.ExportPdfAsync(_currentRange, periodName);
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export PDF", $"PDF tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export PDF", $"Gagal export PDF: {ex.Message}", "OK");
+        }
     }
 
     private async void OnExportExcelClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Export Excel", "Laporan berhasil diekspor ke Excel", "OK");
+        try
+        {
+            var periodName = _activePeriod switch
+            {
+                ReportPeriod.Daily => "Harian",
+                ReportPeriod.Weekly => "Mingguan",
+                _ => "Bulanan"
+            };
+
+            var filePath = await ReportExportService.ExportExcelAsync(_currentRange, periodName);
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export Excel", $"Excel tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export Excel", $"Gagal export Excel: {ex.Message}", "OK");
+        }
+    }
+
+    private static async Task TryOpenFileAsync(string path)
+    {
+        try
+        {
+            await Launcher.Default.OpenAsync(new OpenFileRequest
+            {
+                File = new ReadOnlyFile(path)
+            });
+        }
+        catch
+        {
+            // Ignore: sebagian platform tidak support open langsung.
+        }
     }
 }

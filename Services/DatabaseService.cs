@@ -95,7 +95,8 @@ CREATE TABLE IF NOT EXISTS StockBatch (
   ProductId CHAR(36) NOT NULL,
   Quantity INT NOT NULL,
   ExpiryDate DATE NOT NULL,
-  UnitCost DECIMAL(18,2) NOT NULL
+  UnitCost DECIMAL(18,2) NOT NULL,
+  DiscountPercent DECIMAL(5,2) NULL
 );");
 
             ExecuteNonQuery(conn, @"
@@ -152,6 +153,7 @@ CREATE TABLE IF NOT EXISTS AppUser (
             EnsureColumn(conn, table: "SaleTransaction", column: "GrossAmount", columnDefinition: "DECIMAL(18,2) NOT NULL DEFAULT 0");
             EnsureColumn(conn, table: "SaleItem", column: "SaleId", columnDefinition: "CHAR(36) NOT NULL");
             EnsureColumn(conn, table: "SaleItem", column: "Id", columnDefinition: "CHAR(36) NOT NULL");
+            EnsureColumn(conn, table: "StockBatch", column: "DiscountPercent", columnDefinition: "DECIMAL(5,2) NULL");
 
             _schemaEnsured = true;
         }
@@ -226,7 +228,7 @@ FROM Product;", Connection);
             var list = new List<StockBatch>();
 
             using var cmd = new MySqlCommand(@"SELECT
-    Id, ProductId, Quantity, ExpiryDate, UnitCost
+    Id, ProductId, Quantity, ExpiryDate, UnitCost, DiscountPercent
 FROM StockBatch;", Connection);
 
             using var reader = cmd.ExecuteReader();
@@ -238,7 +240,10 @@ FROM StockBatch;", Connection);
                     ProductId = ReadGuid(reader, "ProductId"),
                     Quantity = reader.GetInt32("Quantity"),
                     ExpiryDate = DateOnly.FromDateTime(reader.GetDateTime("ExpiryDate")),
-                    UnitCost = reader.GetDecimal("UnitCost")
+                    UnitCost = reader.GetDecimal("UnitCost"),
+                    DiscountPercent = reader.IsDBNull(reader.GetOrdinal("DiscountPercent"))
+                        ? null
+                        : reader.GetDecimal("DiscountPercent")
                 };
                 list.Add(b);
             }
@@ -485,15 +490,16 @@ WHERE Id = @Id;", Connection);
         lock (_lock)
         {
             using var cmd = new MySqlCommand(@"INSERT INTO StockBatch
-(Id, ProductId, Quantity, ExpiryDate, UnitCost)
+(Id, ProductId, Quantity, ExpiryDate, UnitCost, DiscountPercent)
 VALUES
-(@Id, @ProductId, @Quantity, @ExpiryDate, @UnitCost);", Connection);
+(@Id, @ProductId, @Quantity, @ExpiryDate, @UnitCost, @DiscountPercent);", Connection);
 
             cmd.Parameters.AddWithValue("@Id", batch.Id.ToString());
             cmd.Parameters.AddWithValue("@ProductId", batch.ProductId.ToString());
             cmd.Parameters.AddWithValue("@Quantity", batch.Quantity);
             cmd.Parameters.AddWithValue("@ExpiryDate", batch.ExpiryDate.ToDateTime(TimeOnly.MinValue));
             cmd.Parameters.AddWithValue("@UnitCost", batch.UnitCost);
+            cmd.Parameters.AddWithValue("@DiscountPercent", (object?)batch.DiscountPercent ?? DBNull.Value);
 
             cmd.ExecuteNonQuery();
         }
@@ -507,7 +513,8 @@ VALUES
     ProductId = @ProductId,
     Quantity = @Quantity,
     ExpiryDate = @ExpiryDate,
-    UnitCost = @UnitCost
+    UnitCost = @UnitCost,
+    DiscountPercent = @DiscountPercent
 WHERE Id = @Id;", Connection);
 
             cmd.Parameters.AddWithValue("@Id", batch.Id.ToString());
@@ -515,6 +522,7 @@ WHERE Id = @Id;", Connection);
             cmd.Parameters.AddWithValue("@Quantity", batch.Quantity);
             cmd.Parameters.AddWithValue("@ExpiryDate", batch.ExpiryDate.ToDateTime(TimeOnly.MinValue));
             cmd.Parameters.AddWithValue("@UnitCost", batch.UnitCost);
+            cmd.Parameters.AddWithValue("@DiscountPercent", (object?)batch.DiscountPercent ?? DBNull.Value);
 
             cmd.ExecuteNonQuery();
         }

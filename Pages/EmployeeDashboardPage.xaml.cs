@@ -198,23 +198,23 @@ public partial class EmployeeDashboardPage : ContentPage
         }
     }
 
-    private async void OnNewTransactionClicked(object sender, EventArgs e)
+    private void OnNewTransactionClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//employeedashboard/financial");
+        ShellNav.TrySelectTab("employeedashboard", "financial");
     }
 
-    private async void OnViewStockClicked(object sender, EventArgs e)
+    private void OnViewStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//employeedashboard/stock");
+        ShellNav.TrySelectTab("employeedashboard", "stock");
     }
 
-    private async void OnUpdateStockClicked(object sender, EventArgs e)
+    private void OnUpdateStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//employeedashboard/stock");
+        ShellNav.TrySelectTab("employeedashboard", "stock");
     }
 
-    private async void OnNotificationsClicked(object sender, EventArgs e)
+    private void OnNotificationsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//employeedashboard/notifications");
+        ShellNav.TrySelectTab("employeedashboard", "notifications");
     }
 }

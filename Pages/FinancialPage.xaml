@@ -22,60 +22,60 @@
                         
                         <!-- Pendapatan -->
                         <Frame Grid.Column="0" 
-                               BackgroundColor="Green" 
+                               BackgroundColor="{StaticResource SuccessBg}" 
                                CornerRadius="10" 
                                Padding="12" 
                                HasShadow="False">
                             <StackLayout>
                                 <Label Text="Pendapatan" 
                                        FontSize="10" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource TextSecondary}" 
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="DailyIncomeLabel" 
                                        Text="Rp 0" 
                                        FontSize="12" 
                                        FontAttributes="Bold" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource SuccessText}" 
                                        HorizontalOptions="Center"/>
                             </StackLayout>
                         </Frame>
                         
                         <!-- Pengeluaran -->
                         <Frame Grid.Column="1" 
-                               BackgroundColor="Red" 
+                               BackgroundColor="{StaticResource DangerBg}" 
                                CornerRadius="10" 
                                Padding="12" 
                                HasShadow="False">
                             <StackLayout>
                                 <Label Text="Pengeluaran" 
                                        FontSize="10" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource TextSecondary}" 
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="DailyExpenseLabel" 
                                        Text="Rp 0" 
                                        FontSize="12" 
                                        FontAttributes="Bold" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource DangerText}" 
                                        HorizontalOptions="Center"/>
                             </StackLayout>
                         </Frame>
                         
                         <!-- Keuntungan -->
                         <Frame Grid.Column="2" 
-                               BackgroundColor="Orange" 
+                               BackgroundColor="{StaticResource WarningBg}" 
                                CornerRadius="10" 
                                Padding="12" 
                                HasShadow="False">
                             <StackLayout>
                                 <Label Text="Keuntungan" 
                                        FontSize="10" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource TextSecondary}" 
                                        HorizontalOptions="Center"/>
                                 <Label x:Name="DailyProfitLabel" 
                                        Text="Rp 0" 
                                        FontSize="12" 
                                        FontAttributes="Bold" 
-                                       TextColor="White" 
+                                       TextColor="{StaticResource WarningText}" 
                                        HorizontalOptions="Center"/>
                             </StackLayout>
                         </Frame>
@@ -108,8 +108,10 @@
                         
                         <Button Grid.Column="1" 
                                 Text="💸 Input Pengeluaran" 
-                                BackgroundColor="Red" 
-                                TextColor="White" 
+                                BackgroundColor="{StaticResource DangerBg}" 
+                                TextColor="{StaticResource DangerText}" 
+                                BorderColor="{StaticResource Danger}"
+                                BorderWidth="1"
                                 CornerRadius="10" 
                                 HeightRequest="60" 
                                 FontAttributes="Bold" 
@@ -117,14 +119,88 @@
                         
                     </Grid>
                     
-                    <!-- Prive / Pengambilan pribadi (tidak dihitung biaya operasional) -->
+                    <!-- Prive / Pengambilan pribadi -->
                     <Button Text="👤 Prive / Ambil Uang" 
-                            BackgroundColor="Orange" 
-                            TextColor="White" 
+                            BackgroundColor="{StaticResource WarningBg}" 
+                            TextColor="{StaticResource WarningText}" 
+                            BorderColor="{StaticResource Warning}"
+                            BorderWidth="1"
                             CornerRadius="10" 
                             HeightRequest="50" 
                             FontAttributes="Bold" 
                             Clicked="OnPriveClicked"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Expense Form (Form + DatePicker) -->
+            <Frame x:Name="ExpenseFormFrame"
+                   BackgroundColor="White"
+                   CornerRadius="15"
+                   Padding="20"
+                   HasShadow="True"
+                   IsVisible="False">
+                <StackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="💸 Input Pengeluaran"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Gray600}"
+                                FontSize="18"
+                                Clicked="OnCancelExpenseClicked"/>
+                    </Grid>
+                    <Label Text="Tanggal" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <DatePicker x:Name="ExpenseDatePicker" />
+                    <Label Text="Deskripsi" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="ExpenseDescriptionEntry" Placeholder="Contoh: Listrik / Transport" BackgroundColor="{StaticResource Gray100}" />
+                    <Label Text="Jumlah (Rp)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="ExpenseAmountEntry" Placeholder="0" Keyboard="Numeric" BackgroundColor="{StaticResource Gray100}" />
+                    <Button Text="Simpan Pengeluaran"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="48"
+                            Clicked="OnSaveExpenseClicked"/>
+                </StackLayout>
+            </Frame>
+
+            <!-- Prive Form (Form + DatePicker) -->
+            <Frame x:Name="PriveFormFrame"
+                   BackgroundColor="White"
+                   CornerRadius="15"
+                   Padding="20"
+                   HasShadow="True"
+                   IsVisible="False">
+                <StackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="👤 Prive / Ambil Uang"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Gray600}"
+                                FontSize="18"
+                                Clicked="OnCancelPriveClicked"/>
+                    </Grid>
+                    <Label Text="Tanggal" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <DatePicker x:Name="PriveDatePicker" />
+                    <Label Text="Keterangan" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="PriveDescriptionEntry" Placeholder="Prive pemilik" BackgroundColor="{StaticResource Gray100}" />
+                    <Label Text="Jumlah (Rp)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="PriveAmountEntry" Placeholder="0" Keyboard="Numeric" BackgroundColor="{StaticResource Gray100}" />
+                    <Button Text="Simpan Prive"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="48"
+                            Clicked="OnSavePriveClicked"/>
                 </StackLayout>
             </Frame>
             
@@ -233,8 +309,10 @@
                     
                     <!-- Process Button -->
                     <Button Text="💳 Proses Transaksi" 
-                            BackgroundColor="Green" 
-                            TextColor="White" 
+                            BackgroundColor="{StaticResource SuccessBg}" 
+                            TextColor="{StaticResource SuccessText}" 
+                            BorderColor="{StaticResource Success}"
+                            BorderWidth="1"
                             CornerRadius="10" 
                             HeightRequest="50" 
                             FontAttributes="Bold" 

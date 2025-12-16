@@ -2,6 +2,7 @@ namespace StoreProgram.Models;
 
 public class ExpiryAlertSetting
 {
-    public int DaysBeforeExpiryWarning { get; set; } = 7;
-    public int DaysBeforeExpiryMax { get; set; } = 30;
+    // "Mendekati kadaluarsa" = sisa <= 14 hari
+    public int DaysBeforeExpiryWarning { get; set; } = 0;
+    public int DaysBeforeExpiryMax { get; set; } = 14;
 }

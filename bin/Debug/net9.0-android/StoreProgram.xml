@@ -16,6 +16,12 @@
             Jika ke depan ingin multi-item, bisa dikembangkan dari sini.
             </summary>
         </member>
+        <member name="M:StoreProgram.Services.ShellNav.TrySelectTab(System.String,System.String)">
+            <summary>
+            Pindah tab (ShellContent) di dalam TabBar tertentu.
+            Ini lebih stabil dibanding GoToAsync("//ownerdashboard/reports") yang sering gagal resolve.
+            </summary>
+        </member>
         <member name="T:StoreProgram.Resource">
             <summary>
             Android Resource Designer class.

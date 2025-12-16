@@ -76,6 +76,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.OwnerDa
 build_metadata.AdditionalFiles.TargetPath = Pages\OwnerDashboardPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\OwnerDashboardPage.xaml
 
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/PurchaseStockPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.PurchaseStockPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\PurchaseStockPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\PurchaseStockPage.xaml
+
 [D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/ReportsPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.ReportsPage.xaml

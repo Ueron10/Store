@@ -7,10 +7,9 @@ public partial class DiscountsPage : ContentPage
 {
     private class DiscountContext
     {
+        public StockBatch Batch { get; set; } = null!;
         public Product Product { get; set; } = null!;
         public Entry DiscountEntry { get; set; } = null!;
-        public int TotalQty { get; set; }
-        public DateOnly NearestExpiry { get; set; }
     }
 
     public DiscountsPage()
@@ -33,28 +32,18 @@ public partial class DiscountsPage : ContentPage
         {
             DiscountsContainer.Children.Add(new Label
             {
-                Text = "Tidak ada produk yang mendekati kadaluarsa.",
+                Text = "Tidak ada produk yang mendekati kadaluarsa (≤ 14 hari).",
                 FontSize = 14,
                 TextColor = Color.FromArgb("#6B7280")
             });
             return;
         }
 
-        var groups = nearing
-            .GroupBy(b => b.ProductId)
-            .Select(g => new
-            {
-                Product = DataStore.Products.FirstOrDefault(p => p.Id == g.Key),
-                TotalQty = g.Sum(b => b.Quantity),
-                NearestExpiry = g.Min(b => b.ExpiryDate)
-            })
-            .Where(x => x.Product != null)
-            .OrderBy(x => x.NearestExpiry)
-            .ToList();
-
-        foreach (var item in groups)
+        foreach (var batch in nearing.OrderBy(b => b.ExpiryDate))
         {
-            var product = item.Product!;
+            var product = DataStore.Products.FirstOrDefault(p => p.Id == batch.ProductId);
+            if (product == null) continue;
+
             var frame = new Frame
             {
                 BackgroundColor = Colors.White,
@@ -92,17 +81,28 @@ public partial class DiscountsPage : ContentPage
 
             grid.Add(new Label
             {
-                Text = $"Stok: {item.TotalQty} {product.Unit}",
+                Text = $"Batch: {batch.Quantity} {product.Unit}",
                 FontSize = 13,
                 TextColor = Color.FromArgb("#6B7280")
             }, 0, 1);
 
             grid.Add(new Label
             {
-                Text = $"Kadaluarsa: {item.NearestExpiry:dd MMM yyyy}",
+                Text = $"Kadaluarsa: {batch.ExpiryDate:dd MMM yyyy}",
                 FontSize = 13,
                 TextColor = Colors.OrangeRed
             }, 1, 1);
+
+            // Harga setelah diskon (preview)
+            decimal percentNow = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
+            decimal discountedPrice = product.SellPrice * (100 - percentNow) / 100m;
+
+            grid.Add(new Label
+            {
+                Text = $"Harga: Rp {product.SellPrice:N0}  →  Rp {discountedPrice:N0}",
+                FontSize = 12,
+                TextColor = Color.FromArgb("#111827")
+            }, 0, 2);
 
             var discountEntry = new Entry
             {
@@ -110,7 +110,7 @@ public partial class DiscountsPage : ContentPage
                 Keyboard = Keyboard.Numeric,
                 WidthRequest = 80,
                 BackgroundColor = Color.FromArgb("#F3F4F6"),
-                Text = product.DiscountPercent?.ToString("0") ?? "0"
+                Text = percentNow.ToString("0")
             };
 
             grid.Add(discountEntry, 0, 2);
@@ -128,10 +128,9 @@ public partial class DiscountsPage : ContentPage
 
             var ctx = new DiscountContext
             {
+                Batch = batch,
                 Product = product,
-                DiscountEntry = discountEntry,
-                TotalQty = item.TotalQty,
-                NearestExpiry = item.NearestExpiry
+                DiscountEntry = discountEntry
             };
             saveButton.CommandParameter = ctx;
             saveButton.Clicked += OnSaveDiscountClicked;
@@ -157,9 +156,12 @@ public partial class DiscountsPage : ContentPage
         if (percent < 0) percent = 0;
         if (percent > 100) percent = 100;
 
-        ctx.Product.DiscountPercent = percent;
-        DatabaseService.UpdateProduct(ctx.Product);
+        ctx.Batch.DiscountPercent = percent;
+        DatabaseService.UpdateStockBatch(ctx.Batch);
 
-        await DisplayAlert("Sukses", $"Diskon {percent:0}% disimpan untuk {ctx.Product.Name}.", "OK");
+        await DisplayAlert("Sukses", $"Diskon {percent:0}% disimpan untuk {ctx.Product.Name} (batch exp {ctx.Batch.ExpiryDate:dd MMM yyyy}).", "OK");
+
+        // Refresh kartu agar harga preview ikut berubah
+        BuildDiscountCards();
     }
 }
