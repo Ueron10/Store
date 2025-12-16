@@ -58,6 +58,7 @@ public static class DataStore
         {
             ProductId = productId,
             Quantity = quantity,
+            PurchaseDate = ts,
             UnitCost = unitCost,
             ExpiryDate = expiryDate
         };
@@ -99,14 +100,45 @@ public static class DataStore
     /// Dipakai untuk menampilkan total yang akurat sebelum transaksi diproses.
     /// </summary>
     public static SalePreview PreviewSale(Guid productId, int quantity)
+        => PreviewSale(productId, quantity, batchId: null);
+
+    public static SalePreview PreviewSale(Guid productId, int quantity, Guid? batchId)
     {
         if (quantity <= 0)
             return new SalePreview(Array.Empty<SaleItem>(), 0m);
 
         var product = Products.First(p => p.Id == productId);
 
+        // Jika user memilih batch tertentu, preview hanya dari batch itu.
+        if (batchId is not null)
+        {
+            var b = StockBatches.FirstOrDefault(x => x.Id == batchId && x.ProductId == productId);
+            if (b == null || b.Quantity <= 0)
+                throw new InvalidOperationException("Batch tidak ditemukan / stok batch kosong.");
+
+            if (b.Quantity < quantity)
+                throw new InvalidOperationException("Stok batch tidak mencukupi.");
+
+            decimal percent = b.DiscountPercent is > 0 and <= 100 ? b.DiscountPercent.Value : 0m;
+            decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
+
+            var items = new List<SaleItem>
+            {
+                new()
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    Quantity = quantity,
+                    UnitPrice = unitPrice
+                }
+            };
+
+            return new SalePreview(items, items.Sum(i => i.LineTotal));
+        }
+
+        // Default: FIFO berdasarkan expiry
         int remaining = quantity;
-        var items = new List<SaleItem>();
+        var fifoItems = new List<SaleItem>();
 
         var batches = StockBatches
             .Where(b => b.ProductId == productId && b.Quantity > 0)
@@ -124,14 +156,14 @@ public static class DataStore
             decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
 
             // Gabungkan kalau unitPrice sama (biar ringkas)
-            var last = items.LastOrDefault();
+            var last = fifoItems.LastOrDefault();
             if (last != null && last.ProductId == productId && last.UnitPrice == unitPrice)
             {
                 last.Quantity += take;
             }
             else
             {
-                items.Add(new SaleItem
+                fifoItems.Add(new SaleItem
                 {
                     ProductId = productId,
                     ProductName = product.Name,
@@ -144,20 +176,74 @@ public static class DataStore
         if (remaining > 0)
             throw new InvalidOperationException("Stok tidak mencukupi untuk transaksi ini.");
 
-        return new SalePreview(items, items.Sum(i => i.LineTotal));
+        return new SalePreview(fifoItems, fifoItems.Sum(i => i.LineTotal));
     }
 
     /// <summary>
     /// Proses penjualan 1 produk (UI FinancialPage). Harga dihitung per batch (diskon per batch).
     /// </summary>
     public static SaleTransaction ProcessSingleItemSale(Guid productId, int quantity, string paymentMethod)
+        => ProcessSingleItemSale(productId, quantity, paymentMethod, batchId: null);
+
+    public static SaleTransaction ProcessSingleItemSale(Guid productId, int quantity, string paymentMethod, Guid? batchId)
     {
         var product = Products.First(p => p.Id == productId);
 
-        // Kurangi stok dengan FIFO dari batch yang paling dekat kadaluarsa
+        // Jika user memilih batch tertentu, keluarkan stok dari batch itu saja.
+        if (batchId is not null)
+        {
+            var batch = StockBatches.FirstOrDefault(b => b.Id == batchId && b.ProductId == productId);
+            if (batch == null || batch.Quantity <= 0)
+                throw new InvalidOperationException("Batch tidak ditemukan / stok batch kosong.");
+
+            if (batch.Quantity < quantity)
+                throw new InvalidOperationException("Stok batch tidak mencukupi.");
+
+            batch.Quantity -= quantity;
+            DatabaseService.UpdateStockBatch(batch);
+
+            decimal percent = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
+            decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
+
+            var saleItems = new List<SaleItem>
+            {
+                new()
+                {
+                    ProductId = productId,
+                    ProductName = product.Name,
+                    Quantity = quantity,
+                    UnitPrice = unitPrice
+                }
+            };
+
+            var movement = new StockMovement
+            {
+                ProductId = productId,
+                Quantity = quantity,
+                UnitCost = batch.UnitCost,
+                TotalCost = quantity * batch.UnitCost,
+                Type = StockMovementType.SaleOut,
+                Reason = $"Penjualan (batch exp {batch.ExpiryDate:yyyy-MM-dd})"
+            };
+            StockMovements.Add(movement);
+            DatabaseService.InsertStockMovement(movement);
+
+            var sale = new SaleTransaction
+            {
+                Items = saleItems,
+                PaymentMethod = paymentMethod,
+                TotalCost = quantity * batch.UnitCost
+            };
+
+            Sales.Add(sale);
+            DatabaseService.InsertSale(sale);
+            return sale;
+        }
+
+        // Default FIFO (multi-batch)
         int remaining = quantity;
         decimal totalCost = 0;
-        var saleItems = new List<SaleItem>();
+        var fifoItems = new List<SaleItem>();
 
         var batches = StockBatches
             .Where(b => b.ProductId == productId && b.Quantity > 0)
@@ -179,14 +265,14 @@ public static class DataStore
             decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
 
             // Gabungkan kalau unitPrice sama
-            var last = saleItems.LastOrDefault();
+            var last = fifoItems.LastOrDefault();
             if (last != null && last.ProductId == productId && last.UnitPrice == unitPrice)
             {
                 last.Quantity += take;
             }
             else
             {
-                saleItems.Add(new SaleItem
+                fifoItems.Add(new SaleItem
                 {
                     ProductId = productId,
                     ProductName = product.Name,
@@ -211,16 +297,16 @@ public static class DataStore
         if (remaining > 0)
             throw new InvalidOperationException("Stok tidak mencukupi untuk penjualan ini.");
 
-        var sale = new SaleTransaction
+        var saleFifo = new SaleTransaction
         {
-            Items = saleItems,
+            Items = fifoItems,
             PaymentMethod = paymentMethod,
             TotalCost = totalCost
         };
 
-        Sales.Add(sale);
-        DatabaseService.InsertSale(sale);
-        return sale;
+        Sales.Add(saleFifo);
+        DatabaseService.InsertSale(saleFifo);
+        return saleFifo;
     }
 
     public static void AdjustStockForDamage(Guid productId, int quantity, string reason)
@@ -292,6 +378,7 @@ public static class DataStore
             {
                 ProductId = productId,
                 Quantity = diff,
+                PurchaseDate = DateTime.Now,
                 UnitCost = product.CostPrice,
                 ExpiryDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(12))
             };

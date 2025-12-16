@@ -5,6 +5,81 @@
              Title="Manajemen Stok">
     
     <Grid RowDefinitions="Auto,*">
+        <!-- Add Product Popup Overlay -->
+        <Grid x:Name="AddProductOverlay"
+              Grid.RowSpan="2"
+              IsVisible="False"
+              BackgroundColor="#66000000"
+              Padding="20"
+              ZIndex="100">
+            <Grid.GestureRecognizers>
+                <!-- Tap backdrop to close -->
+                <TapGestureRecognizer Tapped="OnAddProductOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Frame BackgroundColor="{StaticResource CardBackground}"
+                   CornerRadius="15"
+                   Padding="20"
+                   HasShadow="True"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   WidthRequest="420">
+                <StackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="➕ Tambah Produk"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource Gray600}"
+                                FontSize="18"
+                                Clicked="OnCancelAddProductClicked"/>
+                    </Grid>
+
+                    <Label Text="Nama Produk" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="AddNameEntry" Placeholder="Contoh: Indomie Goreng" BackgroundColor="{StaticResource Gray100}" />
+
+                    <Label Text="Kategori" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="AddCategoryEntry" Placeholder="makanan/minuman/sembako" BackgroundColor="{StaticResource Gray100}" />
+
+                    <Label Text="Barcode (opsional)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <Entry x:Name="AddBarcodeEntry" Placeholder="899..." BackgroundColor="{StaticResource Gray100}" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackLayout Spacing="6">
+                            <Label Text="Satuan" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                            <Entry x:Name="AddUnitEntry" Placeholder="pcs/btl/pak" BackgroundColor="{StaticResource Gray100}" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Stok Awal" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                            <Entry x:Name="AddInitialStockEntry" Placeholder="0" Keyboard="Numeric" BackgroundColor="{StaticResource Gray100}" />
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackLayout Spacing="6">
+                            <Label Text="Harga Jual (Rp)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                            <Entry x:Name="AddSellPriceEntry" Placeholder="0" Keyboard="Numeric" BackgroundColor="{StaticResource Gray100}" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Harga Modal (Rp)" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                            <Entry x:Name="AddCostPriceEntry" Placeholder="0" Keyboard="Numeric" BackgroundColor="{StaticResource Gray100}" />
+                        </StackLayout>
+                    </Grid>
+
+                    <Label Text="Kadaluarsa Batch Stok Awal" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
+                    <DatePicker x:Name="AddExpiryDatePicker" BackgroundColor="{StaticResource Gray200}" TextColor="{StaticResource Gray900}" />
+
+                    <Button Text="Simpan Produk"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="48"
+                            Clicked="OnSaveAddProductClicked" />
+                </StackLayout>
+            </Frame>
+        </Grid>
         
         <!-- Header with Search and Add Button -->
         <Frame Grid.Row="0" 
@@ -14,7 +89,7 @@
                HasShadow="True" 
                Margin="0,0,0,10">
             
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
                 
                 <!-- Search Bar -->
                 <Frame Grid.Column="0" 
@@ -54,6 +129,32 @@
                         WidthRequest="100" 
                         FontAttributes="Bold" 
                         Clicked="OnAddProductClicked"/>
+
+                <!-- Export PDF (Stok) -->
+                <Button Grid.Column="2"
+                        Text="📄 PDF"
+                        BackgroundColor="{StaticResource Gray100}"
+                        TextColor="{StaticResource TextPrimary}"
+                        BorderColor="{StaticResource Gray300}"
+                        BorderWidth="1"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        WidthRequest="90"
+                        FontAttributes="Bold"
+                        Clicked="OnExportStockPdfClicked" />
+
+                <!-- Export Excel (Stok) -->
+                <Button Grid.Column="3"
+                        Text="📊 Excel"
+                        BackgroundColor="{StaticResource Gray100}"
+                        TextColor="{StaticResource TextPrimary}"
+                        BorderColor="{StaticResource Gray300}"
+                        BorderWidth="1"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        WidthRequest="90"
+                        FontAttributes="Bold"
+                        Clicked="OnExportStockExcelClicked" />
                 
             </Grid>
             

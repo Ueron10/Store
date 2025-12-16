@@ -47,7 +47,7 @@ public partial class DiscountsPage : ContentPage
             var frame = new Frame
             {
                 BackgroundColor = Colors.White,
-                CornerRadius = 10,
+                CornerRadius = 12,
                 Padding = 15,
                 HasShadow = true
             };
@@ -90,41 +90,53 @@ public partial class DiscountsPage : ContentPage
             {
                 Text = $"Kadaluarsa: {batch.ExpiryDate:dd MMM yyyy}",
                 FontSize = 13,
-                TextColor = Colors.OrangeRed
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#991B1B") // DangerText
             }, 1, 1);
 
             // Harga setelah diskon (preview)
             decimal percentNow = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
             decimal discountedPrice = product.SellPrice * (100 - percentNow) / 100m;
 
-            grid.Add(new Label
+            var priceLabel = new Label
             {
                 Text = $"Harga: Rp {product.SellPrice:N0}  →  Rp {discountedPrice:N0}",
                 FontSize = 12,
                 TextColor = Color.FromArgb("#111827")
-            }, 0, 2);
+            };
+            grid.Add(priceLabel, 0, 2);
 
             var discountEntry = new Entry
             {
                 Placeholder = "Diskon %",
                 Keyboard = Keyboard.Numeric,
-                WidthRequest = 80,
-                BackgroundColor = Color.FromArgb("#F3F4F6"),
+                WidthRequest = 70,
+                BackgroundColor = Color.FromArgb("#E5E7EB"),
+                TextColor = Color.FromArgb("#111827"),
                 Text = percentNow.ToString("0")
             };
-
-            grid.Add(discountEntry, 0, 2);
 
             var saveButton = new Button
             {
                 Text = "Simpan",
-                BackgroundColor = Color.FromArgb("#6366F1"),
-                TextColor = Colors.White,
-                CornerRadius = 8,
+                BackgroundColor = Color.FromArgb("#E5E7EB"),
+                TextColor = Color.FromArgb("#111827"),
+                BorderColor = Color.FromArgb("#CBD5E1"),
+                BorderWidth = 1,
+                CornerRadius = 10,
                 Padding = new Thickness(12, 6),
                 FontSize = 13,
                 HorizontalOptions = LayoutOptions.End
             };
+
+            var actionRow = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Spacing = 8,
+                HorizontalOptions = LayoutOptions.End,
+                Children = { discountEntry, saveButton }
+            };
+            grid.Add(actionRow, 1, 2);
 
             var ctx = new DiscountContext
             {

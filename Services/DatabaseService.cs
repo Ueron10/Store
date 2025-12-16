@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS StockBatch (
   Id CHAR(36) NOT NULL PRIMARY KEY,
   ProductId CHAR(36) NOT NULL,
   Quantity INT NOT NULL,
+  PurchaseDate DATETIME NOT NULL,
   ExpiryDate DATE NOT NULL,
   UnitCost DECIMAL(18,2) NOT NULL,
   DiscountPercent DECIMAL(5,2) NULL
@@ -153,6 +154,7 @@ CREATE TABLE IF NOT EXISTS AppUser (
             EnsureColumn(conn, table: "SaleTransaction", column: "GrossAmount", columnDefinition: "DECIMAL(18,2) NOT NULL DEFAULT 0");
             EnsureColumn(conn, table: "SaleItem", column: "SaleId", columnDefinition: "CHAR(36) NOT NULL");
             EnsureColumn(conn, table: "SaleItem", column: "Id", columnDefinition: "CHAR(36) NOT NULL");
+            EnsureColumn(conn, table: "StockBatch", column: "PurchaseDate", columnDefinition: "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
             EnsureColumn(conn, table: "StockBatch", column: "DiscountPercent", columnDefinition: "DECIMAL(5,2) NULL");
 
             _schemaEnsured = true;
@@ -228,7 +230,7 @@ FROM Product;", Connection);
             var list = new List<StockBatch>();
 
             using var cmd = new MySqlCommand(@"SELECT
-    Id, ProductId, Quantity, ExpiryDate, UnitCost, DiscountPercent
+    Id, ProductId, Quantity, PurchaseDate, ExpiryDate, UnitCost, DiscountPercent
 FROM StockBatch;", Connection);
 
             using var reader = cmd.ExecuteReader();
@@ -239,6 +241,7 @@ FROM StockBatch;", Connection);
                     Id = ReadGuid(reader, "Id"),
                     ProductId = ReadGuid(reader, "ProductId"),
                     Quantity = reader.GetInt32("Quantity"),
+                    PurchaseDate = reader.GetDateTime("PurchaseDate"),
                     ExpiryDate = DateOnly.FromDateTime(reader.GetDateTime("ExpiryDate")),
                     UnitCost = reader.GetDecimal("UnitCost"),
                     DiscountPercent = reader.IsDBNull(reader.GetOrdinal("DiscountPercent"))
@@ -490,13 +493,14 @@ WHERE Id = @Id;", Connection);
         lock (_lock)
         {
             using var cmd = new MySqlCommand(@"INSERT INTO StockBatch
-(Id, ProductId, Quantity, ExpiryDate, UnitCost, DiscountPercent)
+(Id, ProductId, Quantity, PurchaseDate, ExpiryDate, UnitCost, DiscountPercent)
 VALUES
-(@Id, @ProductId, @Quantity, @ExpiryDate, @UnitCost, @DiscountPercent);", Connection);
+(@Id, @ProductId, @Quantity, @PurchaseDate, @ExpiryDate, @UnitCost, @DiscountPercent);", Connection);
 
             cmd.Parameters.AddWithValue("@Id", batch.Id.ToString());
             cmd.Parameters.AddWithValue("@ProductId", batch.ProductId.ToString());
             cmd.Parameters.AddWithValue("@Quantity", batch.Quantity);
+            cmd.Parameters.AddWithValue("@PurchaseDate", batch.PurchaseDate);
             cmd.Parameters.AddWithValue("@ExpiryDate", batch.ExpiryDate.ToDateTime(TimeOnly.MinValue));
             cmd.Parameters.AddWithValue("@UnitCost", batch.UnitCost);
             cmd.Parameters.AddWithValue("@DiscountPercent", (object?)batch.DiscountPercent ?? DBNull.Value);
@@ -512,6 +516,7 @@ VALUES
             using var cmd = new MySqlCommand(@"UPDATE StockBatch SET
     ProductId = @ProductId,
     Quantity = @Quantity,
+    PurchaseDate = @PurchaseDate,
     ExpiryDate = @ExpiryDate,
     UnitCost = @UnitCost,
     DiscountPercent = @DiscountPercent
@@ -520,6 +525,7 @@ WHERE Id = @Id;", Connection);
             cmd.Parameters.AddWithValue("@Id", batch.Id.ToString());
             cmd.Parameters.AddWithValue("@ProductId", batch.ProductId.ToString());
             cmd.Parameters.AddWithValue("@Quantity", batch.Quantity);
+            cmd.Parameters.AddWithValue("@PurchaseDate", batch.PurchaseDate);
             cmd.Parameters.AddWithValue("@ExpiryDate", batch.ExpiryDate.ToDateTime(TimeOnly.MinValue));
             cmd.Parameters.AddWithValue("@UnitCost", batch.UnitCost);
             cmd.Parameters.AddWithValue("@DiscountPercent", (object?)batch.DiscountPercent ?? DBNull.Value);

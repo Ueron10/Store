@@ -23,7 +23,7 @@ public static class ReportExportService
         var data = BuildReportData(range);
 
         var filename = $"Laporan_{periodName}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-        var path = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
+        var path = Path.Combine(ExportPathService.GetDefaultExportDirectory(), filename);
 
         using var wb = new XLWorkbook();
 
@@ -114,7 +114,7 @@ public static class ReportExportService
         var data = BuildReportData(range);
 
         var filename = $"Laporan_{periodName}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
-        var path = Path.Combine(FileSystem.Current.AppDataDirectory, filename);
+        var path = Path.Combine(ExportPathService.GetDefaultExportDirectory(), filename);
 
         Document.Create(container =>
         {
@@ -347,6 +347,375 @@ public static class ReportExportService
         var text = string.Join(", ", parts);
         return text.Length > 120 ? text[..117] + "..." : text;
     }
+
+    // =============================
+    // STOCK REPORT (Stok / Barang)
+    // =============================
+
+    public static Task<string> ExportStockExcelAsync()
+    {
+        var (rows, batchRows, summary) = BuildStockReportData();
+
+        var filename = $"Laporan_Stok_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+        var path = Path.Combine(ExportPathService.GetDefaultExportDirectory(), filename);
+
+        using var wb = new XLWorkbook();
+
+        // Sheet: Ringkasan
+        {
+            var ws = wb.Worksheets.Add("Ringkasan");
+            ws.Cell(1, 1).Value = "Generated";
+            ws.Cell(1, 2).Value = DateTime.Now.ToString("dd MMM yyyy HH:mm");
+
+            ws.Cell(3, 1).Value = "Total Produk";
+            ws.Cell(3, 2).Value = summary.TotalProducts;
+            ws.Cell(4, 1).Value = "Total Stok (Qty)";
+            ws.Cell(4, 2).Value = summary.TotalStockQty;
+            ws.Cell(5, 1).Value = "Nilai Stok (Modal)";
+            ws.Cell(5, 2).Value = summary.TotalStockValueCost;
+            ws.Cell(6, 1).Value = "Nilai Stok (Jual)";
+            ws.Cell(6, 2).Value = summary.TotalStockValueSell;
+
+            ws.Range(1, 1, 1, 1).Style.Font.Bold = true;
+            ws.Range(3, 1, 6, 1).Style.Font.Bold = true;
+            ws.Range(5, 2, 6, 2).Style.NumberFormat.Format = "\"Rp\" #,##0";
+            ws.Columns().AdjustToContents();
+        }
+
+        // Sheet: Stok
+        {
+            var ws = wb.Worksheets.Add("Stok");
+
+            ws.Cell(1, 1).Value = "Produk";
+            ws.Cell(1, 2).Value = "Kategori";
+            ws.Cell(1, 3).Value = "Barcode";
+            ws.Cell(1, 4).Value = "Satuan";
+            ws.Cell(1, 5).Value = "Harga Jual";
+            ws.Cell(1, 6).Value = "Harga Modal";
+            ws.Cell(1, 7).Value = "Stok";
+            ws.Cell(1, 8).Value = "Nearest Expiry";
+            ws.Cell(1, 9).Value = "Last Masuk";
+            ws.Cell(1, 10).Value = "Last Keluar";
+            ws.Range(1, 1, 1, 10).Style.Font.Bold = true;
+
+            int r = 2;
+            foreach (var row in rows)
+            {
+                ws.Cell(r, 1).Value = row.ProductName;
+                ws.Cell(r, 2).Value = row.Category;
+                ws.Cell(r, 3).Value = row.Barcode;
+                ws.Cell(r, 4).Value = row.Unit;
+                ws.Cell(r, 5).Value = row.SellPrice;
+                ws.Cell(r, 6).Value = row.CostPrice;
+                ws.Cell(r, 7).Value = row.StockQty;
+                ws.Cell(r, 8).Value = row.NearestExpiryDateText;
+                ws.Cell(r, 9).Value = row.LastInDateText;
+                ws.Cell(r, 10).Value = row.LastOutDateText;
+                r++;
+            }
+
+            ws.Column(5).Style.NumberFormat.Format = "\"Rp\" #,##0";
+            ws.Column(6).Style.NumberFormat.Format = "\"Rp\" #,##0";
+            ws.Columns().AdjustToContents();
+            ws.Column(1).Width = Math.Min(60, ws.Column(1).Width + 10);
+        }
+
+        // Sheet: Batch
+        {
+            var ws = wb.Worksheets.Add("Batch");
+
+            ws.Cell(1, 1).Value = "Produk";
+            ws.Cell(1, 2).Value = "BatchId";
+            ws.Cell(1, 3).Value = "PurchaseDate";
+            ws.Cell(1, 4).Value = "ExpiryDate";
+            ws.Cell(1, 5).Value = "Qty";
+            ws.Cell(1, 6).Value = "UnitCost";
+            ws.Cell(1, 7).Value = "Diskon (%)";
+            ws.Range(1, 1, 1, 7).Style.Font.Bold = true;
+
+            int r = 2;
+            foreach (var b in batchRows)
+            {
+                ws.Cell(r, 1).Value = b.ProductName;
+                ws.Cell(r, 2).Value = b.BatchId;
+                ws.Cell(r, 3).Value = b.PurchaseDate;
+                ws.Cell(r, 3).Style.DateFormat.Format = "dd MMM yyyy HH:mm";
+                ws.Cell(r, 4).Value = b.ExpiryDate;
+                ws.Cell(r, 4).Style.DateFormat.Format = "dd MMM yyyy";
+                ws.Cell(r, 5).Value = b.Quantity;
+                ws.Cell(r, 6).Value = b.UnitCost;
+                ws.Cell(r, 7).Value = b.DiscountPercent;
+                r++;
+            }
+
+            ws.Column(6).Style.NumberFormat.Format = "\"Rp\" #,##0";
+            ws.Columns().AdjustToContents();
+            ws.Column(1).Width = Math.Min(60, ws.Column(1).Width + 10);
+        }
+
+        wb.SaveAs(path);
+        return Task.FromResult(path);
+    }
+
+    public static Task<string> ExportStockPdfAsync()
+    {
+        var (rows, batchRows, summary) = BuildStockReportData();
+
+        var filename = $"Laporan_Stok_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+        var path = Path.Combine(ExportPathService.GetDefaultExportDirectory(), filename);
+
+        Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(24);
+                page.DefaultTextStyle(x => x.FontSize(10));
+
+                page.Header().Column(col =>
+                {
+                    col.Item().Text("Laporan Stok").FontSize(18).SemiBold();
+                    col.Item().Text($"Generated: {DateTime.Now:dd MMM yyyy HH:mm}").FontSize(10).FontColor(PdfColors.Grey.Darken2);
+                });
+
+                page.Content().Column(col =>
+                {
+                    col.Spacing(12);
+
+                    col.Item().Element(c =>
+                    {
+                        c.Background(PdfColors.Grey.Lighten4)
+                            .Border(1)
+                            .BorderColor(PdfColors.Grey.Lighten2)
+                            .Padding(12)
+                            .Column(x =>
+                            {
+                                x.Item().Text("Ringkasan").SemiBold();
+                                x.Item().Row(r => { r.RelativeItem().Text("Total Produk"); r.ConstantItem(120).AlignRight().Text(summary.TotalProducts.ToString()).SemiBold(); });
+                                x.Item().Row(r => { r.RelativeItem().Text("Total Stok (Qty)"); r.ConstantItem(120).AlignRight().Text(summary.TotalStockQty.ToString()).SemiBold(); });
+                                x.Item().Row(r => { r.RelativeItem().Text("Nilai Stok (Modal)"); r.ConstantItem(120).AlignRight().Text($"Rp {summary.TotalStockValueCost:N0}"); });
+                                x.Item().Row(r => { r.RelativeItem().Text("Nilai Stok (Jual)"); r.ConstantItem(120).AlignRight().Text($"Rp {summary.TotalStockValueSell:N0}"); });
+                            });
+                    });
+
+                    col.Item().Text("Stok per Produk").SemiBold();
+
+                    col.Item().Table(table =>
+                    {
+                        table.ColumnsDefinition(cols =>
+                        {
+                            cols.RelativeColumn(5);
+                            cols.RelativeColumn(3);
+                            cols.ConstantColumn(55);
+                            cols.ConstantColumn(75);
+                            cols.ConstantColumn(75);
+                        });
+
+                        table.Header(h =>
+                        {
+                            h.Cell().Element(HeaderCell).Text("Produk");
+                            h.Cell().Element(HeaderCell).Text("Kategori");
+                            h.Cell().Element(HeaderCell).AlignRight().Text("Stok");
+                            h.Cell().Element(HeaderCell).Text("Expiry");
+                            h.Cell().Element(HeaderCell).Text("Last Masuk");
+                        });
+
+                        foreach (var r in rows)
+                        {
+                            table.Cell().Element(BodyCell).Text(r.ProductName);
+                            table.Cell().Element(BodyCell).Text(r.Category);
+                            table.Cell().Element(BodyCell).AlignRight().Text(r.StockQty.ToString());
+                            table.Cell().Element(BodyCell).Text(r.NearestExpiryDateText);
+                            table.Cell().Element(BodyCell).Text(r.LastInDateText);
+                        }
+
+                        static QContainer HeaderCell(QContainer c) => c
+                            .Background(PdfColors.Grey.Lighten3)
+                            .PaddingVertical(6)
+                            .PaddingHorizontal(6)
+                            .BorderBottom(1)
+                            .BorderColor(PdfColors.Grey.Lighten2)
+                            .DefaultTextStyle(x => x.SemiBold().FontSize(9));
+
+                        static QContainer BodyCell(QContainer c) => c
+                            .PaddingVertical(5)
+                            .PaddingHorizontal(6)
+                            .BorderBottom(1)
+                            .BorderColor(PdfColors.Grey.Lighten3)
+                            .DefaultTextStyle(x => x.FontSize(9));
+                    });
+
+                    // Tampilkan sebagian batch yang mendekati/expired (top 15)
+                    var specialBatches = batchRows
+                        .Where(b => b.ExpiryDate <= DateOnly.FromDateTime(DateTime.Today.AddDays(14)))
+                        .OrderBy(b => b.ExpiryDate)
+                        .Take(15)
+                        .ToList();
+
+                    col.Item().PaddingTop(8).Text("Batch Mendekati/Expired (<= 14 hari)").SemiBold();
+
+                    if (specialBatches.Count == 0)
+                    {
+                        col.Item().Text("Tidak ada batch yang mendekati kadaluarsa.").FontColor(PdfColors.Grey.Darken2);
+                    }
+                    else
+                    {
+                        col.Item().Table(table =>
+                        {
+                            table.ColumnsDefinition(cols =>
+                            {
+                                cols.RelativeColumn(5);
+                                cols.ConstantColumn(70);
+                                cols.ConstantColumn(55);
+                                cols.ConstantColumn(55);
+                            });
+
+                            table.Header(h =>
+                            {
+                                h.Cell().Element(HeaderCell).Text("Produk");
+                                h.Cell().Element(HeaderCell).Text("Expiry");
+                                h.Cell().Element(HeaderCell).AlignRight().Text("Qty");
+                                h.Cell().Element(HeaderCell).AlignRight().Text("Disc");
+                            });
+
+                            foreach (var b in specialBatches)
+                            {
+                                table.Cell().Element(BodyCell).Text(b.ProductName);
+                                table.Cell().Element(BodyCell).Text(b.ExpiryDate.ToString("dd/MM/yyyy"));
+                                table.Cell().Element(BodyCell).AlignRight().Text(b.Quantity.ToString());
+                                table.Cell().Element(BodyCell).AlignRight().Text(b.DiscountPercent?.ToString("0") ?? "0");
+                            }
+
+                            static QContainer HeaderCell(QContainer c) => c
+                                .Background(PdfColors.Grey.Lighten3)
+                                .PaddingVertical(6)
+                                .PaddingHorizontal(6)
+                                .BorderBottom(1)
+                                .BorderColor(PdfColors.Grey.Lighten2)
+                                .DefaultTextStyle(x => x.SemiBold().FontSize(9));
+
+                            static QContainer BodyCell(QContainer c) => c
+                                .PaddingVertical(5)
+                                .PaddingHorizontal(6)
+                                .BorderBottom(1)
+                                .BorderColor(PdfColors.Grey.Lighten3)
+                                .DefaultTextStyle(x => x.FontSize(9));
+                        });
+                    }
+                });
+
+                page.Footer().AlignCenter()
+                    .DefaultTextStyle(x => x.FontSize(9).FontColor(PdfColors.Grey.Darken2))
+                    .Text(x =>
+                    {
+                        x.Span("Generated: ");
+                        x.Span(DateTime.Now.ToString("dd MMM yyyy HH:mm"));
+                    });
+            });
+        }).GeneratePdf(path);
+
+        return Task.FromResult(path);
+    }
+
+    private static (List<StockRow> rows, List<BatchRow> batchRows, StockSummary summary) BuildStockReportData()
+    {
+        var products = DataStore.Products
+            .OrderBy(p => p.Name)
+            .ToList();
+
+        var batches = DataStore.StockBatches.ToList();
+        var movements = DataStore.StockMovements.ToList();
+
+        var batchRows = batches
+            .OrderBy(b => b.ExpiryDate)
+            .ThenBy(b => b.PurchaseDate)
+            .Select(b => new BatchRow(
+                ProductName: products.FirstOrDefault(p => p.Id == b.ProductId)?.Name ?? "Produk",
+                BatchId: b.Id,
+                PurchaseDate: b.PurchaseDate,
+                ExpiryDate: b.ExpiryDate,
+                Quantity: b.Quantity,
+                UnitCost: b.UnitCost,
+                DiscountPercent: b.DiscountPercent
+            ))
+            .ToList();
+
+        var rows = new List<StockRow>();
+        decimal totalCostValue = 0;
+        decimal totalSellValue = 0;
+        int totalStockQty = 0;
+
+        foreach (var p in products)
+        {
+            int stockQty = batches.Where(b => b.ProductId == p.Id).Sum(b => b.Quantity);
+            totalStockQty += stockQty;
+            totalCostValue += p.CostPrice * stockQty;
+            totalSellValue += p.SellPrice * stockQty;
+
+            var nearestExpiry = batches
+                .Where(b => b.ProductId == p.Id && b.Quantity > 0)
+                .OrderBy(b => b.ExpiryDate)
+                .Select(b => (DateOnly?)b.ExpiryDate)
+                .FirstOrDefault();
+
+            var lastIn = movements
+                .Where(m => m.ProductId == p.Id && m.Type is StockMovementType.PurchaseIn or StockMovementType.AdjustmentIn or StockMovementType.StockOpnameAdjustment)
+                .OrderByDescending(m => m.Timestamp)
+                .Select(m => (DateTime?)m.Timestamp)
+                .FirstOrDefault();
+
+            var lastOut = movements
+                .Where(m => m.ProductId == p.Id && m.Type is StockMovementType.SaleOut or StockMovementType.AdjustmentOut)
+                .OrderByDescending(m => m.Timestamp)
+                .Select(m => (DateTime?)m.Timestamp)
+                .FirstOrDefault();
+
+            rows.Add(new StockRow(
+                ProductName: p.Name,
+                Category: p.Category,
+                Barcode: p.Barcode,
+                Unit: p.Unit,
+                SellPrice: p.SellPrice,
+                CostPrice: p.CostPrice,
+                StockQty: stockQty,
+                NearestExpiryDateText: nearestExpiry?.ToString("dd/MM/yyyy") ?? "-",
+                LastInDateText: lastIn?.ToString("dd/MM/yyyy") ?? "-",
+                LastOutDateText: lastOut?.ToString("dd/MM/yyyy") ?? "-"
+            ));
+        }
+
+        var summary = new StockSummary(
+            TotalProducts: products.Count,
+            TotalStockQty: totalStockQty,
+            TotalStockValueCost: totalCostValue,
+            TotalStockValueSell: totalSellValue
+        );
+
+        return (rows, batchRows, summary);
+    }
+
+    private record StockRow(
+        string ProductName,
+        string Category,
+        string? Barcode,
+        string Unit,
+        decimal SellPrice,
+        decimal CostPrice,
+        int StockQty,
+        string NearestExpiryDateText,
+        string LastInDateText,
+        string LastOutDateText);
+
+    private record BatchRow(
+        string ProductName,
+        Guid BatchId,
+        DateTime PurchaseDate,
+        DateOnly ExpiryDate,
+        int Quantity,
+        decimal UnitCost,
+        decimal? DiscountPercent);
+
+    private record StockSummary(int TotalProducts, int TotalStockQty, decimal TotalStockValueCost, decimal TotalStockValueSell);
 
     private record ReportData(DateRange Range, FinancialSummary Summary, List<SaleTransaction> Sales, decimal TotalExpenses);
 }

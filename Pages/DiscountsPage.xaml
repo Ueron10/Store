@@ -8,10 +8,10 @@
             <Label Text="🏷️ Diskon Barang Mendekati Kadaluarsa"
                    FontSize="20"
                    FontAttributes="Bold"
-                   TextColor="{StaticResource Gray900}"/>
+                   TextColor="{StaticResource TextPrimary}"/>
             <Label Text="Atur diskon untuk produk yang akan segera kadaluarsa agar bisa dijual lebih cepat."
                    FontSize="14"
-                   TextColor="{StaticResource Gray600}"/>
+                   TextColor="{StaticResource TextSecondary}"/>
 
             <StackLayout x:Name="DiscountsContainer" Spacing="10"/>
         </StackLayout>

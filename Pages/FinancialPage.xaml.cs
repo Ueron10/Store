@@ -1,3 +1,5 @@
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
 using StoreProgram.Models;
 using StoreProgram.Services;
 
@@ -6,6 +8,7 @@ namespace StoreProgram.Pages;
 public partial class FinancialPage : ContentPage
 {
     private List<Product> _products = new();
+    private List<StockBatch> _batchesForSelectedProduct = new();
 
     public FinancialPage()
     {
@@ -47,6 +50,9 @@ public partial class FinancialPage : ContentPage
         TransactionFormFrame.IsVisible = false;
         // Reset form
         ProductPicker.SelectedIndex = -1;
+        BatchPicker.SelectedIndex = -1;
+        BatchPicker.Items.Clear();
+        _batchesForSelectedProduct.Clear();
         QuantityEntry.Text = "1";
         CashRadio.IsChecked = true;
     }
@@ -79,7 +85,8 @@ public partial class FinancialPage : ContentPage
 
                 try
                 {
-                    var preview = DataStore.PreviewSale(product.Id, quantity);
+                    Guid? batchId = GetSelectedBatchIdOrNull();
+                    var preview = DataStore.PreviewSale(product.Id, quantity, batchId);
                     TotalLabel.Text = $"Rp {preview.TotalAmount:N0}";
                 }
                 catch
@@ -98,7 +105,56 @@ public partial class FinancialPage : ContentPage
         }
     }
 
-    private void OnProductSelectionChanged(object? sender, EventArgs e) => UpdateTotal();
+    private void OnProductSelectionChanged(object? sender, EventArgs e)
+    {
+        LoadBatchesForSelectedProduct();
+        UpdateTotal();
+    }
+
+    private void OnBatchSelectionChanged(object? sender, EventArgs e) => UpdateTotal();
+
+    private void LoadBatchesForSelectedProduct()
+    {
+        BatchPicker.Items.Clear();
+        _batchesForSelectedProduct.Clear();
+
+        if (ProductPicker.SelectedIndex < 0 || ProductPicker.SelectedIndex >= _products.Count)
+            return;
+
+        var product = _products[ProductPicker.SelectedIndex];
+
+        // Item 0 = Otomatis FIFO
+        BatchPicker.Items.Add("Otomatis (FIFO)");
+
+        var batches = DataStore.StockBatches
+            .Where(b => b.ProductId == product.Id && b.Quantity > 0)
+            .OrderBy(b => b.ExpiryDate)
+            .ThenBy(b => b.PurchaseDate)
+            .ToList();
+
+        foreach (var b in batches)
+        {
+            var disc = b.DiscountPercent is > 0 and <= 100 ? b.DiscountPercent.Value : 0m;
+            var label = $"Exp {b.ExpiryDate:dd MMM yyyy} • Masuk {b.PurchaseDate:dd MMM} • Stok {b.Quantity} • Diskon {disc:0}%";
+            BatchPicker.Items.Add(label);
+            _batchesForSelectedProduct.Add(b);
+        }
+
+        BatchPicker.SelectedIndex = 0;
+    }
+
+    private Guid? GetSelectedBatchIdOrNull()
+    {
+        // index 0 = otomatis FIFO
+        if (BatchPicker.SelectedIndex <= 0)
+            return null;
+
+        int idx = BatchPicker.SelectedIndex - 1;
+        if (idx < 0 || idx >= _batchesForSelectedProduct.Count)
+            return null;
+
+        return _batchesForSelectedProduct[idx].Id;
+    }
 
     private void OnQuantityTextChanged(object? sender, TextChangedEventArgs e) => UpdateTotal();
 
@@ -129,7 +185,7 @@ public partial class FinancialPage : ContentPage
         {
             try
             {
-                var sale = DataStore.ProcessSingleItemSale(product.Id, quantity, paymentMethod);
+                var sale = DataStore.ProcessSingleItemSale(product.Id, quantity, paymentMethod, GetSelectedBatchIdOrNull());
 
                 // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
                 if (paymentMethod == "QRIS")
@@ -236,6 +292,55 @@ public partial class FinancialPage : ContentPage
     private async void OnEditExpenseClicked(object sender, EventArgs e)
     {
         await DisplayAlert("Edit Pengeluaran", "Fitur edit pengeluaran belum diimplementasikan.", "OK");
+    }
+
+    private async void OnExportFinancialPdfClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var today = DateTime.Today;
+            var range = new DateRange(today, today.AddDays(1).AddTicks(-1));
+
+            var filePath = await ReportExportService.ExportPdfAsync(range, "Keuangan_HariIni");
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export PDF", $"PDF keuangan tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export PDF", $"Gagal export PDF keuangan: {ex.Message}", "OK");
+        }
+    }
+
+    private async void OnExportFinancialExcelClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var today = DateTime.Today;
+            var range = new DateRange(today, today.AddDays(1).AddTicks(-1));
+
+            var filePath = await ReportExportService.ExportExcelAsync(range, "Keuangan_HariIni");
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export Excel", $"Excel keuangan tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export Excel", $"Gagal export Excel keuangan: {ex.Message}", "OK");
+        }
+    }
+
+    private static async Task TryOpenFileAsync(string path)
+    {
+        try
+        {
+            await Launcher.Default.OpenAsync(new OpenFileRequest
+            {
+                File = new ReadOnlyFile(path)
+            });
+        }
+        catch
+        {
+            // Ignore: sebagian platform tidak support open langsung.
+        }
     }
 
     private void UpdateSummary()

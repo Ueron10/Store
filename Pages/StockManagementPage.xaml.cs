@@ -1,3 +1,5 @@
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
 using StoreProgram.Models;
 using StoreProgram.Services;
 
@@ -166,33 +168,67 @@ public partial class StockManagementPage : ContentPage
         LoadProductsAndRender();
     }
 
-    private async void OnAddProductClicked(object sender, EventArgs e)
+    private void OnAddProductClicked(object sender, EventArgs e)
     {
-        string name = await DisplayPromptAsync("Tambah Produk", "Nama produk:");
-        if (string.IsNullOrWhiteSpace(name)) return;
+        // Tampilkan popup form
+        AddNameEntry.Text = string.Empty;
+        AddCategoryEntry.Text = "makanan";
+        AddBarcodeEntry.Text = string.Empty;
+        AddUnitEntry.Text = "pcs";
+        AddInitialStockEntry.Text = "0";
+        AddSellPriceEntry.Text = string.Empty;
+        AddCostPriceEntry.Text = string.Empty;
+        AddExpiryDatePicker.Date = DateTime.Today.AddMonths(6);
 
-        string category = await DisplayPromptAsync("Tambah Produk", "Kategori (makanan/minuman/sembako/dll):", initialValue: "makanan");
-        string unit = await DisplayPromptAsync("Tambah Produk", "Satuan (pcs/btl/pak/dll):", initialValue: "pcs");
+        AddProductOverlay.IsVisible = true;
 
-        string sellPriceText = await DisplayPromptAsync("Tambah Produk", "Harga jual per satuan (Rp):", keyboard: Keyboard.Numeric);
-        string costPriceText = await DisplayPromptAsync("Tambah Produk", "Harga modal per satuan (Rp):", keyboard: Keyboard.Numeric);
-        string initialStockText = await DisplayPromptAsync("Tambah Produk", "Stok awal:", keyboard: Keyboard.Numeric, initialValue: "0");
-        string expiryText = await DisplayPromptAsync("Tambah Produk", "Tanggal kadaluarsa (yyyy-MM-dd):", initialValue: DateTime.Today.AddMonths(6).ToString("yyyy-MM-dd"));
+        // Pastikan entry fokus setelah overlay tampil
+        Dispatcher.Dispatch(() => AddNameEntry.Focus());
+    }
 
-        if (!decimal.TryParse(sellPriceText, out var sellPrice) ||
-            !decimal.TryParse(costPriceText, out var costPrice) ||
-            !int.TryParse(initialStockText, out var initialStock) ||
-            !DateOnly.TryParse(expiryText, out var expiry))
+    private void OnAddProductOverlayBackgroundTapped(object sender, TappedEventArgs e)
+    {
+        // Klik area gelap (backdrop) => tutup popup
+        AddProductOverlay.IsVisible = false;
+    }
+
+    private void OnCancelAddProductClicked(object sender, EventArgs e)
+    {
+        AddProductOverlay.IsVisible = false;
+    }
+
+    private async void OnSaveAddProductClicked(object sender, EventArgs e)
+    {
+        string name = AddNameEntry.Text?.Trim() ?? string.Empty;
+        string category = AddCategoryEntry.Text?.Trim() ?? string.Empty;
+        string unit = AddUnitEntry.Text?.Trim() ?? "pcs";
+        string? barcode = AddBarcodeEntry.Text?.Trim();
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(category) || string.IsNullOrWhiteSpace(unit))
         {
-            await DisplayAlert("Error", "Input tidak valid.", "OK");
+            await DisplayAlert("Error", "Nama/Kategori/Satuan wajib diisi.", "OK");
+            return;
+        }
+
+        if (!decimal.TryParse(AddSellPriceEntry.Text?.Trim(), out var sellPrice) || sellPrice <= 0 ||
+            !decimal.TryParse(AddCostPriceEntry.Text?.Trim(), out var costPrice) || costPrice <= 0)
+        {
+            await DisplayAlert("Error", "Harga jual / harga modal tidak valid.", "OK");
+            return;
+        }
+
+        if (!int.TryParse(AddInitialStockEntry.Text?.Trim(), out var initialStock) || initialStock < 0)
+        {
+            await DisplayAlert("Error", "Stok awal tidak valid.", "OK");
             return;
         }
 
         var product = new Product
         {
             Name = name,
-            Category = category ?? string.Empty,
-            Unit = unit ?? "pcs",
+            Category = category,
+            Barcode = string.IsNullOrWhiteSpace(barcode) ? null : barcode,
+            Unit = unit,
             SellPrice = sellPrice,
             CostPrice = costPrice
         };
@@ -202,11 +238,56 @@ public partial class StockManagementPage : ContentPage
 
         if (initialStock > 0)
         {
-            DataStore.AddPurchase(product.Id, initialStock, costPrice, expiry, "Stok awal");
+            var expiry = DateOnly.FromDateTime(AddExpiryDatePicker.Date);
+            DataStore.AddPurchase(product.Id, initialStock, costPrice, expiry, "Stok awal", timestamp: DateTime.Now);
         }
 
+        AddProductOverlay.IsVisible = false;
         await DisplayAlert("Sukses", $"Produk '{name}' berhasil ditambahkan.", "OK");
-        LoadProductsAndRender();
+        LoadProductsAndRender(SearchEntry.Text);
+    }
+
+    private async void OnExportStockPdfClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var filePath = await ReportExportService.ExportStockPdfAsync();
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export PDF", $"PDF stok tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export PDF", $"Gagal export PDF stok: {ex.Message}", "OK");
+        }
+    }
+
+    private async void OnExportStockExcelClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var filePath = await ReportExportService.ExportStockExcelAsync();
+            await TryOpenFileAsync(filePath);
+            await DisplayAlert("Export Excel", $"Excel stok tersimpan:\n{filePath}", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Export Excel", $"Gagal export Excel stok: {ex.Message}", "OK");
+        }
+    }
+
+    private static async Task TryOpenFileAsync(string path)
+    {
+        try
+        {
+            await Launcher.Default.OpenAsync(new OpenFileRequest
+            {
+                File = new ReadOnlyFile(path)
+            });
+        }
+        catch
+        {
+            // Ignore: sebagian platform tidak support open langsung.
+        }
     }
 
     private async void OnProductMenuClicked(object? sender, EventArgs e)

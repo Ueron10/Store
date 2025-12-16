@@ -10,10 +10,15 @@
             Tujuan: aplikasi langsung jalan di MySQL kosong tanpa perlu setup manual yang rawan salah.
             </summary>
         </member>
+        <member name="M:StoreProgram.Services.DataStore.PreviewSale(System.Guid,System.Int32)">
+            <summary>
+            Preview perhitungan transaksi berdasarkan FIFO batch (termasuk diskon per batch).
+            Dipakai untuk menampilkan total yang akurat sebelum transaksi diproses.
+            </summary>
+        </member>
         <member name="M:StoreProgram.Services.DataStore.ProcessSingleItemSale(System.Guid,System.Int32,System.String)">
             <summary>
-            Proses penjualan 1 jenis produk sederhana (sesuai UI FinancialPage sekarang).
-            Jika ke depan ingin multi-item, bisa dikembangkan dari sini.
+            Proses penjualan 1 produk (UI FinancialPage). Harga dihitung per batch (diskon per batch).
             </summary>
         </member>
         <member name="M:StoreProgram.Services.ShellNav.TrySelectTab(System.String,System.String)">
