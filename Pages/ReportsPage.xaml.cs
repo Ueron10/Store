@@ -5,6 +5,15 @@ namespace StoreProgram.Pages;
 
 public partial class ReportsPage : ContentPage
 {
+    private enum ReportPeriod
+    {
+        Daily,
+        Weekly,
+        Monthly
+    }
+
+    private ReportPeriod _activePeriod = ReportPeriod.Daily;
+
     public ReportsPage()
     {
         InitializeComponent();
@@ -13,20 +22,45 @@ public partial class ReportsPage : ContentPage
         LoadDailyData();
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Auto refresh saat halaman dibuka lagi (setelah transaksi/pengeluaran baru)
+        switch (_activePeriod)
+        {
+            case ReportPeriod.Weekly:
+                SetActiveButton(WeeklyButton);
+                LoadWeeklyData();
+                break;
+            case ReportPeriod.Monthly:
+                SetActiveButton(MonthlyButton);
+                LoadMonthlyData();
+                break;
+            default:
+                SetActiveButton(DailyButton);
+                LoadDailyData();
+                break;
+        }
+    }
+
     private void OnDailyReportClicked(object sender, EventArgs e)
     {
+        _activePeriod = ReportPeriod.Daily;
         SetActiveButton(DailyButton);
         LoadDailyData();
     }
 
     private void OnWeeklyReportClicked(object sender, EventArgs e)
     {
+        _activePeriod = ReportPeriod.Weekly;
         SetActiveButton(WeeklyButton);
         LoadWeeklyData();
     }
 
     private void OnMonthlyReportClicked(object sender, EventArgs e)
     {
+        _activePeriod = ReportPeriod.Monthly;
         SetActiveButton(MonthlyButton);
         LoadMonthlyData();
     }

@@ -209,7 +209,7 @@ public partial class StockManagementPage : ContentPage
         LoadProductsAndRender();
     }
 
-    private async void OnProductMenuClicked(object sender, EventArgs e)
+    private async void OnProductMenuClicked(object? sender, EventArgs e)
     {
         if (sender is not Button button || button.BindingContext is not Product product)
             return;

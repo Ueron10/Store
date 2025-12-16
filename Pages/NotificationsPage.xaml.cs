@@ -187,7 +187,16 @@ public partial class NotificationsPage : ContentPage
                 };
                 discountButton.Clicked += async (_, __) =>
                 {
-                    await Shell.Current.GoToAsync("//discounts");
+                    // Diskon hanya ada di tab Owner.
+                    if (DataStore.CurrentUser != null &&
+                        string.Equals(DataStore.CurrentUser.Role, "Owner", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await Shell.Current.GoToAsync("//ownerdashboard/discounts");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Akses Ditolak", "Fitur diskon hanya untuk Owner.", "OK");
+                    }
                 };
 
                 grid.Add(discountButton, 1, 0);
@@ -209,7 +218,7 @@ public partial class NotificationsPage : ContentPage
         }
     }
 
-    private async void OnRemoveExpiredClicked(object sender, EventArgs e)
+    private async void OnRemoveExpiredClicked(object? sender, EventArgs e)
     {
         if (sender is not Button btn || btn.CommandParameter is not Guid productId)
             return;

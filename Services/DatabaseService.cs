@@ -12,6 +12,8 @@ public static class DatabaseService
     private static MySqlConnection? _connection;
     private static readonly object _lock = new();
 
+    private static bool _schemaEnsured;
+
     private static MySqlConnection Connection
     {
         get
@@ -23,6 +25,11 @@ public static class DatabaseService
             {
                 _connection = new MySqlConnection(ConnectionString);
                 _connection.Open();
+
+                // Pastikan tabel/kolom yang dibutuhkan sudah ada agar aplikasi tidak error saat query.
+                // Ini juga membantu kasus "fitur belum dibuat" (mis. tabel belum dibuat di MySQL).
+                EnsureSchema(_connection);
+
                 return _connection;
             }
             catch (Exception ex)
@@ -50,6 +57,128 @@ public static class DatabaseService
             byte[] bytes => new Guid(bytes),
             _ => Guid.Parse(Convert.ToString(value)!)
         };
+    }
+
+    #endregion
+
+    #region Schema bootstrap / upgrade
+
+    /// <summary>
+    /// Membuat tabel/kolom yang dibutuhkan jika belum ada.
+    /// Tujuan: aplikasi langsung jalan di MySQL kosong tanpa perlu setup manual yang rawan salah.
+    /// </summary>
+    private static void EnsureSchema(MySqlConnection conn)
+    {
+        // Jalankan sekali per proses.
+        if (_schemaEnsured) return;
+
+        lock (_lock)
+        {
+            if (_schemaEnsured) return;
+
+            // CREATE TABLE jika belum ada
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS Product (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  Name VARCHAR(255) NOT NULL,
+  Category VARCHAR(100) NOT NULL,
+  Barcode VARCHAR(100) NULL,
+  Unit VARCHAR(50) NOT NULL,
+  SellPrice DECIMAL(18,2) NOT NULL,
+  CostPrice DECIMAL(18,2) NOT NULL,
+  DiscountPercent DECIMAL(5,2) NULL
+);");
+
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS StockBatch (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  ProductId CHAR(36) NOT NULL,
+  Quantity INT NOT NULL,
+  ExpiryDate DATE NOT NULL,
+  UnitCost DECIMAL(18,2) NOT NULL
+);");
+
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS StockMovement (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  ProductId CHAR(36) NOT NULL,
+  Timestamp DATETIME NOT NULL,
+  Type VARCHAR(50) NOT NULL,
+  Quantity INT NOT NULL,
+  Reason VARCHAR(255) NULL,
+  UnitCost DECIMAL(18,2) NOT NULL,
+  TotalCost DECIMAL(18,2) NOT NULL
+);");
+
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS Expense (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  Timestamp DATETIME NOT NULL,
+  Description VARCHAR(255) NOT NULL,
+  Amount DECIMAL(18,2) NOT NULL,
+  Type VARCHAR(50) NOT NULL
+);");
+
+            // SaleTransaction: simpan GrossAmount agar setelah restart laporan tetap benar
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS SaleTransaction (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  Timestamp DATETIME NOT NULL,
+  PaymentMethod VARCHAR(50) NOT NULL,
+  GrossAmount DECIMAL(18,2) NOT NULL,
+  TotalCost DECIMAL(18,2) NOT NULL
+);");
+
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS SaleItem (
+  Id CHAR(36) NOT NULL PRIMARY KEY,
+  SaleId CHAR(36) NOT NULL,
+  ProductId CHAR(36) NOT NULL,
+  ProductName VARCHAR(255) NOT NULL,
+  Quantity INT NOT NULL,
+  UnitPrice DECIMAL(18,2) NOT NULL
+);");
+
+            ExecuteNonQuery(conn, @"
+CREATE TABLE IF NOT EXISTS AppUser (
+  Username VARCHAR(100) NOT NULL PRIMARY KEY,
+  Password VARCHAR(255) NOT NULL,
+  Role VARCHAR(50) NOT NULL,
+  Email VARCHAR(255) NULL,
+  Phone VARCHAR(50) NULL
+);");
+
+            // Upgrade kolom yang mungkin belum ada (untuk DB yang sudah dibuat versi lama)
+            EnsureColumn(conn, table: "SaleTransaction", column: "GrossAmount", columnDefinition: "DECIMAL(18,2) NOT NULL DEFAULT 0");
+            EnsureColumn(conn, table: "SaleItem", column: "SaleId", columnDefinition: "CHAR(36) NOT NULL");
+            EnsureColumn(conn, table: "SaleItem", column: "Id", columnDefinition: "CHAR(36) NOT NULL");
+
+            _schemaEnsured = true;
+        }
+    }
+
+    private static void ExecuteNonQuery(MySqlConnection conn, string sql)
+    {
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.ExecuteNonQuery();
+    }
+
+    private static void EnsureColumn(MySqlConnection conn, string table, string column, string columnDefinition)
+    {
+        using var checkCmd = new MySqlCommand(@"
+SELECT COUNT(*)
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE()
+  AND TABLE_NAME = @Table
+  AND COLUMN_NAME = @Column;", conn);
+        checkCmd.Parameters.AddWithValue("@Table", table);
+        checkCmd.Parameters.AddWithValue("@Column", column);
+
+        var exists = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+        if (exists) return;
+
+        using var alter = new MySqlCommand($"ALTER TABLE `{table}` ADD COLUMN `{column}` {columnDefinition};", conn);
+        alter.ExecuteNonQuery();
     }
 
     #endregion
@@ -185,26 +314,89 @@ FROM Expense;", Connection);
         {
             var list = new List<SaleTransaction>();
 
-            using var cmd = new MySqlCommand(@"SELECT
-    Id, Timestamp, PaymentMethod, TotalCost
-FROM SaleTransaction;", Connection);
-
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            using (var cmd = new MySqlCommand(@"SELECT
+    Id, Timestamp, PaymentMethod, GrossAmount, TotalCost
+FROM SaleTransaction;", Connection))
+            using (var reader = cmd.ExecuteReader())
             {
-                var s = new SaleTransaction
+                while (reader.Read())
                 {
-                    Id = ReadGuid(reader, "Id"),
-                    Timestamp = reader.GetDateTime("Timestamp"),
-                    PaymentMethod = reader.GetString("PaymentMethod"),
-                    TotalCost = reader.GetDecimal("TotalCost"),
-                    Items = new List<SaleItem>() // detail item tidak di-load (sama seperti implementasi SQLite lama)
-                };
-                list.Add(s);
+                    var s = new SaleTransaction
+                    {
+                        Id = ReadGuid(reader, "Id"),
+                        Timestamp = reader.GetDateTime("Timestamp"),
+                        PaymentMethod = reader.GetString("PaymentMethod"),
+                        TotalCost = reader.GetDecimal("TotalCost"),
+                        Items = new List<SaleItem>()
+                    };
+
+                    // NOTE: GrossAmount adalah computed property dari Items, jadi tidak diset di model.
+                    // Kolom GrossAmount tetap dibaca di query agar kompatibel dan untuk validasi schema.
+                    list.Add(s);
+                }
+            }
+
+            // Load detail item untuk semua transaksi (agar laporan/top products tetap benar setelah restart)
+            var itemsBySaleId = GetSaleItemsBySaleIds(list.Select(s => s.Id).ToList());
+            foreach (var sale in list)
+            {
+                if (itemsBySaleId.TryGetValue(sale.Id, out var items))
+                {
+                    sale.Items = items;
+                }
             }
 
             return list;
         }
+    }
+
+    private static Dictionary<Guid, List<SaleItem>> GetSaleItemsBySaleIds(IReadOnlyList<Guid> saleIds)
+    {
+        var result = new Dictionary<Guid, List<SaleItem>>();
+        if (saleIds.Count == 0) return result;
+
+        // Buat parameter IN (@id0,@id1,...)
+        var paramNames = new List<string>(saleIds.Count);
+        for (int i = 0; i < saleIds.Count; i++)
+        {
+            paramNames.Add("@id" + i);
+        }
+
+        var sql = $@"SELECT
+    Id, SaleId, ProductId, ProductName, Quantity, UnitPrice
+FROM SaleItem
+WHERE SaleId IN ({string.Join(",", paramNames)});";
+
+        using var cmd = new MySqlCommand(sql, Connection);
+        for (int i = 0; i < saleIds.Count; i++)
+        {
+            cmd.Parameters.AddWithValue(paramNames[i], saleIds[i].ToString());
+        }
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var saleId = ReadGuid(reader, "SaleId");
+            var item = new SaleItem
+            {
+                Id = ReadGuid(reader, "Id"),
+                SaleId = saleId,
+                ProductId = ReadGuid(reader, "ProductId"),
+                ProductName = reader.GetString("ProductName"),
+                Quantity = reader.GetInt32("Quantity"),
+                UnitPrice = reader.GetDecimal("UnitPrice")
+            };
+
+            if (!result.TryGetValue(saleId, out var list))
+            {
+                list = new List<SaleItem>();
+                result[saleId] = list;
+            }
+
+            list.Add(item);
+        }
+
+        return result;
     }
 
     public static IList<AppUser> GetAllUsers()
@@ -376,24 +568,31 @@ VALUES
             using var transaction = Connection.BeginTransaction();
 
             using (var cmd = new MySqlCommand(@"INSERT INTO SaleTransaction
-(Id, Timestamp, PaymentMethod, TotalCost)
+(Id, Timestamp, PaymentMethod, GrossAmount, TotalCost)
 VALUES
-(@Id, @Timestamp, @PaymentMethod, @TotalCost);", Connection, transaction))
+(@Id, @Timestamp, @PaymentMethod, @GrossAmount, @TotalCost);", Connection, transaction))
             {
                 cmd.Parameters.AddWithValue("@Id", sale.Id.ToString());
                 cmd.Parameters.AddWithValue("@Timestamp", sale.Timestamp);
                 cmd.Parameters.AddWithValue("@PaymentMethod", sale.PaymentMethod);
+                cmd.Parameters.AddWithValue("@GrossAmount", sale.GrossAmount);
                 cmd.Parameters.AddWithValue("@TotalCost", sale.TotalCost);
                 cmd.ExecuteNonQuery();
             }
 
             foreach (var item in sale.Items)
             {
-                using var cmdItem = new MySqlCommand(@"INSERT INTO SaleItem
-(ProductId, ProductName, Quantity, UnitPrice)
-VALUES
-(@ProductId, @ProductName, @Quantity, @UnitPrice);", Connection, transaction);
+                // Pastikan FK terset untuk persist
+                if (item.SaleId == Guid.Empty)
+                    item.SaleId = sale.Id;
 
+                using var cmdItem = new MySqlCommand(@"INSERT INTO SaleItem
+(Id, SaleId, ProductId, ProductName, Quantity, UnitPrice)
+VALUES
+(@Id, @SaleId, @ProductId, @ProductName, @Quantity, @UnitPrice);", Connection, transaction);
+
+                cmdItem.Parameters.AddWithValue("@Id", item.Id.ToString());
+                cmdItem.Parameters.AddWithValue("@SaleId", item.SaleId.ToString());
                 cmdItem.Parameters.AddWithValue("@ProductId", item.ProductId.ToString());
                 cmdItem.Parameters.AddWithValue("@ProductName", item.ProductName);
                 cmdItem.Parameters.AddWithValue("@Quantity", item.Quantity);

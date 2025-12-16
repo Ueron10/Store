@@ -8,6 +8,11 @@ public partial class EmployeeDashboardPage : ContentPage
     public EmployeeDashboardPage()
     {
         InitializeComponent();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
         LoadDashboardData();
     }
 
@@ -195,21 +200,21 @@ public partial class EmployeeDashboardPage : ContentPage
 
     private async void OnNewTransactionClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//financial");
+        await Shell.Current.GoToAsync("//employeedashboard/financial");
     }
 
     private async void OnViewStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//stock");
+        await Shell.Current.GoToAsync("//employeedashboard/stock");
     }
 
     private async void OnUpdateStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//stock");
+        await Shell.Current.GoToAsync("//employeedashboard/stock");
     }
 
     private async void OnNotificationsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//notifications");
+        await Shell.Current.GoToAsync("//employeedashboard/notifications");
     }
 }

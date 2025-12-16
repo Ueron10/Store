@@ -10,8 +10,16 @@ public partial class FinancialPage : ContentPage
     public FinancialPage()
     {
         InitializeComponent();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Auto refresh setiap halaman muncul (mis. setelah tambah produk / transaksi)
         LoadProducts();
         UpdateSummary();
+        BuildRecentTransactions();
     }
 
     private void LoadProducts()
@@ -27,6 +35,9 @@ public partial class FinancialPage : ContentPage
 
     private void OnNewTransactionClicked(object sender, EventArgs e)
     {
+        // Refresh picker supaya produk baru langsung muncul
+        LoadProducts();
+
         TransactionFormFrame.IsVisible = true;
         UpdateTotal();
     }
@@ -86,6 +97,10 @@ public partial class FinancialPage : ContentPage
         }
     }
 
+    private void OnProductSelectionChanged(object? sender, EventArgs e) => UpdateTotal();
+
+    private void OnQuantityTextChanged(object? sender, TextChangedEventArgs e) => UpdateTotal();
+
     private async void OnProcessTransactionClicked(object sender, EventArgs e)
     {
         if (ProductPicker.SelectedIndex < 0 || ProductPicker.SelectedIndex >= _products.Count)
@@ -124,6 +139,7 @@ public partial class FinancialPage : ContentPage
                 await DisplayAlert("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}", "OK");
                 OnCloseTransactionFormClicked(sender, e);
                 UpdateSummary();
+                BuildRecentTransactions();
             }
             catch (Exception ex)
             {
@@ -143,6 +159,7 @@ public partial class FinancialPage : ContentPage
                 DataStore.AddOperationalExpense(description, amount);
                 await DisplayAlert("Sukses", $"Pengeluaran '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
                 UpdateSummary();
+                BuildRecentTransactions();
             }
         }
     }
@@ -160,12 +177,13 @@ public partial class FinancialPage : ContentPage
             DataStore.AddPrive(description, amount);
             await DisplayAlert("Sukses", $"Prive '{description}' sebesar Rp {amount:N0} berhasil dicatat!\n(Pengeluaran ini tidak dihitung sebagai biaya operasional.)", "OK");
             UpdateSummary();
+            BuildRecentTransactions();
         }
     }
 
     private async void OnViewReceiptClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Struk Transaksi", "Menampilkan detail struk transaksi", "OK");
+        await DisplayAlert("Struk Transaksi", "Fitur struk (detail item) akan ditampilkan dari daftar transaksi terbaru.", "OK");
     }
 
     private async void OnEditExpenseClicked(object sender, EventArgs e)
@@ -183,5 +201,99 @@ public partial class FinancialPage : ContentPage
         var totalExpenses = summary.OperationalExpenses + summary.DamagedLostExpenses;
         DailyExpenseLabel.Text = $"Rp {totalExpenses:N0}";
         DailyProfitLabel.Text = $"Rp {summary.NetProfit:N0}";
+    }
+
+    private void BuildRecentTransactions()
+    {
+        RecentTransactionsContainer.Children.Clear();
+
+        var today = DateTime.Today;
+        var todaySales = DataStore.Sales
+            .Where(s => s.Timestamp.Date == today)
+            .OrderByDescending(s => s.Timestamp)
+            .Take(10)
+            .ToList();
+
+        if (!todaySales.Any())
+        {
+            RecentTransactionsContainer.Children.Add(new Label
+            {
+                Text = "Belum ada data transaksi untuk ditampilkan.",
+                FontSize = 12,
+                TextColor = Color.FromArgb("#6B7280")
+            });
+            return;
+        }
+
+        foreach (var sale in todaySales)
+        {
+            string timeText = sale.Timestamp.ToString("HH:mm");
+
+            string itemsText;
+            if (sale.Items != null && sale.Items.Count > 0)
+            {
+                if (sale.Items.Count == 1)
+                {
+                    var item = sale.Items[0];
+                    itemsText = $"{item.ProductName} x{item.Quantity}";
+                }
+                else
+                {
+                    var first = sale.Items[0];
+                    itemsText = $"{first.ProductName} dan {sale.Items.Count - 1} item lain";
+                }
+            }
+            else
+            {
+                itemsText = "Transaksi";
+            }
+
+            var frame = new Frame
+            {
+                BackgroundColor = Color.FromArgb("#F3F4F6"),
+                CornerRadius = 10,
+                Padding = 12,
+                HasShadow = false
+            };
+
+            var grid = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition{ Width = GridLength.Star },
+                    new ColumnDefinition{ Width = GridLength.Auto }
+                },
+                ColumnSpacing = 10
+            };
+
+            var left = new StackLayout();
+            left.Children.Add(new Label
+            {
+                Text = itemsText,
+                FontSize = 14,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#111827")
+            });
+            left.Children.Add(new Label
+            {
+                Text = $"{sale.PaymentMethod} • {timeText}",
+                FontSize = 12,
+                TextColor = Color.FromArgb("#6B7280")
+            });
+
+            grid.Add(left, 0, 0);
+
+            grid.Add(new Label
+            {
+                Text = $"Rp {sale.GrossAmount:N0}",
+                FontSize = 14,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Colors.Green,
+                VerticalOptions = LayoutOptions.Center
+            }, 1, 0);
+
+            frame.Content = grid;
+            RecentTransactionsContainer.Children.Add(frame);
+        }
     }
 }

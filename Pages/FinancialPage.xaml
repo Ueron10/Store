@@ -158,7 +158,8 @@
                                TextColor="{StaticResource Gray900}"/>
                         <Picker x:Name="ProductPicker" 
                                 Title="Pilih produk..." 
-                                BackgroundColor="{StaticResource Gray100}" />
+                                BackgroundColor="{StaticResource Gray100}" 
+                                SelectedIndexChanged="OnProductSelectionChanged" />
                     </StackLayout>
                     
                     <!-- Quantity -->
@@ -182,7 +183,8 @@
                                    Keyboard="Numeric" 
                                    HorizontalTextAlignment="Center" 
                                    BackgroundColor="{StaticResource Gray100}" 
-                                   Margin="10,0"/>
+                                   Margin="10,0" 
+                                   TextChanged="OnQuantityTextChanged" />
                             <Button Grid.Column="2" 
                                     Text="+" 
                                     BackgroundColor="{StaticResource Gray200}" 

@@ -4,6 +4,12 @@
         <name>StoreProgram</name>
     </assembly>
     <members>
+        <member name="M:StoreProgram.Services.DatabaseService.EnsureSchema(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Membuat tabel/kolom yang dibutuhkan jika belum ada.
+            Tujuan: aplikasi langsung jalan di MySQL kosong tanpa perlu setup manual yang rawan salah.
+            </summary>
+        </member>
         <member name="M:StoreProgram.Services.DataStore.ProcessSingleItemSale(System.Guid,System.Int32,System.String)">
             <summary>
             Proses penjualan 1 jenis produk sederhana (sesuai UI FinancialPage sekarang).

@@ -1,4 +1,5 @@
-﻿using StoreProgram.Services;
+using Microsoft.Maui.ApplicationModel;
+using StoreProgram.Services;
 
 namespace StoreProgram
 {
@@ -10,26 +11,21 @@ namespace StoreProgram
 
             // Inisialisasi data in-memory (produk, stok awal, user, dll.)
             DataStore.Initialize();
-
-            // Set AppShell sebagai halaman utama
-            MainPage = new AppShell();
-
-            // Pindah ke halaman login setelah Shell aktif
-            NavigateToLogin();
-        }
-
-        private async void NavigateToLogin()
-        {
-            // Tunggu 1 frame agar Shell benar-benar siap
-            await Task.Delay(100);
-
-            // Arahkan ke halaman login
-            await Shell.Current.GoToAsync("//login");
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(MainPage);
+            var shell = new AppShell();
+            var window = new Window(shell);
+
+            // Pindah ke halaman login setelah Shell aktif (tanpa pakai MainPage yang deprecated)
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Task.Delay(100);
+                await shell.GoToAsync("//login");
+            });
+
+            return window;
         }
     }
 }

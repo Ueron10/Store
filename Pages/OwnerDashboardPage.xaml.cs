@@ -8,6 +8,11 @@ public partial class OwnerDashboardPage : ContentPage
     public OwnerDashboardPage()
     {
         InitializeComponent();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
         LoadDashboardData();
     }
 
@@ -165,32 +170,32 @@ public partial class OwnerDashboardPage : ContentPage
 
     private async void OnViewStockAlertsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//notifications");
+        await Shell.Current.GoToAsync("//ownerdashboard/notifications");
     }
 
     private async void OnViewAllTransactionsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//financial");
+        await Shell.Current.GoToAsync("//ownerdashboard/financial");
     }
 
     private async void OnReportsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//reports");
+        await Shell.Current.GoToAsync("//ownerdashboard/reports");
     }
 
     private async void OnManageStockClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//stock");
+        await Shell.Current.GoToAsync("//ownerdashboard/stock");
     }
 
     private async void OnFinancialClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//financial");
+        await Shell.Current.GoToAsync("//ownerdashboard/financial");
     }
 
     private async void OnNotificationsClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//notifications");
+        await Shell.Current.GoToAsync("//ownerdashboard/notifications");
     }
 
     private async void OnStockOpnameClicked(object sender, EventArgs e)

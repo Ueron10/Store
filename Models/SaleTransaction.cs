@@ -4,6 +4,12 @@ namespace StoreProgram.Models;
 
 public class SaleItem
 {
+    // Disimpan ke database agar laporan tetap benar setelah aplikasi ditutup/dibuka lagi
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    // Foreign key ke SaleTransaction
+    public Guid SaleId { get; set; }
+
     public Guid ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
     public int Quantity { get; set; }

@@ -2,48 +2,45 @@
 <ContentPage x:Class="StoreProgram.Pages.LoginPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="Login - Store Management System"
-             BackgroundColor="{StaticResource Primary}">
+             Title="Login - TOKO YOLAN"
+             BackgroundColor="{StaticResource PageBackground}">
     
     <ScrollView>
-        <Grid RowDefinitions="*,Auto,*" Padding="40,0">
-            
-            <!-- Logo Section -->
-            <StackLayout Grid.Row="1" Spacing="30">
-                
-                <!-- App Logo -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="50" 
-                       WidthRequest="100" 
-                       HeightRequest="100" 
-                       HorizontalOptions="Center"
-                       HasShadow="True">
-                    <Label Text="🏪" 
-                           FontSize="50" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center"/>
-                </Frame>
-                
-                <!-- App Title -->
-                <Label Text="Store Management System" 
-                       FontSize="24" 
-                       FontAttributes="Bold" 
-                       TextColor="White" 
-                       HorizontalOptions="Center"/>
-                
-                <Label Text="Masuk untuk melanjutkan" 
-                       FontSize="16" 
-                       TextColor="White" 
-                       HorizontalOptions="Center" 
-                       Opacity="0.8"/>
-                
-                <!-- Login Form -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="15" 
-                       Padding="30" 
-                       HasShadow="True">
-                    
-                    <StackLayout Spacing="20">
+        <Grid RowDefinitions="Auto,*" Padding="24,28" RowSpacing="18">
+
+            <!-- Header / Branding -->
+            <Border Grid.Row="0"
+                    StrokeThickness="0"
+                    Padding="22"
+                    StrokeShape="RoundRectangle 22">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="1,0">
+                        <GradientStop Color="{StaticResource Primary}" Offset="0" />
+                        <GradientStop Color="{StaticResource Secondary}" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 18" BackgroundColor="{StaticResource CardBackground}" WidthRequest="56" HeightRequest="56" HorizontalOptions="Start" VerticalOptions="Center">
+                        <Label Text="🏪" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <StackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="TOKO YOLAN" FontSize="22" FontAttributes="Bold" TextColor="White" />
+                        <Label Text="Aplikasi kasir &amp; manajemen stok" FontSize="12" TextColor="White" Opacity="0.92" />
+                    </StackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Login Form -->
+            <Frame Grid.Row="1"
+                   BackgroundColor="{StaticResource CardBackground}" 
+                   CornerRadius="18" 
+                   Padding="22" 
+                   HasShadow="True">
+                    <StackLayout Spacing="16">
+
+                        <Label Text="Masuk" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                        <Label Text="Silakan masukkan akun untuk melanjutkan" FontSize="12" TextColor="{StaticResource TextSecondary}" />
                         
                         <!-- Username Field -->
                         <StackLayout Spacing="5">
@@ -83,7 +80,7 @@
                         <!-- Error Message -->
                         <Label x:Name="ErrorLabel" 
                                Text="Username atau password salah!" 
-                               TextColor="Red" 
+                               TextColor="{StaticResource Danger}" 
                                FontSize="14" 
                                HorizontalOptions="Center" 
                                IsVisible="False"/>
@@ -93,9 +90,9 @@
                                 Text="Masuk" 
                                 BackgroundColor="{StaticResource Primary}" 
                                 TextColor="White" 
-                                CornerRadius="10" 
+                                CornerRadius="12" 
                                 FontAttributes="Bold" 
-                                HeightRequest="50" 
+                                HeightRequest="52" 
                                 Clicked="OnLoginClicked"/>
                         
                         <!-- Additional Actions -->
@@ -108,11 +105,7 @@
                         </StackLayout>
                         
                     </StackLayout>
-                    
                 </Frame>
-                
-            </StackLayout>
-            
         </Grid>
     </ScrollView>
     
