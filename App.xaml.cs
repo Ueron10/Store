@@ -1,10 +1,15 @@
-﻿namespace StoreProgram
+﻿using StoreProgram.Services;
+
+namespace StoreProgram
 {
     public partial class App : Application
     {
         public App()
         {
             InitializeComponent();
+
+            // Inisialisasi data in-memory (produk, stok awal, user, dll.)
+            DataStore.Initialize();
 
             // Set AppShell sebagai halaman utama
             MainPage = new AppShell();

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.DiscountsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Diskon Kadaluarsa">
+    <ScrollView Padding="20">
+        <StackLayout Spacing="15">
+            <Label Text="🏷️ Diskon Barang Mendekati Kadaluarsa"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource Gray900}"/>
+            <Label Text="Atur diskon untuk produk yang akan segera kadaluarsa agar bisa dijual lebih cepat."
+                   FontSize="14"
+                   TextColor="{StaticResource Gray600}"/>
+
+            <StackLayout x:Name="DiscountsContainer" Spacing="10"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

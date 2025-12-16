@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.UserManagementPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Kelola Pengguna">
+    <ScrollView Padding="20">
+        <StackLayout Spacing="20">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Kelola Pengguna"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Gray900}" />
+                    <Label Text="Tambah, ubah, dan hapus akun pengguna aplikasi"
+                           FontSize="13"
+                           TextColor="{StaticResource Gray600}" />
+                </StackLayout>
+                <Button Grid.Column="1"
+                        Text="+ Tambah"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        Clicked="OnAddUserClicked" />
+            </Grid>
+
+            <!-- Info -->
+            <Frame BackgroundColor="{StaticResource Gray100}"
+                   CornerRadius="10"
+                   Padding="10"
+                   HasShadow="False">
+                <Label Text="Catatan: Role 'Owner' memiliki akses penuh (termasuk kelola pengguna). Role 'Employee' hanya untuk kasir/pegawai biasa."
+                       FontSize="12"
+                       TextColor="{StaticResource Gray700}" />
+            </Frame>
+
+            <!-- Users List -->
+            <StackLayout x:Name="UsersContainer" Spacing="10" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

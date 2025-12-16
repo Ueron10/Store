@@ -98,24 +98,13 @@
                                 HeightRequest="50" 
                                 Clicked="OnLoginClicked"/>
                         
-                        <!-- Role Selection -->
-                        <StackLayout Spacing="10">
-                            <Label Text="Login sebagai:" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray600}" 
-                                   HorizontalOptions="Center"/>
-                            
-                            <StackLayout Orientation="Horizontal" 
-                                         HorizontalOptions="Center" 
-                                         Spacing="20">
-                                <RadioButton x:Name="OwnerRadio" 
-                                             Content="Pemilik" 
-                                             IsChecked="True" 
-                                             TextColor="{StaticResource Gray900}"/>
-                                <RadioButton x:Name="EmployeeRadio" 
-                                             Content="Pegawai" 
-                                             TextColor="{StaticResource Gray900}"/>
-                            </StackLayout>
+                        <!-- Additional Actions -->
+                        <StackLayout Spacing="10" Orientation="Horizontal" HorizontalOptions="Center" >
+                            <Button Text="Lupa Password" 
+                                    BackgroundColor="Transparent" 
+                                    TextColor="{StaticResource Primary}" 
+                                    FontSize="13" 
+                                    Padding="0"/>
                         </StackLayout>
                         
                     </StackLayout>

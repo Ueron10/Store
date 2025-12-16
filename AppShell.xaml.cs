@@ -16,6 +16,9 @@ namespace StoreProgram
             Routing.RegisterRoute("financial", typeof(FinancialPage));
             Routing.RegisterRoute("reports", typeof(ReportsPage));
             Routing.RegisterRoute("notifications", typeof(NotificationsPage));
+            Routing.RegisterRoute("stockopname", typeof(StockOpnamePage));
+            Routing.RegisterRoute("discounts", typeof(DiscountsPage));
+            Routing.RegisterRoute("users", typeof(UserManagementPage));
         }
     }
 }

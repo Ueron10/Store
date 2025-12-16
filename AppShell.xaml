@@ -39,6 +39,12 @@
                 ContentTemplate="{DataTemplate pages:ReportsPage}"
                 Route="reports" />
         </Tab>
+        <Tab Title="Diskon" Icon="package.png">
+            <ShellContent
+                Title="Diskon Kadaluarsa"
+                ContentTemplate="{DataTemplate pages:DiscountsPage}"
+                Route="discounts" />
+        </Tab>
         <Tab Title="Notifikasi" Icon="bell.png">
             <ShellContent
                 Title="Notifikasi"

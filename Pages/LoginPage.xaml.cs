@@ -1,3 +1,5 @@
+using StoreProgram.Services;
+
 namespace StoreProgram.Pages;
 
 public partial class LoginPage : ContentPage
@@ -9,8 +11,8 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string username = UsernameEntry.Text?.Trim();
-        string password = PasswordEntry.Text?.Trim();
+        string username = UsernameEntry.Text?.Trim() ?? string.Empty;
+        string password = PasswordEntry.Text?.Trim() ?? string.Empty;
 
         // Hide error message
         ErrorLabel.IsVisible = false;
@@ -23,13 +25,12 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        // Simulate login validation
-        bool isValidLogin = ValidateLogin(username, password);
+        var user = AuthService.ValidateLogin(username, password);
 
-        if (isValidLogin)
+        if (user != null)
         {
-            // Determine role and navigate accordingly
-            if (OwnerRadio.IsChecked)
+            // Tentukan role berdasarkan data user (bukan radio button)
+            if (string.Equals(user.Role, "Owner", StringComparison.OrdinalIgnoreCase))
             {
                 await Shell.Current.GoToAsync("//ownerdashboard");
             }
@@ -43,12 +44,5 @@ public partial class LoginPage : ContentPage
             ErrorLabel.Text = "Username atau password salah!";
             ErrorLabel.IsVisible = true;
         }
-    }
-
-    private bool ValidateLogin(string username, string password)
-    {
-        // Mock validation - replace with actual authentication
-        return (username == "owner" && password == "owner123") || 
-               (username == "pegawai" && password == "pegawai123");
     }
 }

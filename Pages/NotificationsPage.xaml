@@ -3,10 +3,8 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              Title="Notifikasi dan Peringatan">
-    
     <ScrollView Padding="20">
         <StackLayout Spacing="20">
-            
             <!-- Header -->
             <Frame BackgroundColor="White" 
                    CornerRadius="15" 
@@ -18,7 +16,7 @@
                                FontSize="20" 
                                FontAttributes="Bold" 
                                TextColor="{StaticResource Gray900}"/>
-                        <Label Text="Pantau peringatan penting untuk toko Anda" 
+                        <Label Text="Pantau stok kadaluarsa dan mendekati kadaluarsa" 
                                FontSize="14" 
                                TextColor="{StaticResource Gray600}"/>
                     </StackLayout>
@@ -30,286 +28,25 @@
                             Clicked="OnClearAllClicked"/>
                 </Grid>
             </Frame>
-            
-            <!-- Critical Alerts -->
-            <StackLayout Spacing="15">
-                <Label Text="🚨 Peringatan Kritis" 
+
+            <!-- Expired Products -->
+            <StackLayout Spacing="10">
+                <Label Text="🚨 Produk Sudah Kadaluarsa" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="Red"/>
-                
-                <!-- Low Stock Alert -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Red" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="⚠️" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Stok Kritis!" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Red"/>
-                            <Label Text="Aqua 600ml - Tersisa 3 botol" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="2 menit yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="📦" 
-                                BackgroundColor="{StaticResource Primary}" 
-                                TextColor="White" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnRestockClicked"/>
-                    </Grid>
-                </Frame>
-                
-                <!-- Expiry Alert -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Red" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="⏰" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Produk Akan Expired!" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Red"/>
-                            <Label Text="Roti Tawar - Expired dalam 2 hari" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="5 menit yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="🗑️" 
-                                BackgroundColor="Red" 
-                                TextColor="White" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnRemoveExpiredClicked"/>
-                    </Grid>
-                </Frame>
-                
+                <StackLayout x:Name="ExpiredContainer" Spacing="10" />
             </StackLayout>
-            
-            <!-- Warning Alerts -->
-            <StackLayout Spacing="15">
-                <Label Text="⚠️ Peringatan" 
+
+            <!-- Near Expiry Products -->
+            <StackLayout Spacing="10">
+                <Label Text="⚠️ Produk Mendekati Kadaluarsa" 
                        FontSize="18" 
                        FontAttributes="Bold" 
                        TextColor="Orange"/>
-                
-                <!-- Low Stock Warning -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Orange" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="📉" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Stok Menipis" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Orange"/>
-                            <Label Text="Indomie Goreng - Tersisa 5 pcs" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="10 menit yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="✓" 
-                                BackgroundColor="Transparent" 
-                                TextColor="Orange" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnMarkAsReadClicked"/>
-                    </Grid>
-                </Frame>
-                
-                <!-- Expiry Warning -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True" >
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Orange" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="📅" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Mendekati Expiry" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Orange"/>
-                            <Label Text="Susu Ultra - Expired dalam 7 hari" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="15 menit yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="✓" 
-                                BackgroundColor="Transparent" 
-                                TextColor="Orange" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnMarkAsReadClicked"/>
-                    </Grid>
-                </Frame>
-                
+                <StackLayout x:Name="NearingContainer" Spacing="10" />
             </StackLayout>
-            
-            <!-- Info Notifications -->
-            <StackLayout Spacing="15">
-                <Label Text="ℹ️ Informasi" 
-                       FontSize="18" 
-                       FontAttributes="Bold" 
-                       TextColor="Blue"/>
-                
-                <!-- New Transaction -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Blue" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="💰" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Transaksi Baru" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Blue"/>
-                            <Label Text="Transaksi #047 - Rp 25.000" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="1 jam yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="👁️" 
-                                BackgroundColor="Transparent" 
-                                TextColor="Blue" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnViewTransactionClicked"/>
-                    </Grid>
-                </Frame>
-                
-                <!-- Stock Update -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       HasShadow="True" >
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
-                        <Frame Grid.Column="0" 
-                               BackgroundColor="Green" 
-                               CornerRadius="25" 
-                               WidthRequest="50" 
-                               HeightRequest="50" 
-                               HasShadow="False" 
-                               Padding="0">
-                            <Label Text="📦" 
-                                   FontSize="24" 
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="Center"/>
-                        </Frame>
-                        <StackLayout Grid.Column="1">
-                            <Label Text="Stok Ditambahkan" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="Green"/>
-                            <Label Text="Kopi Sachet +50 pcs berhasil ditambahkan" 
-                                   FontSize="14" 
-                                   TextColor="{StaticResource Gray700}"/>
-                            <Label Text="2 jam yang lalu" 
-                                   FontSize="10" 
-                                   TextColor="{StaticResource Gray500}"/>
-                        </StackLayout>
-                        <Button Grid.Column="2" 
-                                Text="✓" 
-                                BackgroundColor="Transparent" 
-                                TextColor="Green" 
-                                CornerRadius="8" 
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                FontSize="16" 
-                                Clicked="OnMarkAsReadClicked"/>
-                    </Grid>
-                </Frame>
-                
-            </StackLayout>
-            
+
             <!-- Settings -->
             <Frame BackgroundColor="White" 
                    CornerRadius="15" 
@@ -321,11 +58,11 @@
                            FontAttributes="Bold" 
                            TextColor="{StaticResource Gray900}"/>
                     
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,*,*" RowSpacing="10">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,*" RowSpacing="10">
                         
                         <Label Grid.Row="0" 
                                Grid.Column="0" 
-                               Text="Notifikasi stok menipis" 
+                               Text="Notifikasi produk kadaluarsa" 
                                FontSize="14" 
                                TextColor="{StaticResource Gray700}" 
                                VerticalOptions="Center"/>
@@ -335,29 +72,16 @@
                         
                         <Label Grid.Row="1" 
                                Grid.Column="0" 
-                               Text="Notifikasi produk expired" 
+                               Text="Notifikasi produk mendekati kadaluarsa" 
                                FontSize="14" 
                                TextColor="{StaticResource Gray700}" 
                                VerticalOptions="Center"/>
                         <Switch Grid.Row="1" 
                                 Grid.Column="1" 
                                 IsToggled="True"/>
-                        
-                        <Label Grid.Row="2" 
-                               Grid.Column="0" 
-                               Text="Notifikasi transaksi baru" 
-                               FontSize="14" 
-                               TextColor="{StaticResource Gray700}" 
-                               VerticalOptions="Center"/>
-                        <Switch Grid.Row="2" 
-                                Grid.Column="1" 
-                                IsToggled="False"/>
-                        
                     </Grid>
                 </StackLayout>
             </Frame>
-            
         </StackLayout>
     </ScrollView>
-    
 </ContentPage>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StoreProgram</name>
+    </assembly>
+    <members>
+        <member name="M:StoreProgram.Services.DataStore.ProcessSingleItemSale(System.Guid,System.Int32,System.String)">
+            <summary>
+            Proses penjualan 1 jenis produk sederhana (sesuai UI FinancialPage sekarang).
+            Jika ke depan ingin multi-item, bisa dikembangkan dari sini.
+            </summary>
+        </member>
+        <member name="T:StoreProgram.Resource">
+            <summary>
+            Android Resource Designer class.
+            Exposes the Android Resource designer assembly into the project Namespace.
+            </summary>
+        </member>
+    </members>
+</doc>

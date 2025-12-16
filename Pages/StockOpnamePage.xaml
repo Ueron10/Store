@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.StockOpnamePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Stok Opname">
+    <ScrollView Padding="20">
+        <StackLayout Spacing="15">
+            <Label Text="📋 Stok Opname Semua Produk"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource Gray900}"/>
+            <Label Text="Masukkan stok fisik untuk setiap produk, lalu tekan Sesuaikan."
+                   FontSize="14"
+                   TextColor="{StaticResource Gray600}"/>
+
+            <StackLayout x:Name="StockOpnameContainer" Spacing="10"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
