@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.Popups.PurchaseStockPopupPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="#80000000"
+             Padding="24">
+
+    <Grid RowDefinitions="*" ColumnDefinitions="*">
+        <Frame Padding="18"
+               BackgroundColor="{StaticResource CardBackground}"
+               CornerRadius="16"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="460">
+
+            <VerticalStackLayout Spacing="12">
+                <Label x:Name="TitleLabel"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <Label x:Name="SubtitleLabel"
+                       FontSize="12"
+                       TextColor="{StaticResource TextSecondary}" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                        <Label x:Name="QtyLabel" Text="Jumlah" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                        <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry x:Name="QtyEntry" Placeholder="0" Keyboard="Numeric" />
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="Harga Modal / Unit (Rp)" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                        <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry x:Name="UnitCostEntry" Placeholder="0" Keyboard="Numeric" />
+                        </Frame>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Kadaluarsa Batch" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="10,0" HasShadow="False">
+                        <DatePicker x:Name="ExpiryDatePicker" />
+                    </Frame>
+                </VerticalStackLayout>
+
+                <Label x:Name="ErrorLabel" TextColor="{StaticResource Danger}" FontSize="12" IsVisible="False" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,6,0,0">
+                    <Button Grid.Column="0"
+                            Text="Cancel"
+                            BackgroundColor="{StaticResource Gray200}"
+                            TextColor="{StaticResource TextPrimary}"
+                            CornerRadius="10"
+                            HeightRequest="44"
+                            Clicked="OnCancelClicked" />
+
+                    <Button Grid.Column="1"
+                            Text="Konfirmasi"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="44"
+                            Clicked="OnConfirmClicked" />
+                </Grid>
+            </VerticalStackLayout>
+
+        </Frame>
+    </Grid>
+</ContentPage>

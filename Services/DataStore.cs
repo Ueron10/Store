@@ -42,6 +42,8 @@ public static class DataStore
 
     public static void SetCurrentUser(AppUser user) => CurrentUser = user;
 
+    public static void ClearCurrentUser() => CurrentUser = null;
+
     public static int GetCurrentStock(Guid productId)
     {
         return StockBatches.Where(b => b.ProductId == productId).Sum(b => b.Quantity);
@@ -94,6 +96,28 @@ public static class DataStore
 
     private static string GetProductName(Guid productId)
         => Products.FirstOrDefault(p => p.Id == productId)?.Name ?? "Produk";
+
+    private static void AddDiscountLossExpense(Guid productId, int quantity, decimal unitCost, decimal unitPrice, DateOnly expiryDate, DateTime timestamp)
+    {
+        if (quantity <= 0) return;
+
+        // Loss hanya jika harga jual (setelah diskon) < harga modal batch.
+        if (unitPrice >= unitCost) return;
+
+        var loss = (unitCost - unitPrice) * quantity;
+        if (loss <= 0) return;
+
+        var expense = new Expense
+        {
+            Timestamp = timestamp,
+            Description = $"Kerugian diskon {GetProductName(productId)} (exp {expiryDate:yyyy-MM-dd})",
+            Amount = loss,
+            Type = ExpenseType.DiscountLoss
+        };
+
+        Expenses.Add(expense);
+        DatabaseService.InsertExpense(expense);
+    }
 
     /// <summary>
     /// Preview perhitungan transaksi berdasarkan FIFO batch (termasuk diskon per batch).
@@ -188,6 +212,7 @@ public static class DataStore
     public static SaleTransaction ProcessSingleItemSale(Guid productId, int quantity, string paymentMethod, Guid? batchId)
     {
         var product = Products.First(p => p.Id == productId);
+        var ts = DateTime.Now;
 
         // Jika user memilih batch tertentu, keluarkan stok dari batch itu saja.
         if (batchId is not null)
@@ -216,9 +241,13 @@ public static class DataStore
                 }
             };
 
+            // Catat kerugian jika jual di bawah modal (diskon batch terlalu besar)
+            AddDiscountLossExpense(productId, quantity, batch.UnitCost, unitPrice, batch.ExpiryDate, ts);
+
             var movement = new StockMovement
             {
                 ProductId = productId,
+                Timestamp = ts,
                 Quantity = quantity,
                 UnitCost = batch.UnitCost,
                 TotalCost = quantity * batch.UnitCost,
@@ -230,6 +259,7 @@ public static class DataStore
 
             var sale = new SaleTransaction
             {
+                Timestamp = ts,
                 Items = saleItems,
                 PaymentMethod = paymentMethod,
                 TotalCost = quantity * batch.UnitCost
@@ -264,6 +294,9 @@ public static class DataStore
             decimal percent = batch.DiscountPercent is > 0 and <= 100 ? batch.DiscountPercent.Value : 0m;
             decimal unitPrice = product.SellPrice * (100 - percent) / 100m;
 
+            // Catat kerugian jika jual di bawah modal untuk batch yang sedang terjual
+            AddDiscountLossExpense(productId, take, batch.UnitCost, unitPrice, batch.ExpiryDate, ts);
+
             // Gabungkan kalau unitPrice sama
             var last = fifoItems.LastOrDefault();
             if (last != null && last.ProductId == productId && last.UnitPrice == unitPrice)
@@ -284,6 +317,7 @@ public static class DataStore
             var movement = new StockMovement
             {
                 ProductId = productId,
+                Timestamp = ts,
                 Quantity = take,
                 UnitCost = batch.UnitCost,
                 TotalCost = take * batch.UnitCost,
@@ -299,6 +333,7 @@ public static class DataStore
 
         var saleFifo = new SaleTransaction
         {
+            Timestamp = ts,
             Items = fifoItems,
             PaymentMethod = paymentMethod,
             TotalCost = totalCost
@@ -440,12 +475,19 @@ public static class DataStore
         var salesInRange = Sales.Where(s => s.Timestamp >= range.Start && s.Timestamp <= range.End).ToList();
         var expensesInRange = Expenses.Where(e => e.Timestamp >= range.Start && e.Timestamp <= range.End).ToList();
 
+        var discountLoss = expensesInRange.Where(e => e.Type == ExpenseType.DiscountLoss).Sum(e => e.Amount);
+        var totalCogsRaw = salesInRange.Sum(s => s.TotalCost);
+
         var summary = new FinancialSummary
         {
             TotalSales = salesInRange.Sum(s => s.GrossAmount),
-            TotalCostOfGoods = salesInRange.Sum(s => s.TotalCost),
+
+            // Untuk menghindari double-count, HPP yang dipakai untuk gross profit dikurangi selisih jual<modal.
+            TotalCostOfGoods = totalCogsRaw - discountLoss,
+
             OperationalExpenses = expensesInRange.Where(e => e.Type == ExpenseType.Operational).Sum(e => e.Amount),
             DamagedLostExpenses = expensesInRange.Where(e => e.Type == ExpenseType.DamagedLostStock).Sum(e => e.Amount),
+            DiscountLossExpenses = discountLoss,
             PriveExpenses = expensesInRange.Where(e => e.Type == ExpenseType.Prive).Sum(e => e.Amount),
             TotalTransactions = salesInRange.Count
         };

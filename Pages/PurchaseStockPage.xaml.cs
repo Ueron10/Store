@@ -1,4 +1,5 @@
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -54,19 +55,19 @@ public partial class PurchaseStockPage : ContentPage
     {
         if (_productGuid is null)
         {
-            await DisplayAlert("Error", "ProductId belum ada. Buka halaman ini lewat route dengan parameter productId.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "ProductId belum ada. Buka halaman ini lewat route dengan parameter productId.");
             return;
         }
 
         if (!int.TryParse(QtyEntry.Text?.Trim(), out var qty) || qty <= 0)
         {
-            await DisplayAlert("Error", "Jumlah tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Jumlah tidak valid.");
             return;
         }
 
         if (!decimal.TryParse(UnitCostEntry.Text?.Trim(), out var unitCost) || unitCost <= 0)
         {
-            await DisplayAlert("Error", "Harga modal tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Harga modal tidak valid.");
             return;
         }
 
@@ -78,7 +79,7 @@ public partial class PurchaseStockPage : ContentPage
 
         DataStore.AddPurchase(_productGuid.Value, qty, unitCost, expiryDate, "Restock", timestamp: ts);
 
-        await DisplayAlert("Sukses", "Stok berhasil ditambahkan.", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", "Stok berhasil ditambahkan.");
         OnCancelClicked(sender, e);
     }
 }

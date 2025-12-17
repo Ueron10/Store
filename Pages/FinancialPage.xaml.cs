@@ -1,6 +1,7 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -36,13 +37,23 @@ public partial class FinancialPage : ContentPage
         }
     }
 
-    private void OnNewTransactionClicked(object sender, EventArgs e)
+    private async void OnNewTransactionClicked(object sender, EventArgs e)
     {
-        // Refresh picker supaya produk baru langsung muncul
+        // Refresh data supaya produk baru langsung muncul
         LoadProducts();
 
-        TransactionFormFrame.IsVisible = true;
-        UpdateTotal();
+        if (!_products.Any())
+        {
+            await InfoPopupPage.ShowAsync("Transaksi", "Belum ada produk. Tambahkan produk terlebih dahulu.");
+            return;
+        }
+
+        var sale = await NewTransactionPopupPage.ShowAsync(_products);
+        if (sale == null) return;
+
+        await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}");
+        UpdateSummary();
+        BuildRecentTransactions();
     }
 
     private void OnCloseTransactionFormClicked(object sender, EventArgs e)
@@ -162,13 +173,13 @@ public partial class FinancialPage : ContentPage
     {
         if (ProductPicker.SelectedIndex < 0 || ProductPicker.SelectedIndex >= _products.Count)
         {
-            await DisplayAlert("Error", "Pilih produk terlebih dahulu!", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Pilih produk terlebih dahulu!");
             return;
         }
 
         if (!int.TryParse(QuantityEntry.Text, out int quantity) || quantity <= 0)
         {
-            await DisplayAlert("Error", "Masukkan jumlah yang valid!", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Masukkan jumlah yang valid!");
             return;
         }
 
@@ -177,9 +188,11 @@ public partial class FinancialPage : ContentPage
         string paymentMethod = CashRadio.IsChecked ? "Tunai" : "QRIS";
         string productName = product.Name;
         
-        bool confirm = await DisplayAlert("Konfirmasi Transaksi", 
-            $"Produk: {productName}\nJumlah: {quantity}\nTotal: {TotalLabel.Text}\nPembayaran: {paymentMethod}\n\nProses transaksi?", 
-            "Ya", "Batal");
+        bool confirm = await ConfirmPopupPage.ShowAsync(
+            title: "Konfirmasi Transaksi",
+            message: $"Produk: {productName}\nJumlah: {quantity}\nTotal: {TotalLabel.Text}\nPembayaran: {paymentMethod}\n\nProses transaksi?",
+            confirmText: "Proses",
+            cancelText: "Batal");
 
         if (confirm)
         {
@@ -190,29 +203,31 @@ public partial class FinancialPage : ContentPage
                 // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
                 if (paymentMethod == "QRIS")
                 {
-                    await DisplayAlert("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).", "OK");
+                    await InfoPopupPage.ShowAsync("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).");
                 }
 
-                await DisplayAlert("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}", "OK");
+                await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}");
                 OnCloseTransactionFormClicked(sender, e);
                 UpdateSummary();
                 BuildRecentTransactions();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await InfoPopupPage.ShowAsync("Error", ex.Message);
             }
         }
     }
 
-    private void OnAddExpenseClicked(object sender, EventArgs e)
+    private async void OnAddExpenseClicked(object sender, EventArgs e)
     {
-        ExpenseFormFrame.IsVisible = true;
-        PriveFormFrame.IsVisible = false;
+        var result = await ExpensePopupPage.ShowAsync();
+        if (result == null) return;
 
-        ExpenseDatePicker.Date = DateTime.Today;
-        ExpenseDescriptionEntry.Text = string.Empty;
-        ExpenseAmountEntry.Text = string.Empty;
+        DataStore.AddOperationalExpense(result.Description, result.Amount, result.Date);
+        await InfoPopupPage.ShowAsync("Sukses", $"Pengeluaran '{result.Description}' sebesar Rp {result.Amount:N0} berhasil dicatat!");
+
+        UpdateSummary();
+        BuildRecentTransactions();
     }
 
     private void OnCancelExpenseClicked(object sender, EventArgs e)
@@ -228,32 +243,34 @@ public partial class FinancialPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(description))
         {
-            await DisplayAlert("Error", "Deskripsi pengeluaran harus diisi.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Deskripsi pengeluaran harus diisi.");
             return;
         }
 
         if (!decimal.TryParse(amountText, out var amount) || amount <= 0)
         {
-            await DisplayAlert("Error", "Jumlah pengeluaran tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Jumlah pengeluaran tidak valid.");
             return;
         }
 
         DataStore.AddOperationalExpense(description, amount, date);
-        await DisplayAlert("Sukses", $"Pengeluaran '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Pengeluaran '{description}' sebesar Rp {amount:N0} berhasil dicatat!");
 
         ExpenseFormFrame.IsVisible = false;
         UpdateSummary();
         BuildRecentTransactions();
     }
 
-    private void OnPriveClicked(object sender, EventArgs e)
+    private async void OnPriveClicked(object sender, EventArgs e)
     {
-        PriveFormFrame.IsVisible = true;
-        ExpenseFormFrame.IsVisible = false;
+        var result = await PrivePopupPage.ShowAsync();
+        if (result == null) return;
 
-        PriveDatePicker.Date = DateTime.Today;
-        PriveDescriptionEntry.Text = "Prive pemilik";
-        PriveAmountEntry.Text = string.Empty;
+        DataStore.AddPrive(result.Description, result.Amount, result.Date);
+        await InfoPopupPage.ShowAsync("Sukses", $"Prive '{result.Description}' sebesar Rp {result.Amount:N0} berhasil dicatat!");
+
+        UpdateSummary();
+        BuildRecentTransactions();
     }
 
     private void OnCancelPriveClicked(object sender, EventArgs e)
@@ -272,12 +289,12 @@ public partial class FinancialPage : ContentPage
 
         if (!decimal.TryParse(amountText, out var amount) || amount <= 0)
         {
-            await DisplayAlert("Error", "Jumlah prive tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Jumlah prive tidak valid.");
             return;
         }
 
         DataStore.AddPrive(description, amount, date);
-        await DisplayAlert("Sukses", $"Prive '{description}' sebesar Rp {amount:N0} berhasil dicatat!", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Prive '{description}' sebesar Rp {amount:N0} berhasil dicatat!");
 
         PriveFormFrame.IsVisible = false;
         UpdateSummary();
@@ -286,12 +303,12 @@ public partial class FinancialPage : ContentPage
 
     private async void OnViewReceiptClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Struk Transaksi", "Fitur struk (detail item) akan ditampilkan dari daftar transaksi terbaru.", "OK");
+        await InfoPopupPage.ShowAsync("Struk Transaksi", "Fitur struk (detail item) akan ditampilkan dari daftar transaksi terbaru.");
     }
 
     private async void OnEditExpenseClicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Edit Pengeluaran", "Fitur edit pengeluaran belum diimplementasikan.", "OK");
+        await InfoPopupPage.ShowAsync("Edit Pengeluaran", "Fitur edit pengeluaran belum diimplementasikan.");
     }
 
     private async void OnExportFinancialPdfClicked(object sender, EventArgs e)
@@ -303,11 +320,11 @@ public partial class FinancialPage : ContentPage
 
             var filePath = await ReportExportService.ExportPdfAsync(range, "Keuangan_HariIni");
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export PDF", $"PDF keuangan tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"PDF keuangan tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export PDF", $"Gagal export PDF keuangan: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"Gagal export PDF keuangan: {ex.Message}");
         }
     }
 
@@ -320,11 +337,11 @@ public partial class FinancialPage : ContentPage
 
             var filePath = await ReportExportService.ExportExcelAsync(range, "Keuangan_HariIni");
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export Excel", $"Excel keuangan tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Excel keuangan tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export Excel", $"Gagal export Excel keuangan: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Gagal export Excel keuangan: {ex.Message}");
         }
     }
 
@@ -350,7 +367,7 @@ public partial class FinancialPage : ContentPage
         var summary = DataStore.GetSummary(range);
 
         DailyIncomeLabel.Text = $"Rp {summary.TotalSales:N0}";
-        var totalExpenses = summary.OperationalExpenses + summary.DamagedLostExpenses;
+        var totalExpenses = summary.OperationalExpenses + summary.DamagedLostExpenses + summary.DiscountLossExpenses;
         DailyExpenseLabel.Text = $"Rp {totalExpenses:N0}";
         DailyProfitLabel.Text = $"Rp {summary.NetProfit:N0}";
     }

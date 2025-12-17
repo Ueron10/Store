@@ -1,4 +1,5 @@
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -117,41 +118,15 @@ public partial class UserManagementPage : ContentPage
 
     private async void OnAddUserClicked(object sender, EventArgs e)
     {
-        string username = await DisplayPromptAsync("Pengguna Baru", "Username:");
-        if (string.IsNullOrWhiteSpace(username)) return;
+        var result = await UserFormPopupPage.ShowAsync();
+        if (result == null) return;
 
-        if (DataStore.Users.Any(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)))
-        {
-            await DisplayAlert("Error", "Username sudah digunakan.", "OK");
-            return;
-        }
-
-        string password = await DisplayPromptAsync("Pengguna Baru", "Password:");
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            await DisplayAlert("Error", "Password tidak boleh kosong.", "OK");
-            return;
-        }
-
-        string role = await DisplayActionSheet("Pilih Role", "Batal", null, "Owner", "Employee");
-        if (string.IsNullOrEmpty(role) || role == "Batal") return;
-
-        string email = await DisplayPromptAsync("Pengguna Baru", "Email (opsional):");
-        string phone = await DisplayPromptAsync("Pengguna Baru", "No. Telepon (opsional):");
-
-        var user = new AppUser
-        {
-            Username = username.Trim(),
-            Password = password.Trim(),
-            Role = role,
-            Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim(),
-            Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim()
-        };
+        var user = result.User;
 
         DatabaseService.InsertUser(user);
         DataStore.Users.Add(user);
 
-        await DisplayAlert("Sukses", $"Pengguna '{user.Username}' berhasil dibuat.", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Pengguna '{user.Username}' berhasil dibuat.");
         BuildUsersList();
     }
 
@@ -163,26 +138,13 @@ public partial class UserManagementPage : ContentPage
         var user = DataStore.Users.FirstOrDefault(u => u.Username == username);
         if (user == null) return;
 
-        string? newPassword = await DisplayPromptAsync("Edit Pengguna", "Password (kosongkan jika tidak diubah):");
-        if (!string.IsNullOrWhiteSpace(newPassword))
-        {
-            user.Password = newPassword.Trim();
-        }
+        var result = await UserFormPopupPage.ShowAsync(user);
+        if (result == null) return;
 
-        string role = await DisplayActionSheet("Role", "Batal", null, "Owner", "Employee");
-        if (!string.IsNullOrEmpty(role) && role != "Batal")
-        {
-            user.Role = role;
-        }
+        // result.User adalah reference yang sama dengan 'user' (edit mode)
+        DatabaseService.InsertUser(result.User); // InsertOrReplace
 
-        string email = await DisplayPromptAsync("Edit Pengguna", "Email:", initialValue: user.Email ?? string.Empty);
-        string phone = await DisplayPromptAsync("Edit Pengguna", "No. Telepon:", initialValue: user.Phone ?? string.Empty);
-
-        user.Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim();
-        user.Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
-
-        DatabaseService.InsertUser(user); // InsertOrReplace
-        await DisplayAlert("Sukses", $"Pengguna '{user.Username}' berhasil diperbarui.", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Pengguna '{user.Username}' berhasil diperbarui.");
         BuildUsersList();
     }
     private async void OnDeleteUserClicked(object? sender, EventArgs e)
@@ -197,18 +159,21 @@ public partial class UserManagementPage : ContentPage
         if (DataStore.CurrentUser != null &&
             DataStore.CurrentUser.Username.Equals(username, StringComparison.OrdinalIgnoreCase))
         {
-            await DisplayAlert("Tidak diizinkan", "Tidak bisa menghapus akun yang sedang digunakan.", "OK");
+            await InfoPopupPage.ShowAsync("Tidak diizinkan", "Tidak bisa menghapus akun yang sedang digunakan.");
             return;
         }
 
-        bool confirm = await DisplayAlert("Hapus Pengguna",
-            $"Yakin ingin menghapus pengguna '{username}'?", "Ya", "Batal");
+        bool confirm = await ConfirmPopupPage.ShowAsync(
+            title: "Hapus Pengguna",
+            message: $"Yakin ingin menghapus pengguna '{username}'?",
+            confirmText: "Hapus",
+            cancelText: "Batal");
         if (!confirm) return;
 
         DatabaseService.DeleteUser(username);
         DataStore.Users.RemoveAll(u => u.Username == username);
 
-        await DisplayAlert("Sukses", $"Pengguna '{username}' sudah dihapus.", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Pengguna '{username}' sudah dihapus.");
         BuildUsersList();
     }
 }

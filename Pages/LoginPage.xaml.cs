@@ -1,3 +1,4 @@
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -48,5 +49,10 @@ public partial class LoginPage : ContentPage
             ErrorLabel.Text = "Username atau password salah!";
             ErrorLabel.IsVisible = true;
         }
+    }
+
+    private async void OnForgotPasswordClicked(object sender, EventArgs e)
+    {
+        await ForgotPasswordPopupPage.ShowAsync();
     }
 }

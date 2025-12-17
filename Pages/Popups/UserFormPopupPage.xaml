@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.Popups.UserFormPopupPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="#80000000"
+             Padding="24">
+
+    <Grid RowDefinitions="*" ColumnDefinitions="*">
+        <Frame Padding="18"
+               BackgroundColor="{StaticResource CardBackground}"
+               CornerRadius="16"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="460">
+
+            <VerticalStackLayout Spacing="12">
+                <Label x:Name="TitleLabel"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <Label x:Name="SubtitleLabel"
+                       FontSize="12"
+                       TextColor="{StaticResource TextSecondary}" />
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Username" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                        <Entry x:Name="UsernameEntry" Placeholder="username" BackgroundColor="Transparent" />
+                    </Frame>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label x:Name="PasswordLabel" Text="Password" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                        <Entry x:Name="PasswordEntry" Placeholder="password" IsPassword="True" BackgroundColor="Transparent" />
+                    </Frame>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Role" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                    <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="10,0" HasShadow="False">
+                        <Picker x:Name="RolePicker" />
+                    </Frame>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                        <Label Text="Email" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                        <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry x:Name="EmailEntry" Placeholder="email (opsional)" Keyboard="Email" BackgroundColor="Transparent" />
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="No. Telepon" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}" />
+                        <Frame BackgroundColor="{StaticResource Gray100}" CornerRadius="10" Padding="0" HasShadow="False">
+                            <Entry x:Name="PhoneEntry" Placeholder="telp (opsional)" Keyboard="Telephone" BackgroundColor="Transparent" />
+                        </Frame>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label x:Name="ErrorLabel"
+                       TextColor="{StaticResource Danger}"
+                       FontSize="12"
+                       IsVisible="False" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,6,0,0">
+                    <Button Grid.Column="0"
+                            Text="Cancel"
+                            BackgroundColor="{StaticResource Gray200}"
+                            TextColor="{StaticResource TextPrimary}"
+                            CornerRadius="10"
+                            HeightRequest="44"
+                            Clicked="OnCancelClicked" />
+
+                    <Button Grid.Column="1"
+                            Text="Konfirmasi"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="44"
+                            Clicked="OnConfirmClicked" />
+                </Grid>
+            </VerticalStackLayout>
+
+        </Frame>
+    </Grid>
+</ContentPage>

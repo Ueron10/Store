@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:StoreProgram"
     xmlns:pages="clr-namespace:StoreProgram.Pages"
-    Title="TOKO YOLAN">
+    Title="TOKO YOLAN"
+    FlyoutBehavior="Flyout">
 
     <!-- Login Page (No Shell Navigation) -->
     <ShellContent
@@ -80,5 +81,7 @@
                 Route="notifications" />
         </Tab>
     </TabBar>
+
+    <MenuItem Text="Logout" Clicked="OnLogoutMenuClicked" />
 
 </Shell>

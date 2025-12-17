@@ -1,4 +1,5 @@
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -9,7 +10,6 @@ public partial class DiscountsPage : ContentPage
     {
         public StockBatch Batch { get; set; } = null!;
         public Product Product { get; set; } = null!;
-        public Entry DiscountEntry { get; set; } = null!;
     }
 
     public DiscountsPage()
@@ -106,19 +106,17 @@ public partial class DiscountsPage : ContentPage
             };
             grid.Add(priceLabel, 0, 2);
 
-            var discountEntry = new Entry
+            var discountLabel = new Label
             {
-                Placeholder = "Diskon %",
-                Keyboard = Keyboard.Numeric,
-                WidthRequest = 70,
-                BackgroundColor = Color.FromArgb("#E5E7EB"),
-                TextColor = Color.FromArgb("#111827"),
-                Text = percentNow.ToString("0")
+                Text = $"Diskon: {percentNow:0}%",
+                FontSize = 12,
+                TextColor = Color.FromArgb("#475569"),
+                VerticalOptions = LayoutOptions.Center
             };
 
-            var saveButton = new Button
+            var editButton = new Button
             {
-                Text = "Simpan",
+                Text = "Edit",
                 BackgroundColor = Color.FromArgb("#E5E7EB"),
                 TextColor = Color.FromArgb("#111827"),
                 BorderColor = Color.FromArgb("#CBD5E1"),
@@ -134,20 +132,17 @@ public partial class DiscountsPage : ContentPage
                 Orientation = StackOrientation.Horizontal,
                 Spacing = 8,
                 HorizontalOptions = LayoutOptions.End,
-                Children = { discountEntry, saveButton }
+                Children = { discountLabel, editButton }
             };
             grid.Add(actionRow, 1, 2);
 
             var ctx = new DiscountContext
             {
                 Batch = batch,
-                Product = product,
-                DiscountEntry = discountEntry
+                Product = product
             };
-            saveButton.CommandParameter = ctx;
-            saveButton.Clicked += OnSaveDiscountClicked;
-
-            grid.Add(saveButton, 1, 2);
+            editButton.CommandParameter = ctx;
+            editButton.Clicked += OnSaveDiscountClicked;
 
             frame.Content = grid;
             DiscountsContainer.Children.Add(frame);
@@ -159,19 +154,13 @@ public partial class DiscountsPage : ContentPage
         if (sender is not Button btn || btn.CommandParameter is not DiscountContext ctx)
             return;
 
-        if (!decimal.TryParse(ctx.DiscountEntry.Text, out var percent))
-        {
-            await DisplayAlert("Error", "Diskon tidak valid.", "OK");
-            return;
-        }
-
-        if (percent < 0) percent = 0;
-        if (percent > 100) percent = 100;
+        var percent = await DiscountPopupPage.ShowAsync(ctx.Product, ctx.Batch);
+        if (percent == null) return;
 
         ctx.Batch.DiscountPercent = percent;
         DatabaseService.UpdateStockBatch(ctx.Batch);
 
-        await DisplayAlert("Sukses", $"Diskon {percent:0}% disimpan untuk {ctx.Product.Name} (batch exp {ctx.Batch.ExpiryDate:dd MMM yyyy}).", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Diskon {percent:0}% disimpan untuk {ctx.Product.Name} (batch exp {ctx.Batch.ExpiryDate:dd MMM yyyy}).");
 
         // Refresh kartu agar harga preview ikut berubah
         BuildDiscountCards();

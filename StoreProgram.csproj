@@ -19,6 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<NoWarn>$(NoWarn);CS0618</NoWarn>
 
 		<!-- Display name -->
 		<ApplicationTitle>StoreProgram</ApplicationTitle>

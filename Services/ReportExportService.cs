@@ -40,15 +40,17 @@ public static class ReportExportService
             ws.Cell(4, 2).Value = data.Summary.TotalSales;
             ws.Cell(5, 1).Value = "Total Pengeluaran";
             ws.Cell(5, 2).Value = data.TotalExpenses;
-            ws.Cell(6, 1).Value = "Keuntungan Bersih";
-            ws.Cell(6, 2).Value = data.Summary.NetProfit;
-            ws.Cell(7, 1).Value = "Total Transaksi";
-            ws.Cell(7, 2).Value = data.Summary.TotalTransactions;
+            ws.Cell(6, 1).Value = "Kerugian Diskon (Jual < Modal)";
+            ws.Cell(6, 2).Value = data.Summary.DiscountLossExpenses;
+            ws.Cell(7, 1).Value = "Keuntungan Bersih";
+            ws.Cell(7, 2).Value = data.Summary.NetProfit;
+            ws.Cell(8, 1).Value = "Total Transaksi";
+            ws.Cell(8, 2).Value = data.Summary.TotalTransactions;
 
             ws.Range(1, 1, 2, 1).Style.Font.Bold = true;
-            ws.Range(4, 1, 7, 1).Style.Font.Bold = true;
+            ws.Range(4, 1, 8, 1).Style.Font.Bold = true;
 
-            ws.Range(4, 2, 6, 2).Style.NumberFormat.Format = "\"Rp\" #,##0";
+            ws.Range(4, 2, 7, 2).Style.NumberFormat.Format = "\"Rp\" #,##0";
             ws.Columns().AdjustToContents();
         }
 
@@ -176,6 +178,12 @@ public static class ReportExportService
                 {
                     r.RelativeItem().Text("Total Pengeluaran");
                     r.ConstantItem(140).AlignRight().Text($"Rp {data.TotalExpenses:N0}");
+                });
+
+                col.Item().Row(r =>
+                {
+                    r.RelativeItem().Text("Kerugian Diskon (Jual < Modal)");
+                    r.ConstantItem(140).AlignRight().Text($"Rp {data.Summary.DiscountLossExpenses:N0}");
                 });
 
                 col.Item().Row(r =>
@@ -328,7 +336,7 @@ public static class ReportExportService
             .ToList();
 
         var totalExpenses = expenses
-            .Where(e => e.Type is ExpenseType.Operational or ExpenseType.DamagedLostStock)
+            .Where(e => e.Type is ExpenseType.Operational or ExpenseType.DamagedLostStock or ExpenseType.DiscountLoss)
             .Sum(e => e.Amount);
 
         return new ReportData(range, summary, sales, totalExpenses);
@@ -437,10 +445,10 @@ public static class ReportExportService
             foreach (var b in batchRows)
             {
                 ws.Cell(r, 1).Value = b.ProductName;
-                ws.Cell(r, 2).Value = b.BatchId;
+                ws.Cell(r, 2).Value = b.BatchId.ToString();
                 ws.Cell(r, 3).Value = b.PurchaseDate;
                 ws.Cell(r, 3).Style.DateFormat.Format = "dd MMM yyyy HH:mm";
-                ws.Cell(r, 4).Value = b.ExpiryDate;
+                ws.Cell(r, 4).Value = b.ExpiryDate.ToDateTime(TimeOnly.MinValue);
                 ws.Cell(r, 4).Style.DateFormat.Format = "dd MMM yyyy";
                 ws.Cell(r, 5).Value = b.Quantity;
                 ws.Cell(r, 6).Value = b.UnitCost;

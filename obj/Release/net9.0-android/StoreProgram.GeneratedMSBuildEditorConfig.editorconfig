@@ -1,0 +1,193 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = true
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net9.0-android
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = StoreProgram
+build_property.ProjectDir = D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/App.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.App.xaml
+build_metadata.AdditionalFiles.TargetPath = App.xaml
+build_metadata.AdditionalFiles.RelativePath = App.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/AppShell.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.AppShell.xaml
+build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
+build_metadata.AdditionalFiles.RelativePath = AppShell.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = MainPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/DiscountsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.DiscountsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\DiscountsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\DiscountsPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/EmployeeDashboardPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.EmployeeDashboardPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\EmployeeDashboardPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\EmployeeDashboardPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/FinancialPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.FinancialPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\FinancialPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\FinancialPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/LoginPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.LoginPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\LoginPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\LoginPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/NotificationsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.NotificationsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\NotificationsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\NotificationsPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/OwnerDashboardPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.OwnerDashboardPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\OwnerDashboardPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\OwnerDashboardPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/AddProductPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.AddProductPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\AddProductPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\AddProductPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/ConfirmPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.ConfirmPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\ConfirmPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\ConfirmPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/DiscountPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.DiscountPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\DiscountPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\DiscountPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/ExpensePopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.ExpensePopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\ExpensePopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\ExpensePopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/ForgotPasswordPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.ForgotPasswordPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\ForgotPasswordPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\ForgotPasswordPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/InfoPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.InfoPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\InfoPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\InfoPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/NewTransactionPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.NewTransactionPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\NewTransactionPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\NewTransactionPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/PrivePopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.PrivePopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\PrivePopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\PrivePopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/PurchaseStockPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.PurchaseStockPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\PurchaseStockPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\PurchaseStockPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/SelectOptionPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.SelectOptionPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\SelectOptionPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\SelectOptionPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/StockAdjustmentPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.StockAdjustmentPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\StockAdjustmentPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\StockAdjustmentPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/StockOpnamePopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.StockOpnamePopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\StockOpnamePopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\StockOpnamePopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/UserFormPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.UserFormPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\UserFormPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\UserFormPopupPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/PurchaseStockPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.PurchaseStockPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\PurchaseStockPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\PurchaseStockPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/ReportsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.ReportsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\ReportsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\ReportsPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/StockManagementPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.StockManagementPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\StockManagementPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\StockManagementPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/StockOpnamePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.StockOpnamePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\StockOpnamePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\StockOpnamePage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/UserManagementPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.UserManagementPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\UserManagementPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\UserManagementPage.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Resources/Styles/Colors.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Resources.Styles.Colors.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
+
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Resources/Styles/Styles.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Resources.Styles.Styles.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml

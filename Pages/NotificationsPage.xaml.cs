@@ -1,4 +1,5 @@
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -181,7 +182,7 @@ public partial class NotificationsPage : ContentPage
                     }
                     else
                     {
-                        await DisplayAlert("Akses Ditolak", "Fitur diskon hanya untuk Owner.", "OK");
+                        await InfoPopupPage.ShowAsync("Akses Ditolak", "Fitur diskon hanya untuk Owner.");
                     }
                 };
 
@@ -195,7 +196,11 @@ public partial class NotificationsPage : ContentPage
 
     private async void OnClearAllClicked(object sender, EventArgs e)
     {
-        bool confirm = await DisplayAlert("Konfirmasi", "Tandai semua notifikasi sebagai sudah ditangani? (Data stok tidak berubah)", "Ya", "Batal");
+        bool confirm = await ConfirmPopupPage.ShowAsync(
+            title: "Konfirmasi",
+            message: "Tandai semua notifikasi sebagai sudah ditangani? (Data stok tidak berubah)",
+            confirmText: "Ya",
+            cancelText: "Batal");
         if (confirm)
         {
             ExpiredContainer.Children.Clear();
@@ -209,7 +214,11 @@ public partial class NotificationsPage : ContentPage
         if (sender is not Button btn || btn.CommandParameter is not Guid productId)
             return;
 
-        bool confirm = await DisplayAlert("Hapus Stok Expired", "Keluarkan semua stok expired untuk produk ini dari sistem?", "Ya", "Batal");
+        bool confirm = await ConfirmPopupPage.ShowAsync(
+            title: "Hapus Stok Expired",
+            message: "Keluarkan semua stok expired untuk produk ini dari sistem?",
+            confirmText: "Ya",
+            cancelText: "Batal");
         if (!confirm) return;
 
         // Hitung total qty expired untuk produk ini dan keluarkan sebagai kerugian "Kadaluarsa"

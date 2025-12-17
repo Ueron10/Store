@@ -168,6 +168,11 @@ public partial class OwnerDashboardPage : ContentPage
         await Shell.Current.GoToAsync("users");
     }
 
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        await SessionManager.LogoutAsync();
+    }
+
     private void OnViewStockAlertsClicked(object sender, EventArgs e)
     {
         ShellNav.TrySelectTab("ownerdashboard", "notifications");

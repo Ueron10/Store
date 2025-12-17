@@ -217,4 +217,9 @@ public partial class EmployeeDashboardPage : ContentPage
     {
         ShellNav.TrySelectTab("employeedashboard", "notifications");
     }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        await SessionManager.LogoutAsync();
+    }
 }

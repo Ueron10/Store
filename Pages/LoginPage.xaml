@@ -101,7 +101,8 @@
                                     BackgroundColor="Transparent" 
                                     TextColor="{StaticResource Primary}" 
                                     FontSize="13" 
-                                    Padding="0"/>
+                                    Padding="0"
+                                    Clicked="OnForgotPasswordClicked"/>
                         </StackLayout>
                         
                     </StackLayout>

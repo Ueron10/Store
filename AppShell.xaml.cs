@@ -1,9 +1,12 @@
 using StoreProgram.Pages;
+using StoreProgram.Services;
 
 namespace StoreProgram
 {
     public partial class AppShell : Shell
     {
+        private bool _redirectingToLogin;
+
         public AppShell()
         {
             InitializeComponent();
@@ -17,6 +20,39 @@ namespace StoreProgram
             Routing.RegisterRoute("login", typeof(LoginPage));
             Routing.RegisterRoute("stockopname", typeof(StockOpnamePage));
             Routing.RegisterRoute("users", typeof(UserManagementPage));
+
+            Navigating += OnShellNavigating;
+        }
+
+        private async void OnLogoutMenuClicked(object sender, EventArgs e)
+        {
+            await SessionManager.LogoutAsync();
+        }
+
+        private async void OnShellNavigating(object? sender, ShellNavigatingEventArgs e)
+        {
+            if (_redirectingToLogin) return;
+
+            // Guard sederhana: kalau belum login, cegah akses ke route selain login.
+            if (DataStore.CurrentUser == null)
+            {
+                var target = e.Target?.Location.OriginalString ?? string.Empty;
+
+                // Allow menuju login.
+                if (target.Contains("login", StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                e.Cancel();
+                _redirectingToLogin = true;
+                try
+                {
+                    await GoToAsync("//login");
+                }
+                finally
+                {
+                    _redirectingToLogin = false;
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -168,28 +169,24 @@ public partial class StockManagementPage : ContentPage
         LoadProductsAndRender();
     }
 
-    private void OnAddProductClicked(object sender, EventArgs e)
+    private async void OnAddProductClicked(object sender, EventArgs e)
     {
-        // Tampilkan popup form
-        AddNameEntry.Text = string.Empty;
-        AddCategoryEntry.Text = "makanan";
-        AddBarcodeEntry.Text = string.Empty;
-        AddUnitEntry.Text = "pcs";
-        AddInitialStockEntry.Text = "0";
-        AddSellPriceEntry.Text = string.Empty;
-        AddCostPriceEntry.Text = string.Empty;
-        AddExpiryDatePicker.Date = DateTime.Today.AddMonths(6);
+        var result = await AddProductPopupPage.ShowAsync();
+        if (result == null) return;
 
-        AddProductOverlay.IsVisible = true;
+        var product = result.Product;
+        int initialStock = result.InitialStock;
 
-        // Pastikan entry fokus setelah overlay tampil
-        Dispatcher.Dispatch(() => AddNameEntry.Focus());
-    }
+        DataStore.Products.Add(product);
+        DatabaseService.InsertProduct(product);
 
-    private void OnAddProductOverlayBackgroundTapped(object sender, TappedEventArgs e)
-    {
-        // Klik area gelap (backdrop) => tutup popup
-        AddProductOverlay.IsVisible = false;
+        if (initialStock > 0)
+        {
+            DataStore.AddPurchase(product.Id, initialStock, product.CostPrice, result.InitialExpiry, "Stok awal", timestamp: DateTime.Now);
+        }
+
+        await InfoPopupPage.ShowAsync("Sukses", $"Produk '{product.Name}' berhasil ditambahkan.");
+        LoadProductsAndRender(SearchEntry.Text);
     }
 
     private void OnCancelAddProductClicked(object sender, EventArgs e)
@@ -206,20 +203,20 @@ public partial class StockManagementPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(category) || string.IsNullOrWhiteSpace(unit))
         {
-            await DisplayAlert("Error", "Nama/Kategori/Satuan wajib diisi.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Nama/Kategori/Satuan wajib diisi.");
             return;
         }
 
         if (!decimal.TryParse(AddSellPriceEntry.Text?.Trim(), out var sellPrice) || sellPrice <= 0 ||
             !decimal.TryParse(AddCostPriceEntry.Text?.Trim(), out var costPrice) || costPrice <= 0)
         {
-            await DisplayAlert("Error", "Harga jual / harga modal tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Harga jual / harga modal tidak valid.");
             return;
         }
 
         if (!int.TryParse(AddInitialStockEntry.Text?.Trim(), out var initialStock) || initialStock < 0)
         {
-            await DisplayAlert("Error", "Stok awal tidak valid.", "OK");
+            await InfoPopupPage.ShowAsync("Error", "Stok awal tidak valid.");
             return;
         }
 
@@ -243,7 +240,7 @@ public partial class StockManagementPage : ContentPage
         }
 
         AddProductOverlay.IsVisible = false;
-        await DisplayAlert("Sukses", $"Produk '{name}' berhasil ditambahkan.", "OK");
+        await InfoPopupPage.ShowAsync("Sukses", $"Produk '{name}' berhasil ditambahkan.");
         LoadProductsAndRender(SearchEntry.Text);
     }
 
@@ -253,11 +250,11 @@ public partial class StockManagementPage : ContentPage
         {
             var filePath = await ReportExportService.ExportStockPdfAsync();
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export PDF", $"PDF stok tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"PDF stok tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export PDF", $"Gagal export PDF stok: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"Gagal export PDF stok: {ex.Message}");
         }
     }
 
@@ -267,11 +264,11 @@ public partial class StockManagementPage : ContentPage
         {
             var filePath = await ReportExportService.ExportStockExcelAsync();
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export Excel", $"Excel stok tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Excel stok tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export Excel", $"Gagal export Excel stok: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Gagal export Excel stok: {ex.Message}");
         }
     }
 
@@ -295,11 +292,19 @@ public partial class StockManagementPage : ContentPage
         if (sender is not Button button || button.BindingContext is not Product product)
             return;
 
-        string action = await DisplayActionSheet($"Aksi untuk {product.Name}", "Batal", null,
-            "Riwayat Stok",
-            "Barang Masuk (Pembelian)",
-            "Penyesuaian Stok (Rusak/Kadaluarsa/Hilang)",
-            "Stok Opname");
+        string? action = await SelectOptionPopupPage.ShowAsync(
+            title: $"Aksi untuk {product.Name}",
+            options: new[]
+            {
+                "Riwayat Stok",
+                "Barang Masuk (Pembelian)",
+                "Penyesuaian Stok (Rusak/Kadaluarsa/Hilang)",
+                "Stok Opname"
+            },
+            message: "Pilih aksi yang ingin dilakukan.");
+
+        if (string.IsNullOrWhiteSpace(action))
+            return;
 
         switch (action)
         {
@@ -328,60 +333,48 @@ public partial class StockManagementPage : ContentPage
 
         if (!movements.Any())
         {
-            await DisplayAlert("Riwayat Stok", "Belum ada riwayat pergerakan stok.", "OK");
+            await InfoPopupPage.ShowAsync("Riwayat Stok", "Belum ada riwayat pergerakan stok.");
             return;
         }
 
         var lines = movements.Select(m =>
             $"{m.Timestamp:dd/MM/yyyy HH:mm} - {m.Type} - Qty: {m.Quantity} - Alasan: {m.Reason}");
 
-        await DisplayAlert("Riwayat Stok", string.Join("\n", lines), "OK");
+        await InfoPopupPage.ShowAsync("Riwayat Stok", string.Join("\n", lines));
     }
 
     private async Task HandlePurchase(Product product)
     {
-        string qtyText = await DisplayPromptAsync("Barang Masuk", $"Jumlah {product.Unit} yang dibeli:", keyboard: Keyboard.Numeric);
-        if (!int.TryParse(qtyText, out var qty) || qty <= 0) return;
+        var result = await PurchaseStockPopupPage.ShowAsync(product.Name, product.Unit, product.CostPrice);
+        if (result == null) return;
 
-        string costText = await DisplayPromptAsync("Barang Masuk", "Harga modal per satuan (Rp):", keyboard: Keyboard.Numeric, initialValue: product.CostPrice.ToString());
-        if (!decimal.TryParse(costText, out var unitCost)) return;
-
-        string expiryText = await DisplayPromptAsync("Barang Masuk", "Tanggal kadaluarsa (yyyy-MM-dd):", initialValue: DateTime.Today.AddMonths(6).ToString("yyyy-MM-dd"));
-        if (!DateOnly.TryParse(expiryText, out var expiry)) return;
-
-        DataStore.AddPurchase(product.Id, qty, unitCost, expiry, "Restock");
-        await DisplayAlert("Sukses", "Stok berhasil ditambahkan.", "OK");
+        DataStore.AddPurchase(product.Id, result.Qty, result.UnitCost, result.ExpiryDate, "Restock");
+        await InfoPopupPage.ShowAsync("Sukses", "Stok berhasil ditambahkan.");
         LoadProductsAndRender(SearchEntry.Text);
     }
 
     private async Task HandleAdjustment(Product product)
     {
-        string reason = await DisplayActionSheet("Alasan penyesuaian", "Batal", null, "Kadaluarsa", "Rusak", "Hilang");
-        if (string.IsNullOrEmpty(reason) || reason == "Batal") return;
+        var result = await StockAdjustmentPopupPage.ShowAsync(product.Name, product.Unit);
+        if (result == null) return;
 
-        string qtyText = await DisplayPromptAsync("Penyesuaian Stok", "Jumlah yang keluar (pcs):", keyboard: Keyboard.Numeric);
-        if (!int.TryParse(qtyText, out var qty) || qty <= 0) return;
-
-        DataStore.AdjustStockForDamage(product.Id, qty, reason);
-        await DisplayAlert("Sukses", $"Penyesuaian stok ({reason}) berhasil.", "OK");
+        DataStore.AdjustStockForDamage(product.Id, result.Qty, result.Reason);
+        await InfoPopupPage.ShowAsync("Sukses", $"Penyesuaian stok ({result.Reason}) berhasil.");
         LoadProductsAndRender(SearchEntry.Text);
     }
 
     private async Task HandleStockOpname(Product product)
     {
         int systemQty = DataStore.GetCurrentStock(product.Id);
-        string physicalText = await DisplayPromptAsync("Stok Opname",
-            $"Stok sistem: {systemQty} {product.Unit}\nMasukkan stok fisik hasil hitung:",
-            keyboard: Keyboard.Numeric,
-            initialValue: systemQty.ToString());
 
-        if (!int.TryParse(physicalText, out var physicalQty)) return;
+        var physicalQty = await StockOpnamePopupPage.ShowAsync(product.Name, product.Unit, systemQty);
+        if (physicalQty == null) return;
 
-        DataStore.StockOpname(product.Id, physicalQty);
+        DataStore.StockOpname(product.Id, physicalQty.Value);
 
-        int diff = physicalQty - systemQty;
-        string message = $"Stok Sistem: {systemQty}\nStok Fisik: {physicalQty}\nSelisih: {diff}";
-        await DisplayAlert("Stok Opname", message + "\n\nPenyesuaian telah disimpan.", "OK");
+        int diff = physicalQty.Value - systemQty;
+        string message = $"Stok Sistem: {systemQty} {product.Unit}\nStok Fisik: {physicalQty.Value} {product.Unit}\nSelisih: {diff}";
+        await InfoPopupPage.ShowAsync("Stok Opname", message + "\n\nPenyesuaian telah disimpan.");
         LoadProductsAndRender(SearchEntry.Text);
     }
 }

@@ -6,7 +6,8 @@ public enum ExpenseType
 {
     Operational,
     Prive,
-    DamagedLostStock
+    DamagedLostStock,
+    DiscountLoss
 }
 
 public class Expense

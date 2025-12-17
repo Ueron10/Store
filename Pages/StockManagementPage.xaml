@@ -12,10 +12,6 @@
               BackgroundColor="#66000000"
               Padding="20"
               ZIndex="100">
-            <Grid.GestureRecognizers>
-                <!-- Tap backdrop to close -->
-                <TapGestureRecognizer Tapped="OnAddProductOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
             <Frame BackgroundColor="{StaticResource CardBackground}"
                    CornerRadius="15"
                    Padding="20"
@@ -71,12 +67,22 @@
                     <Label Text="Kadaluarsa Batch Stok Awal" FontAttributes="Bold" TextColor="{StaticResource Gray900}"/>
                     <DatePicker x:Name="AddExpiryDatePicker" BackgroundColor="{StaticResource Gray200}" TextColor="{StaticResource Gray900}" />
 
-                    <Button Text="Simpan Produk"
-                            BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
-                            CornerRadius="10"
-                            HeightRequest="48"
-                            Clicked="OnSaveAddProductClicked" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="Batal"
+                                BackgroundColor="{StaticResource Gray200}"
+                                TextColor="{StaticResource Gray900}"
+                                CornerRadius="10"
+                                HeightRequest="48"
+                                Clicked="OnCancelAddProductClicked" />
+                        <Button Grid.Column="1"
+                                Text="Konfirmasi"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="48"
+                                Clicked="OnSaveAddProductClicked" />
+                    </Grid>
                 </StackLayout>
             </Frame>
         </Grid>

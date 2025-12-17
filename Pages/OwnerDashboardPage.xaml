@@ -15,7 +15,7 @@
                         <GradientStop Color="{StaticResource Secondary}" Offset="1" />
                     </LinearGradientBrush>
                 </Border.Background>
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
                     <StackLayout Grid.Column="0" Spacing="2">
                         <Label Text="TOKO YOLAN" FontSize="12" TextColor="White" Opacity="0.95" />
                         <Label Text="Dashboard Pemilik" FontSize="20" FontAttributes="Bold" TextColor="White"/>
@@ -31,6 +31,12 @@
                             TextColor="White" 
                             FontSize="22" 
                             Clicked="OnSettingsClicked"/>
+                    <Button Grid.Column="2" 
+                            Text="Logout" 
+                            BackgroundColor="Transparent" 
+                            TextColor="White" 
+                            FontSize="13" 
+                            Clicked="OnLogoutClicked"/>
                 </Grid>
             </Border>
             

@@ -4,6 +4,14 @@
         <name>StoreProgram</name>
     </assembly>
     <members>
+        <member name="P:StoreProgram.Models.FinancialSummary.TotalCostOfGoods">
+            <summary>
+            HPP yang dipakai untuk hitung gross profit.
+            NOTE: Jika ada penjualan di bawah harga modal (mis. karena diskon batch),
+            selisihnya dicatat sebagai ExpenseType.DiscountLoss dan HPP di sini sudah dikurangi selisih itu
+            supaya NetProfit tidak double-count.
+            </summary>
+        </member>
         <member name="M:StoreProgram.Services.DatabaseService.EnsureSchema(MySql.Data.MySqlClient.MySqlConnection)">
             <summary>
             Membuat tabel/kolom yang dibutuhkan jika belum ada.

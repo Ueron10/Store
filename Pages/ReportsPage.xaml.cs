@@ -1,6 +1,8 @@
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
 using StoreProgram.Components;
 using StoreProgram.Models;
+using StoreProgram.Pages.Popups;
 using StoreProgram.Services;
 
 namespace StoreProgram.Pages;
@@ -120,7 +122,7 @@ public partial class ReportsPage : ContentPage
         var summary = DataStore.GetSummary(range);
 
         TotalSalesLabel.Text = $"Rp {summary.TotalSales:N0}";
-        var totalExpenses = summary.OperationalExpenses + summary.DamagedLostExpenses;
+        var totalExpenses = summary.OperationalExpenses + summary.DamagedLostExpenses + summary.DiscountLossExpenses;
         TotalExpensesLabel.Text = $"Rp {totalExpenses:N0}";
         NetProfitLabel.Text = $"Rp {summary.NetProfit:N0}";
         TotalTransactionsLabel.Text = $"{summary.TotalTransactions} Transaksi";
@@ -311,11 +313,11 @@ public partial class ReportsPage : ContentPage
 
             var filePath = await ReportExportService.ExportPdfAsync(_currentRange, periodName);
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export PDF", $"PDF tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"PDF tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export PDF", $"Gagal export PDF: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export PDF", $"Gagal export PDF: {ex.Message}");
         }
     }
 
@@ -332,11 +334,11 @@ public partial class ReportsPage : ContentPage
 
             var filePath = await ReportExportService.ExportExcelAsync(_currentRange, periodName);
             await TryOpenFileAsync(filePath);
-            await DisplayAlert("Export Excel", $"Excel tersimpan:\n{filePath}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Excel tersimpan:\n{filePath}");
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Export Excel", $"Gagal export Excel: {ex.Message}", "OK");
+            await InfoPopupPage.ShowAsync("Export Excel", $"Gagal export Excel: {ex.Message}");
         }
     }
 
