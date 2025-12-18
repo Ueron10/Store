@@ -439,6 +439,35 @@ FROM AppUser;", Connection);
         }
     }
 
+    /// <summary>
+    /// Dipakai untuk fitur "Lupa Password" (assignment).
+    /// Mengembalikan password jika username+email cocok.
+    /// </summary>
+    public static string? GetPasswordByUsernameAndEmail(string username, string email)
+    {
+        username = (username ?? string.Empty).Trim();
+        email = (email ?? string.Empty).Trim();
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(email))
+            return null;
+
+        lock (_lock)
+        {
+            using var cmd = new MySqlCommand(@"SELECT Password
+FROM AppUser
+WHERE LOWER(Username) = LOWER(@Username)
+  AND Email IS NOT NULL
+  AND LOWER(Email) = LOWER(@Email)
+LIMIT 1;", Connection);
+
+            cmd.Parameters.AddWithValue("@Username", username);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            var result = cmd.ExecuteScalar();
+            return result == null || result == DBNull.Value ? null : Convert.ToString(result);
+        }
+    }
+
     public static void InsertProduct(Product product)
     {
         lock (_lock)

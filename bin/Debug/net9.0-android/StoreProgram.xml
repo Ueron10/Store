@@ -18,6 +18,12 @@
             Tujuan: aplikasi langsung jalan di MySQL kosong tanpa perlu setup manual yang rawan salah.
             </summary>
         </member>
+        <member name="M:StoreProgram.Services.DatabaseService.GetPasswordByUsernameAndEmail(System.String,System.String)">
+            <summary>
+            Dipakai untuk fitur "Lupa Password" (assignment).
+            Mengembalikan password jika username+email cocok.
+            </summary>
+        </member>
         <member name="M:StoreProgram.Services.DataStore.PreviewSale(System.Guid,System.Int32)">
             <summary>
             Preview perhitungan transaksi berdasarkan FIFO batch (termasuk diskon per batch).

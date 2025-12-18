@@ -28,7 +28,6 @@ public partial class ForgotPasswordPopupPage : ContentPage
 
         var username = UsernameEntry.Text?.Trim() ?? string.Empty;
         var email = EmailEntry.Text?.Trim() ?? string.Empty;
-        var phone = PhoneEntry.Text?.Trim() ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -36,64 +35,33 @@ public partial class ForgotPasswordPopupPage : ContentPage
             return;
         }
 
-        var user = DataStore.Users.FirstOrDefault(u =>
-            u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
-
-        if (user == null)
+        if (string.IsNullOrWhiteSpace(email))
         {
-            ShowError("Akun tidak ditemukan.");
+            ShowError("Email wajib diisi.");
             return;
         }
 
-        // Cocokkan hanya field yang memang tersimpan di database.
-        // Ini bikin fitur tetap bisa dipakai walau ada akun lama yang Email/Phone-nya kosong.
-        var storedEmail = user.Email?.Trim() ?? string.Empty;
-        var storedPhone = user.Phone?.Trim() ?? string.Empty;
-
-        var hasEmail = !string.IsNullOrWhiteSpace(storedEmail);
-        var hasPhone = !string.IsNullOrWhiteSpace(storedPhone);
-
-        if (hasEmail)
+        // Query langsung ke database supaya selalu up-to-date.
+        ConfirmButton.IsEnabled = false;
+        try
         {
-            if (string.IsNullOrWhiteSpace(email))
+            var password = await Task.Run(() => DatabaseService.GetPasswordByUsernameAndEmail(username, email));
+            if (string.IsNullOrEmpty(password))
             {
-                ShowError("Email wajib diisi untuk akun ini.");
+                ShowError("Username atau email tidak cocok.");
                 return;
             }
 
-            if (!storedEmail.Equals(email, StringComparison.OrdinalIgnoreCase))
-            {
-                ShowError("Email tidak cocok.");
-                return;
-            }
+            PasswordLabel.Text = password;
+            PasswordBox.IsVisible = true;
+
+            ConfirmButton.Text = "Tutup";
+            _revealed = true;
         }
-
-        if (hasPhone)
+        finally
         {
-            if (string.IsNullOrWhiteSpace(phone))
-            {
-                ShowError("No. telepon wajib diisi untuk akun ini.");
-                return;
-            }
-
-            if (!NormalizePhone(storedPhone).Equals(NormalizePhone(phone), StringComparison.OrdinalIgnoreCase))
-            {
-                ShowError("No. telepon tidak cocok.");
-                return;
-            }
+            ConfirmButton.IsEnabled = true;
         }
-
-        if (!hasEmail && !hasPhone)
-        {
-            // Akun belum punya Email/Phone di DB → izinkan berdasarkan username saja.
-            // (Untuk tugas/assignment; di production sebaiknya pakai OTP/email reset.)
-        }
-
-        PasswordLabel.Text = user.Password;
-        PasswordBox.IsVisible = true;
-
-        ConfirmButton.Text = "Tutup";
-        _revealed = true;
     }
 
     private void ShowError(string message)
@@ -101,12 +69,6 @@ public partial class ForgotPasswordPopupPage : ContentPage
         ErrorLabel.Text = message;
         ErrorLabel.IsVisible = true;
         PasswordBox.IsVisible = false;
-    }
-
-    private static string NormalizePhone(string input)
-    {
-        var digits = new string((input ?? string.Empty).Where(char.IsDigit).ToArray());
-        return digits;
     }
 
     public static async Task ShowAsync()
