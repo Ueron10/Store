@@ -43,10 +43,11 @@ public partial class FinancialPage : ContentPage
             return;
         }
 
-        var sale = await NewTransactionPopupPage.ShowAsync(_products);
-        if (sale == null) return;
+        // Popup mengembalikan SaleTransaction jika berhasil, tapi untuk menjaga UI tetap konsisten
+        // (mis. jika modal tertutup dengan cara lain), kita tetap refresh ringkasan & list transaksi.
+        _ = await NewTransactionPopupPage.ShowAsync(_products);
 
-        // Setelah klik Proses & transaksi berhasil, langsung tutup popup transaksi dan refresh UI (tanpa popup tambahan)
+        // Setelah popup ditutup, refresh UI agar transaksi terbaru langsung muncul.
         UpdateSummary();
         BuildRecentTransactions();
     }
