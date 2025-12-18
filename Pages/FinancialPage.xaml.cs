@@ -46,22 +46,7 @@ public partial class FinancialPage : ContentPage
         var sale = await NewTransactionPopupPage.ShowAsync(_products);
         if (sale == null) return;
 
-        // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
-        if (sale.PaymentMethod == "QRIS")
-        {
-            await InfoPopupPage.ShowAsync(
-                "QRIS",
-                "Tampilkan kode QR ke pelanggan (simulasi).",
-                okText: "OK",
-                autoCloseAfter: TimeSpan.FromSeconds(2));
-        }
-
-        await InfoPopupPage.ShowAsync(
-            "Sukses",
-            $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}",
-            okText: "OK",
-            autoCloseAfter: TimeSpan.FromSeconds(2));
-
+        // Setelah klik Proses & transaksi berhasil, langsung tutup popup transaksi dan refresh UI (tanpa popup tambahan)
         UpdateSummary();
         BuildRecentTransactions();
     }
@@ -225,24 +210,9 @@ public partial class FinancialPage : ContentPage
                 // Tutup form transaksi setelah proses (biar kembali normal)
                 OnCloseTransactionFormClicked(sender, e);
 
+                // Setelah klik Proses & transaksi berhasil, langsung tutup form transaksi dan refresh UI (tanpa popup tambahan)
                 UpdateSummary();
                 BuildRecentTransactions();
-
-                // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
-                if (paymentMethod == "QRIS")
-                {
-                    await InfoPopupPage.ShowAsync(
-                        "QRIS",
-                        "Tampilkan kode QR ke pelanggan (simulasi).",
-                        okText: "OK",
-                        autoCloseAfter: TimeSpan.FromSeconds(2));
-                }
-
-                await InfoPopupPage.ShowAsync(
-                    "Sukses",
-                    $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}",
-                    okText: "OK",
-                    autoCloseAfter: TimeSpan.FromSeconds(2));
             }
             catch (Exception ex)
             {
