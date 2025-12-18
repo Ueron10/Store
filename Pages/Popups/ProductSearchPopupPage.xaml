@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StoreProgram.Pages.Popups.ProductSearchPopupPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:popups="clr-namespace:StoreProgram.Pages.Popups"
+             BackgroundColor="#80000000"
+             Padding="24">
+
+    <Grid RowDefinitions="*" ColumnDefinitions="*">
+        <Frame Padding="18"
+               BackgroundColor="{StaticResource CardBackground}"
+               CornerRadius="16"
+               HasShadow="True"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               WidthRequest="520">
+
+            <VerticalStackLayout Spacing="12">
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <Label Text="🔎 Cari Produk"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}" />
+                    <Button Grid.Column="1"
+                            Text="✕"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="18"
+                            Clicked="OnCancelClicked" />
+                </Grid>
+
+                <SearchBar x:Name="SearchBar"
+                           Placeholder="Ketik nama / barcode..."
+                           TextChanged="OnSearchTextChanged" />
+
+                <CollectionView x:Name="ProductsView"
+                                SelectionMode="Single"
+                                SelectionChanged="OnSelectionChanged">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="popups:ProductSearchItem">
+                            <Frame Padding="10"
+                                   Margin="0,0,0,8"
+                                   BackgroundColor="{StaticResource Gray100}"
+                                   CornerRadius="12"
+                                   HasShadow="False">
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="2">
+                                    <Label Text="{Binding DisplayName}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding PriceText}"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}" />
+                                    <Label Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           Text="{Binding MetaText}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}" />
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label x:Name="EmptyLabel"
+                       Text="Produk tidak ditemukan."
+                       IsVisible="False"
+                       TextColor="{StaticResource TextSecondary}"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

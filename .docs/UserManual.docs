@@ -1,0 +1,498 @@
+USER MANUAL
+Aplikasi TOKO YOLAN (StoreProgram)
+
+Versi dokumen: 17 Desember 2025
+
+Tujuan dokumen ini adalah menjelaskan fungsi utama aplikasi (apa yang bisa dilakukan), memberikan
+panduan langkah demi langkah untuk penggunaan harian, serta membantu user baru memahami konsep stok
+berbasis batch dan tanggal kadaluarsa.
+
+====================================================================
+0. Alur Penggunaan Cepat (Quick Start)
+====================================================================
+Bagian ini berisi panduan singkat agar pengguna bisa langsung menjalankan aplikasi tanpa membaca
+seluruh detail. Untuk penggunaan lebih lengkap (stok batch, diskon, laporan), lihat bab berikutnya.
+
+A. Untuk Owner (Pemilik)
+1) Login sebagai Owner.
+2) Pastikan data produk & stok tersedia:
+   - Buka menu Stok -> tambah produk (jika belum ada).
+   - Lakukan Barang Masuk (Pembelian) untuk menambah stok.
+3) Pantau penjualan dan kondisi toko:
+   - Dashboard untuk ringkasan.
+   - Notifikasi untuk stok kadaluarsa/mendekati kadaluarsa.
+4) Atur diskon batch (jika diperlukan):
+   - Menu Notifikasi -> Atur Diskon -> Menu Diskon.
+5) Cek laporan dan export:
+   - Menu Laporan -> pilih periode -> export PDF/Excel.
+
+B. Untuk Employee (Kasir/Pegawai)
+1) Login sebagai Employee.
+2) Input transaksi:
+   - Menu Transaksi/Keuangan -> Transaksi Baru -> pilih produk & jumlah -> proses.
+3) Cek stok menipis dan laporkan ke Owner bila perlu restock:
+   - Dashboard Pegawai (stok kritis/menipis).
+   - Menu Stok (cek detail).
+
+Catatan penting: sebelum bisa transaksi, produk harus memiliki stok (stok batch > 0). Selain itu,
+diskon hanya berlaku pada batch tertentu, bukan untuk seluruh produk.
+
+====================================================================
+1. Ringkasan Aplikasi
+====================================================================
+TOKO YOLAN adalah aplikasi kasir dan manajemen stok untuk membantu operasional toko harian. Aplikasi
+ini memudahkan pencatatan transaksi, pengelolaan stok berbasis batch (dengan kadaluarsa), serta
+menyediakan laporan untuk evaluasi penjualan.
+
+Fitur utama yang tersedia:
+- Login dengan role (Owner / Employee)
+- Manajemen produk dan stok (batch stok + tanggal kadaluarsa)
+- Pencatatan transaksi penjualan (Tunai / QRIS)
+- Pencatatan pengeluaran dan prive
+- Laporan harian / mingguan / bulanan + grafik penjualan
+- Notifikasi stok kadaluarsa & mendekati kadaluarsa
+- Fitur diskon per-batch untuk barang mendekati kadaluarsa (khusus Owner)
+- Export laporan dan stok ke PDF/Excel
+
+Penjelasan singkat fitur-fitur utama:
+Produk adalah daftar barang yang dijual (nama, kategori, satuan, harga jual, harga modal). Stok
+disimpan dalam bentuk stok batch, artinya setiap pembelian/restock akan menjadi batch tersendiri yang
+memiliki tanggal kadaluarsa dan bisa memiliki diskon. Saat transaksi menggunakan mode otomatis,
+sistem menerapkan FIFO berbasis kadaluarsa (mengambil batch yang paling dekat kadaluarsanya lebih
+dulu). Notifikasi membantu mendeteksi batch yang expired atau mendekati expired, sedangkan fitur
+Diskon (khusus Owner) memungkinkan pengaturan diskon per-batch agar stok cepat terjual. Menu Laporan
+menyajikan rekap penjualan dan pengeluaran beserta grafik dan produk terlaris.
+
+====================================================================
+2. Role & Hak Akses
+====================================================================
+Aplikasi membedakan hak akses berdasarkan peran (role) pengguna. Pastikan Anda login dengan role
+yang sesuai, karena beberapa menu hanya tersedia untuk Owner.
+
+2.1 Owner (Pemilik)
+- Akses penuh ke semua menu:
+  Dashboard, Stok, Keuangan, Laporan, Diskon, Notifikasi, Kelola Pengguna
+- Tugas umum Owner:
+  - Menambah/mengatur produk
+  - Restock / pembelian barang
+  - Mengatur diskon batch mendekati kadaluarsa
+  - Mengecek laporan dan profit
+  - Mengelola akun pengguna aplikasi
+
+2.2 Employee (Pegawai/Kasir)
+- Akses menu:
+  Dashboard Pegawai, Stok, Transaksi (Keuangan), Notifikasi
+- Tidak bisa mengatur diskon dan tidak bisa kelola pengguna.
+- Tugas umum Employee:
+  - Melayani transaksi penjualan
+  - Membantu update stok (barang masuk/penyesuaian) sesuai wewenang di toko
+  - Menginformasikan Owner jika ada stok menipis/kritis
+
+Istilah yang sering muncul:
+Stok Sistem adalah jumlah stok menurut aplikasi, sedangkan Stok Fisik adalah jumlah stok hasil hitung
+nyata di gudang/rak. Kadaluarsa (Expired) berarti tanggal kadaluarsa sudah lewat. Mendekati kadaluarsa
+berarti akan expired dalam waktu peringatan (contoh: <= 14 hari).
+
+====================================================================
+3. Login
+====================================================================
+3.1 Cara Login
+1) Buka aplikasi.
+2) Pada halaman "Login - TOKO YOLAN":
+   - Isi Username
+   - Isi Password
+3) Tekan tombol "Masuk".
+4) Jika berhasil:
+   - Owner  -> otomatis masuk ke tab "Dashboard" (ownerdashboard)
+   - Employee -> otomatis masuk ke tab "Dashboard Pegawai" (employeedashboard)
+5) Jika gagal:
+   - Muncul pesan error "Username atau password salah".
+
+Tips:
+- Pastikan tidak ada spasi di awal/akhir username atau password.
+- Jika database kosong, buat akun Owner dulu melalui seed/testing atau insert di database.
+
+3.2 Lupa Password (OTP)
+- Tekan tombol "Lupa Password" pada halaman login.
+- Sistem menggunakan OTP (kode verifikasi) untuk reset password.
+  Catatan: OTP bersifat simulasi (untuk kebutuhan testing) dan akan ditampilkan
+  melalui popup aplikasi.
+
+3.3 Akun Contoh (opsional untuk testing)
+Jika Anda menggunakan script database `store_program_with_seed_testing.sql`, akun
+berikut tersedia:
+- Owner:
+  username: owner
+  password: owner123
+- Employee:
+  username: pegawai1
+  password: 123456
+- Employee:
+  username: kasir
+  password: kasir123
+
+====================================================================
+4. Navigasi Menu
+====================================================================
+4.1 Menu Owner
+- Dashboard
+- Stok (Manajemen Stok)
+- Keuangan
+- Laporan
+- Diskon (Diskon Kadaluarsa)
+- Notifikasi
+- Logout
+
+4.2 Menu Employee
+- Dashboard Pegawai
+- Stok
+- Transaksi (Keuangan)
+- Notifikasi
+- Logout
+
+====================================================================
+4.3 Desain Halaman (UI) yang Dibuat
+====================================================================
+Bagian ini menjelaskan desain halaman (UI) yang dibuat di aplikasi, termasuk tujuan halaman dan
+komponen UI utama yang terlihat oleh pengguna.
+
+A. Halaman Utama (Pages)
+1) LoginPage (Login - TOKO YOLAN)
+   - Tujuan: autentikasi user sebelum masuk aplikasi.
+   - Komponen utama: form Username, Password, tombol "Masuk", tombol "Lupa Password", serta label
+     error yang muncul jika input salah.
+   - Catatan desain: menggunakan kartu (Frame/Border) dan header branding TOKO YOLAN.
+
+2) OwnerDashboardPage (Dashboard Pemilik)
+   - Tujuan: ringkasan kondisi toko untuk Owner.
+   - Komponen utama: kartu statistik (penjualan, profit, total produk, jumlah transaksi), peringatan
+     stok (kadaluarsa/mendekati), transaksi terbaru, dan tombol aksi cepat.
+   - Tombol penting: Settings (⚙️) untuk Kelola Pengguna, serta Logout.
+
+3) EmployeeDashboardPage (Dashboard Pegawai)
+   - Tujuan: ringkasan kerja kasir/pegawai.
+   - Komponen utama: ringkasan transaksi hari ini, indikator stok kritis, daftar stok menipis,
+     transaksi terakhir, serta tombol menu utama (input transaksi, lihat stok, update stok, notifikasi).
+
+4) StockManagementPage (Manajemen Stok)
+   - Tujuan: pusat pengelolaan produk dan stok.
+   - Komponen utama:
+     - Search bar (cari produk berdasarkan nama/kategori/barcode)
+     - Tombol "+ Tambah" untuk menambah produk
+     - Tombol export stok ke PDF dan Excel
+     - Kartu daftar produk beserta status stok (AMAN/MENIPIS/KRITIS/HABIS)
+     - Menu aksi per produk (tombol "⋮") untuk riwayat stok, pembelian/restock, penyesuaian stok,
+       dan stok opname.
+
+5) FinancialPage (Manajemen Keuangan / Transaksi)
+   - Tujuan: mencatat transaksi penjualan dan arus kas harian.
+   - Komponen utama:
+     - Ringkasan harian (pendapatan, pengeluaran, keuntungan)
+     - Aksi cepat: transaksi baru, input pengeluaran, prive (khusus Owner)
+     - Daftar transaksi terbaru
+     - Export keuangan ke PDF/Excel (ringkasan hari ini)
+   - Desain transaksi: memilih produk, memilih batch (FIFO / batch tertentu), input jumlah, dan metode
+     pembayaran (Tunai/QRIS).
+
+6) ReportsPage (Laporan dan Analisis)
+   - Tujuan: analisis performa toko.
+   - Komponen utama: pemilih periode (harian/mingguan/bulanan), kartu ringkasan, grafik penjualan,
+     daftar produk terlaris, serta tombol export PDF/Excel.
+
+7) NotificationsPage (Notifikasi dan Peringatan)
+   - Tujuan: monitoring batch expired dan mendekati expired.
+   - Komponen utama:
+     - Daftar produk sudah kadaluarsa (dengan tombol "Hapus Stok Expired")
+     - Daftar produk mendekati kadaluarsa (dengan tombol "Atur Diskon" untuk Owner)
+     - Tombol hapus/tandai semua notifikasi (ikon 🗑️)
+
+8) DiscountsPage (Diskon Kadaluarsa)
+   - Tujuan: mengatur diskon untuk batch yang mendekati kadaluarsa (khusus Owner).
+   - Komponen utama: kartu batch yang mendekati kadaluarsa, preview harga sebelum/sesudah diskon,
+     dan tombol "Edit" untuk menyimpan diskon.
+
+9) UserManagementPage (Kelola Pengguna)
+   - Tujuan: membuat/mengubah/menghapus akun pengguna (khusus Owner).
+   - Komponen utama: daftar pengguna, tombol "+ Tambah", tombol Edit, tombol Hapus.
+
+10) StockOpnamePage (Stok Opname Semua Produk)
+   - Tujuan: mencocokkan stok sistem dengan stok fisik.
+   - Komponen utama: daftar semua produk, informasi stok sistem, tombol "Sesuaikan" untuk input stok fisik.
+
+11) PurchaseStockPage (Barang Masuk)
+   - Tujuan: form pembelian/restock stok dengan tanggal masuk & kadaluarsa.
+   - Catatan: halaman ini ada, namun flow utama aplikasi lebih sering menggunakan popup/prompt pembelian
+     dari menu aksi pada StockManagementPage.
+
+B. Halaman Popup / Dialog (Pages/Popups)
+Popup dipakai untuk input cepat, konfirmasi, dan menampilkan informasi.
+- AddProductPopupPage: form tambah produk + stok awal + expiry.
+- PurchaseStockPopupPage: input barang masuk/restock (qty, harga modal, expiry).
+- StockAdjustmentPopupPage: penyesuaian stok keluar (rusak/kadaluarsa/hilang) beserta alasan.
+- StockOpnamePopupPage: input stok fisik untuk proses stok opname.
+- NewTransactionPopupPage: input transaksi baru dengan pemilihan produk dan jumlah.
+- ExpensePopupPage: input pengeluaran operasional.
+- PrivePopupPage: input prive/pengambilan uang (Owner).
+- DiscountPopupPage: set persentase diskon per batch.
+- UserFormPopupPage: tambah/edit user (username, password, role, kontak).
+- SelectOptionPopupPage: memilih opsi aksi (mis. dari menu "⋮").
+- ConfirmPopupPage: dialog konfirmasi (mis. logout, hapus user, proses transaksi).
+- InfoPopupPage: dialog informasi sukses/gagal.
+- ForgotPasswordPopupPage: bantuan lupa password (menampilkan password akun untuk kebutuhan tugas/testing).
+
+====================================================================
+5. Dashboard Owner
+====================================================================
+Dashboard Owner menampilkan ringkasan:
+- Penjualan hari ini
+- Keuntungan hari ini
+- Total produk
+- Jumlah transaksi hari ini
+
+Fitur tambahan:
+- Peringatan Stok (kadaluarsa / mendekati kadaluarsa)
+- Transaksi terbaru
+- Aksi cepat: Laporan, Kelola Stok, Keuangan, Notifikasi, Stok Opname
+
+Tips:
+- Tombol "⚙️" akan membuka halaman Kelola Pengguna.
+- Tombol "Lihat Selengkapnya" pada peringatan stok akan membuka Notifikasi.
+
+====================================================================
+6. Dashboard Pegawai
+====================================================================
+Dashboard Pegawai menampilkan:
+- Jumlah transaksi hari ini + total penjualan hari ini
+- Jumlah stok kritis (stok <= 5)
+- Daftar stok menipis (stok <= 10, ditampilkan max 5 produk)
+- Transaksi terakhir hari ini
+
+Aksi cepat:
+- Input Transaksi -> membuka menu Transaksi (Keuangan)
+- Lihat Stok / Update Stok -> membuka menu Stok
+- Notifikasi -> membuka menu Notifikasi
+
+====================================================================
+7. Manajemen Stok
+====================================================================
+Menu: Tab "Stok".
+
+Tujuan menu Stok adalah untuk melihat daftar produk beserta stok terkini, menambah produk baru,
+melakukan transaksi stok (barang masuk, penyesuaian, stok opname), serta mengunduh laporan stok ke
+PDF/Excel.
+
+7.1 Melihat & Mencari Produk
+- Gunakan kolom "Cari produk..." untuk mencari berdasarkan:
+  - Nama
+  - Kategori
+  - Barcode
+- Tekan tombol "✕" pada kotak pencarian untuk menghapus filter.
+
+7.2 Menambah Produk
+1) Tekan tombol "+ Tambah".
+2) Isi form:
+   - Nama Produk
+   - Kategori
+   - Barcode (opsional)
+   - Satuan
+   - Stok Awal
+   - Harga Jual
+   - Harga Modal
+   - Kadaluarsa batch stok awal
+3) Tekan "Konfirmasi".
+
+Catatan:
+- Jika Stok Awal > 0, sistem otomatis membuat batch stok awal dan mencatat
+  pembelian stok sebagai pengeluaran operasional.
+
+7.3 Status Stok
+Pada kartu produk, status stok ditampilkan sebagai:
+- AMAN    : stok > 10
+- MENIPIS : stok 6–10
+- KRITIS  : stok 1–5
+- HABIS   : stok 0
+
+7.4 Menu Aksi per Produk (tombol "⋮")
+Pilih salah satu aksi:
+- Riwayat Stok
+  Menampilkan 10 pergerakan stok terakhir.
+- Barang Masuk (Pembelian)
+  Menambah stok dengan membuat batch baru (dengan expiry).
+- Penyesuaian Stok (Rusak/Kadaluarsa/Hilang)
+  Mengurangi stok dan mencatat kerugian stok.
+- Stok Opname
+  Memasukkan stok fisik untuk produk tersebut, lalu sistem menyesuaikan selisih.
+
+7.5 Export Stok
+- Tekan tombol "📄 PDF" untuk export stok ke PDF.
+- Tekan tombol "📊 Excel" untuk export stok ke Excel.
+
+====================================================================
+8. Transaksi & Keuangan
+====================================================================
+Menu: Tab "Keuangan" (Owner) / "Transaksi" (Employee).
+
+8.1 Ringkasan Hari Ini
+Tampilan ringkasan:
+- Pendapatan (penjualan)
+- Pengeluaran
+- Keuntungan
+
+8.2 Transaksi Baru
+1) Tekan tombol "🛒 Transaksi Baru".
+2) Pilih produk.
+3) Pilih batch (opsional):
+   - Otomatis (FIFO) = sistem mengambil stok dari batch dengan expiry paling dekat
+     terlebih dahulu.
+   - Batch tertentu = mengambil stok hanya dari batch yang dipilih.
+4) Tentukan jumlah.
+5) Pilih metode pembayaran: Tunai atau QRIS.
+6) Tekan "Proses" dan konfirmasi.
+
+Penjelasan pilihan batch:
+Gunakan "Otomatis (FIFO)" untuk penggunaan kasir normal karena lebih cepat dan mengikuti aturan FIFO.
+Gunakan batch tertentu jika ingin menghabiskan stok batch yang hampir expired terlebih dahulu, atau
+jika ingin memastikan transaksi mengambil stok dari batch tertentu.
+
+Jika transaksi gagal, umumnya karena stok batch/total tidak mencukupi atau produk belum memiliki
+batch stok (stok masih 0).
+
+Catatan penting tentang Batch & Diskon:
+- Diskon dihitung per batch (DiscountPercent pada StockBatch).
+- Total transaksi akan mengikuti diskon batch yang digunakan.
+
+8.3 Input Pengeluaran
+1) Tekan tombol "💸 Input Pengeluaran".
+2) Isi deskripsi, tanggal, dan nominal.
+3) Simpan.
+
+8.4 Prive / Ambil Uang (Owner)
+1) Tekan tombol "👤 Prive / Ambil Uang".
+2) Isi keterangan, tanggal, dan nominal.
+3) Simpan.
+
+8.5 Export Keuangan (Hari Ini)
+- "📄 Export PDF" -> export ringkasan keuangan hari ini ke PDF.
+- "📊 Export Excel" -> export ringkasan keuangan hari ini ke Excel.
+
+====================================================================
+9. Laporan & Analisis
+====================================================================
+Menu: Tab "Laporan" (Owner).
+
+Tujuan menu Laporan adalah menilai performa penjualan dan profit toko, membandingkan penjualan antar
+hari melalui grafik, mengetahui produk terlaris, serta menghasilkan file laporan (PDF/Excel) untuk
+kebutuhan dokumentasi.
+
+9.1 Memilih Periode
+- Harian   : hari ini
+- Mingguan : 7 hari terakhir (termasuk hari ini)
+- Bulanan  : 1 bulan berjalan
+
+9.2 Informasi yang Ditampilkan
+- Total penjualan
+- Total pengeluaran
+- Keuntungan bersih
+- Total transaksi
+- Grafik penjualan (mengikuti periode)
+- Top 5 produk terlaris
+
+9.3 Export Laporan
+- "📄 Export PDF" -> export laporan sesuai periode aktif.
+- "📊 Export Excel" -> export laporan sesuai periode aktif.
+
+====================================================================
+10. Notifikasi & Peringatan Kadaluarsa
+====================================================================
+Menu: Tab "Notifikasi".
+
+Tujuan menu Notifikasi adalah menampilkan stok yang sudah kadaluarsa dan yang mendekati kadaluarsa,
+serta memberi aksi cepat untuk penanganan (menghapus stok expired dari sistem dengan pencatatan
+kerugian, atau mengarahkan Owner untuk mengatur diskon batch).
+
+Saran penggunaan harian: Owner sebaiknya mengecek menu ini minimal 1x sehari. Jika ada expired,
+segera keluarkan dari sistem agar laporan stok dan keuangan tetap akurat.
+
+Notifikasi terbagi menjadi 2:
+- Produk Sudah Kadaluarsa
+- Produk Mendekati Kadaluarsa (≤ 14 hari)
+
+10.1 Hapus Stok Expired
+Pada daftar "Produk Sudah Kadaluarsa":
+- Tekan "Hapus Stok Expired" untuk mengeluarkan stok kadaluarsa dari sistem.
+- Sistem akan mencatat kerugian stok dengan alasan "Kadaluarsa".
+
+10.2 Atur Diskon
+Pada daftar "Produk Mendekati Kadaluarsa":
+- Tombol "Atur Diskon" akan mengarahkan Owner ke menu Diskon.
+- Untuk Employee, fitur ini ditolak.
+
+====================================================================
+11. Diskon Barang Mendekati Kadaluarsa (Owner)
+====================================================================
+Menu: Tab "Diskon".
+
+- Halaman menampilkan batch yang mendekati kadaluarsa (≤ 14 hari).
+- Tekan tombol "Edit" pada batch untuk mengatur DiscountPercent.
+
+Catatan:
+- Diskon diterapkan per batch, bukan per produk secara global.
+- Saat transaksi, bila mengambil stok dari batch diskon, harga akan otomatis
+  mengikuti diskon tersebut.
+
+====================================================================
+12. Kelola Pengguna (Owner)
+====================================================================
+Menu: dari tombol "⚙️" di Dashboard Owner atau navigasi ke halaman pengguna.
+
+12.1 Tambah Pengguna
+1) Tekan "+ Tambah".
+2) Isi data user (username, password, role, email/telepon bila ada).
+3) Simpan.
+
+12.2 Edit Pengguna
+- Tekan "Edit" pada pengguna.
+- Ubah data, lalu simpan.
+
+12.3 Hapus Pengguna
+- Tekan "Hapus" pada pengguna.
+- Konfirmasi penghapusan.
+
+Catatan:
+- Tidak bisa menghapus akun yang sedang digunakan untuk login.
+
+====================================================================
+13. Stok Opname Semua Produk
+====================================================================
+Menu: dari tombol "📋 Stok Opname Semua Produk" di Dashboard Owner.
+
+Cara pakai:
+1) Sistem menampilkan semua produk beserta stok sistem.
+2) Tekan tombol "Sesuaikan" pada produk yang ingin dicek.
+3) Masukkan stok fisik (hasil hitung nyata di gudang/toko).
+4) Sistem menyimpan penyesuaian:
+   - Jika stok fisik < stok sistem => dianggap kehilangan, dicatat sebagai kerugian.
+   - Jika stok fisik > stok sistem => menambah stok (penyesuaian masuk).
+
+====================================================================
+14. Logout
+====================================================================
+- Tekan tombol "Logout" (di Dashboard / menu).
+- Konfirmasi logout.
+- Sistem kembali ke halaman login.
+
+====================================================================
+15. Troubleshooting Singkat
+====================================================================
+- Tidak bisa login:
+  Pastikan username/password benar dan akun tersedia di database.
+- Produk tidak muncul saat transaksi:
+  Pastikan sudah ada data produk dan stok batch (stok > 0).
+- Total transaksi muncul "Stok tidak cukup":
+  Jumlah yang dimasukkan melebihi stok batch/stok total.
+- Export PDF/Excel tidak bisa terbuka otomatis:
+  Beberapa platform tidak mendukung open file langsung. File tetap tersimpan,
+  buka manual melalui file explorer sesuai path yang ditampilkan pada popup.
+
+====================================================================
+Selesai.

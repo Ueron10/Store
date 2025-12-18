@@ -20,6 +20,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<NoWarn>$(NoWarn);CS0618</NoWarn>
+		<!-- XA0141 is a forward-looking warning about Android 16's 16KB page size.
+		     Suppress it so CI/build output stays clean until upstream native libs are updated. -->
+		<NoWarn Condition="'$(TargetFramework)' == 'net9.0-android'">$(NoWarn);XA0141</NoWarn>
 
 		<!-- Display name -->
 		<ApplicationTitle>StoreProgram</ApplicationTitle>

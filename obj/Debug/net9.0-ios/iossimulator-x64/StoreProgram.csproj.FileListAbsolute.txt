@@ -295,6 +295,7 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-ios\ios
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-ios\iossimulator-x64\libxamarin-dotnet-nativeaot.a
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-ios\iossimulator-x64\libxamarin-dotnet.a
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-ios\iossimulator-x64\libxamarin-dotnet.dylib
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-ios\iossimulator-x64\build-signature\signature
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-ios\iossimulator-x64\StoreProgram.csproj.AssemblyReference.cache
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-ios\iossimulator-x64\mauiimage.inputs
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-ios\iossimulator-x64\mauifont.inputs

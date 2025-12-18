@@ -10,6 +10,7 @@ public partial class FinancialPage : ContentPage
 {
     private List<Product> _products = new();
     private List<StockBatch> _batchesForSelectedProduct = new();
+    private Product? _selectedTransactionProduct;
 
     public FinancialPage()
     {
@@ -28,13 +29,7 @@ public partial class FinancialPage : ContentPage
 
     private void LoadProducts()
     {
-        _products = DataStore.Products.ToList();
-
-        ProductPicker.Items.Clear();
-        foreach (var product in _products)
-        {
-            ProductPicker.Items.Add($"{product.Name} - Rp {product.SellPrice:N0}");
-        }
+        _products = DataStore.Products.OrderBy(p => p.Name).ToList();
     }
 
     private async void OnNewTransactionClicked(object sender, EventArgs e)
@@ -51,7 +46,14 @@ public partial class FinancialPage : ContentPage
         var sale = await NewTransactionPopupPage.ShowAsync(_products);
         if (sale == null) return;
 
-        await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}");
+        // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
+        if (sale.PaymentMethod == "QRIS")
+        {
+            await InfoPopupPage.ShowAsync("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).", okText: "OK");
+        }
+
+        await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}", okText: "OK");
+
         UpdateSummary();
         BuildRecentTransactions();
     }
@@ -59,13 +61,20 @@ public partial class FinancialPage : ContentPage
     private void OnCloseTransactionFormClicked(object sender, EventArgs e)
     {
         TransactionFormFrame.IsVisible = false;
-        // Reset form
-        ProductPicker.SelectedIndex = -1;
+        ResetTransactionForm();
+    }
+
+    private void ResetTransactionForm()
+    {
+        _selectedTransactionProduct = null;
+        TransactionProductEntry.Text = string.Empty;
+
         BatchPicker.SelectedIndex = -1;
         BatchPicker.Items.Clear();
         _batchesForSelectedProduct.Clear();
         QuantityEntry.Text = "1";
         CashRadio.IsChecked = true;
+        TotalLabel.Text = "Rp 0";
     }
 
     private void OnDecreaseQuantityClicked(object sender, EventArgs e)
@@ -88,36 +97,43 @@ public partial class FinancialPage : ContentPage
 
     private void UpdateTotal()
     {
-        if (ProductPicker.SelectedIndex >= 0 && int.TryParse(QuantityEntry.Text, out int quantity))
-        {
-            if (ProductPicker.SelectedIndex >= 0 && ProductPicker.SelectedIndex < _products.Count)
-            {
-                var product = _products[ProductPicker.SelectedIndex];
-
-                try
-                {
-                    Guid? batchId = GetSelectedBatchIdOrNull();
-                    var preview = DataStore.PreviewSale(product.Id, quantity, batchId);
-                    TotalLabel.Text = $"Rp {preview.TotalAmount:N0}";
-                }
-                catch
-                {
-                    TotalLabel.Text = "Stok tidak cukup";
-                }
-            }
-            else
-            {
-                TotalLabel.Text = "Rp 0";
-            }
-        }
-        else
+        var product = _selectedTransactionProduct;
+        if (product == null)
         {
             TotalLabel.Text = "Rp 0";
+            return;
+        }
+
+        if (!int.TryParse(QuantityEntry.Text, out int quantity) || quantity <= 0)
+        {
+            TotalLabel.Text = "Rp 0";
+            return;
+        }
+
+        try
+        {
+            Guid? batchId = GetSelectedBatchIdOrNull();
+            var preview = DataStore.PreviewSale(product.Id, quantity, batchId);
+            TotalLabel.Text = $"Rp {preview.TotalAmount:N0}";
+        }
+        catch
+        {
+            TotalLabel.Text = "Stok tidak cukup";
         }
     }
 
-    private void OnProductSelectionChanged(object? sender, EventArgs e)
+    private async void OnSelectTransactionProductClicked(object sender, EventArgs e)
     {
+        // Pastikan list produk terbaru
+        LoadProducts();
+
+        var p = await ProductSearchPopupPage.ShowAsync(_products);
+        if (p == null)
+            return;
+
+        _selectedTransactionProduct = p;
+        TransactionProductEntry.Text = $"{p.Name} - Rp {p.SellPrice:N0}";
+
         LoadBatchesForSelectedProduct();
         UpdateTotal();
     }
@@ -129,10 +145,9 @@ public partial class FinancialPage : ContentPage
         BatchPicker.Items.Clear();
         _batchesForSelectedProduct.Clear();
 
-        if (ProductPicker.SelectedIndex < 0 || ProductPicker.SelectedIndex >= _products.Count)
+        var product = _selectedTransactionProduct;
+        if (product == null)
             return;
-
-        var product = _products[ProductPicker.SelectedIndex];
 
         // Item 0 = Otomatis FIFO
         BatchPicker.Items.Add("Otomatis (FIFO)");
@@ -171,7 +186,8 @@ public partial class FinancialPage : ContentPage
 
     private async void OnProcessTransactionClicked(object sender, EventArgs e)
     {
-        if (ProductPicker.SelectedIndex < 0 || ProductPicker.SelectedIndex >= _products.Count)
+        var product = _selectedTransactionProduct;
+        if (product == null)
         {
             await InfoPopupPage.ShowAsync("Error", "Pilih produk terlebih dahulu!");
             return;
@@ -182,8 +198,6 @@ public partial class FinancialPage : ContentPage
             await InfoPopupPage.ShowAsync("Error", "Masukkan jumlah yang valid!");
             return;
         }
-
-        var product = _products[ProductPicker.SelectedIndex];
 
         string paymentMethod = CashRadio.IsChecked ? "Tunai" : "QRIS";
         string productName = product.Name;
@@ -200,6 +214,12 @@ public partial class FinancialPage : ContentPage
             {
                 var sale = DataStore.ProcessSingleItemSale(product.Id, quantity, paymentMethod, GetSelectedBatchIdOrNull());
 
+                // Tutup form transaksi setelah proses (biar kembali normal)
+                OnCloseTransactionFormClicked(sender, e);
+
+                UpdateSummary();
+                BuildRecentTransactions();
+
                 // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
                 if (paymentMethod == "QRIS")
                 {
@@ -207,9 +227,6 @@ public partial class FinancialPage : ContentPage
                 }
 
                 await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}");
-                OnCloseTransactionFormClicked(sender, e);
-                UpdateSummary();
-                BuildRecentTransactions();
             }
             catch (Exception ex)
             {

@@ -1,0 +1,402 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Times New Roman;}{\f1 Arial;}}
+\paperw11906\paperh16838\margl1417\margr1417\margt1134\margb1134
+
+\pard\qc\fs36\b LAPORAN PROYEK\par
+\pard\qc\fs28\b APLIKASI STORE (POINT OF SALE & MANAJEMEN PERSEDIAAN)\par
+\pard\qc\fs24\b BERBASIS DESKTOP\par
+\pard\qc\fs24\par
+\pard\qc\fs22 Disusun untuk Memenuhi Tugas UAS\par
+\pard\qc\fs22 Mata Kuliah: Pemrograman Visual\par
+\pard\qc\fs22\par
+\pard\qc\fs22\b Disusun Oleh:\par
+\pard\qc\fs22 Nama\tab : ........................................................\par
+\pard\qc\fs22 NIM\tab\tab : ........................................................\par
+\pard\qc\fs22 Kelas\tab : ........................................................\par
+\pard\qc\fs22 Program Studi\tab : ........................................................\par
+\pard\qc\fs22\par
+\pard\qc\fs22\b Dosen Pengampu:\par
+\pard\qc\fs22 ........................................................\par
+\pard\qc\fs22\par
+\pard\qc\fs22\b (Nama Institusi/Universitas)\par
+\pard\qc\fs22\b Tahun 2025\par
+\page
+
+\pard\qc\fs28\b KATA PENGANTAR\par
+\pard\fs24\b0\qc\par
+\pard\fs24\b0 Puji syukur penulis panjatkan ke hadirat Tuhan Yang Maha Esa karena atas rahmat dan karunia-Nya, laporan proyek ini dapat disusun dan diselesaikan. Laporan ini dibuat sebagai dokumentasi pelaksanaan dan hasil pengembangan aplikasi \i Store \i0 (Point of Sale & Manajemen Persediaan) berbasis desktop untuk memenuhi tugas UAS mata kuliah Pemrograman Visual.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Penulis menyadari bahwa laporan ini masih memiliki kekurangan. Oleh karena itu, penulis mengharapkan kritik dan saran yang membangun agar laporan dan aplikasi yang dibuat dapat menjadi lebih baik.\par
+\pard\fs24\b0\par
+\pard\fs24\b0\qr (Kota), (Tanggal) 2025\par
+\pard\fs24\b0\qr Penulis\par
+\page
+
+\pard\qc\fs28\b ABSTRAK\par
+\pard\fs24\b0\qc\par
+\pard\fs24\b0 Aplikasi \i Store \i0 adalah sistem informasi berbasis desktop yang dirancang untuk membantu proses transaksi penjualan dan pengelolaan persediaan barang pada toko skala kecil hingga menengah. Aplikasi ini memfasilitasi pengelolaan data master barang, transaksi penjualan, pembaruan stok otomatis, serta penyajian laporan penjualan berdasarkan periode tertentu. Metode pengembangan yang digunakan adalah SDLC model Waterfall yang terdiri dari tahap analisis kebutuhan, perancangan, implementasi, pengujian, dan evaluasi. Pengujian dilakukan menggunakan metode Black-Box untuk memastikan setiap fungsi berjalan sesuai kebutuhan pengguna. Hasil yang diperoleh menunjukkan aplikasi mampu meningkatkan efisiensi proses transaksi, mengurangi kesalahan pencatatan, dan mempercepat pembuatan laporan.\par
+\pard\fs24\b0\par
+\pard\fs24\b0\b Kata kunci:\b0 Point of Sale, Desktop Application, Inventori, SDLC, Black-Box Testing\par
+\page
+
+\pard\qc\fs28\b DAFTAR ISI\par
+\pard\fs24\b0\par
+\pard\fs24\b0 1. Judul\tab\tab\tab\tab\tab 1\par
+\pard\fs24\b0 2. Latar Belakang\tab\tab\tab\tab\tab 2\par
+\pard\fs24\b0 3. Landasan Teori\tab\tab\tab\tab\tab 3\par
+\pard\fs24\b0 4. Tinjauan Pustaka\tab\tab\tab\tab\tab 6\par
+\pard\fs24\b0 5. Rumusan Masalah\tab\tab\tab\tab\tab 8\par
+\pard\fs24\b0 6. Tujuan Penelitian/Proyek\tab\tab\tab\tab 9\par
+\pard\fs24\b0 7. Metodologi\tab\tab\tab\tab\tab 10\par
+\pard\fs24\b0 8. User Requirement\tab\tab\tab\tab\tab 13\par
+\pard\fs24\b0 9. Analysis\tab\tab\tab\tab\tab 17\par
+\pard\fs24\b0 10. Design\tab\tab\tab\tab\tab 21\par
+\pard\fs24\b0 11. Schedule (Work for Each Person)\tab\tab\tab 30\par
+\pard\fs24\b0 12. Testing\tab\tab\tab\tab\tab 33\par
+\pard\fs24\b0 13. Result\tab\tab\tab\tab\tab 38\par
+\pard\fs24\b0 14. Kesimpulan dan Saran\tab\tab\tab\tab 40\par
+\pard\fs24\b0 15. Daftar Pustaka\tab\tab\tab\tab\tab 42\par
+\page
+
+\pard\qc\fs28\b BAB I. PENDAHULUAN\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 1.1 Judul\par
+\pard\fs24\b0 Judul proyek: \b “Aplikasi Store (Point of Sale & Manajemen Persediaan) Berbasis Desktop.”\b0\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 1.2 Latar Belakang\par
+\pard\fs24\b0 Perkembangan usaha ritel dan kebutuhan pelayanan yang cepat menuntut adanya sistem yang mampu menangani transaksi penjualan dengan akurat dan efisien. Pencatatan manual untuk penjualan, stok, dan laporan sering menimbulkan permasalahan seperti salah hitung total dan kembalian, kesalahan pencatatan jumlah stok, duplikasi data, serta keterlambatan penyajian laporan penjualan.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Selain itu, pemilik toko membutuhkan informasi yang ringkas dan tepat waktu terkait omzet harian, produk yang paling laku, serta ketersediaan barang. Tanpa sistem, informasi tersebut sulit diperoleh secara cepat. Karena itu, dibutuhkan aplikasi \i Store \i0 yang dapat membantu proses transaksi sekaligus mengelola persediaan dan laporan penjualan secara terkomputerisasi.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 1.3 Ruang Lingkup\par
+\pard\fs24\b0 Ruang lingkup proyek ini meliputi:\par
+\pard\fs24\b0 1) Pengelolaan data barang (CRUD: tambah, ubah, hapus, cari).\par
+\pard\fs24\b0 2) Transaksi penjualan (keranjang, total, pembayaran, kembalian).\par
+\pard\fs24\b0 3) Pembaruan stok otomatis setelah transaksi.\par
+\pard\fs24\b0 4) Laporan penjualan berdasarkan periode (harian/mingguan/bulanan).\par
+\pard\fs24\b0 5) Autentikasi pengguna (opsional sesuai implementasi).\par
+\page
+
+\pard\qc\fs28\b BAB II. LANDASAN TEORI\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.1 Sistem Informasi\par
+\pard\fs24\b0 Sistem informasi merupakan kombinasi dari manusia, prosedur, perangkat keras, perangkat lunak, jaringan komunikasi, dan data yang saling berinteraksi untuk mengumpulkan, mengolah, menyimpan, dan menyebarkan informasi guna mendukung pengambilan keputusan dan pengendalian dalam organisasi.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.2 Aplikasi Desktop\par
+\pard\fs24\b0 Aplikasi desktop adalah aplikasi yang berjalan di komputer lokal dan umumnya dapat dioperasikan tanpa koneksi internet. Aplikasi desktop cocok digunakan untuk sistem kasir karena responsif, stabil, dan dapat terintegrasi dengan perangkat lokal seperti printer struk.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.3 Database dan DBMS\par
+\pard\fs24\b0 Database adalah kumpulan data terorganisir yang disimpan secara sistematis. DBMS (Database Management System) adalah perangkat lunak untuk mengelola database, termasuk operasi Create, Read, Update, dan Delete (CRUD), serta menjaga konsistensi dan integritas data.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.4 Point of Sale (POS)\par
+\pard\fs24\b0 Point of Sale (POS) adalah sistem yang digunakan untuk memproses transaksi penjualan. POS biasanya mencakup pengelolaan produk, pencatatan transaksi, perhitungan pembayaran, pengelolaan stok, serta pelaporan penjualan.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.5 SDLC (Software Development Life Cycle)\par
+\pard\fs24\b0 SDLC adalah kerangka kerja pengembangan perangkat lunak yang terdiri dari tahapan terstruktur. Salah satu model SDLC adalah \b Waterfall\b0 yang mengerjakan fase secara berurutan: requirement, analysis, design, implementation, testing, dan maintenance/evaluation.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 2.6 Pengujian Perangkat Lunak (Testing)\par
+\pard\fs24\b0 Pengujian perangkat lunak bertujuan untuk memastikan perangkat lunak berjalan sesuai kebutuhan dan meminimalkan kesalahan. Pengujian \b Black-Box\b0 berfokus pada pemeriksaan fungsi tanpa melihat struktur internal kode, dengan menguji input dan output berdasarkan spesifikasi.\par
+\page
+
+\pard\qc\fs28\b BAB III. TINJAUAN PUSTAKA\par
+\pard\fs24\b0\par
+
+\pard\fs24\b0 Berdasarkan literatur terkait sistem POS dan aplikasi inventori, kebutuhan umum yang sering muncul pada pengembangan aplikasi toko antara lain: pengelolaan master data barang, transaksi penjualan berbasis keranjang, pengurangan stok otomatis, serta laporan penjualan periodik.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Penelitian dan praktik rekayasa perangkat lunak menekankan pentingnya analisis kebutuhan, perancangan database yang baik, dan pengujian fungsional agar sistem dapat diandalkan untuk operasional harian. Oleh karena itu, proyek ini mengadopsi prinsip SDLC dan pengujian black-box sebagai pendekatan yang sesuai untuk pengembangan aplikasi tugas akhir/ujian.\par
+\page
+
+\pard\qc\fs28\b BAB IV. RUMUSAN MASALAH\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Rumusan masalah dalam proyek ini adalah:\par
+\pard\fs24\b0 1) Bagaimana merancang dan membangun aplikasi Store berbasis desktop yang dapat mengelola data barang, transaksi penjualan, dan laporan secara terintegrasi?\par
+\pard\fs24\b0 2) Bagaimana aplikasi dapat mengurangi kesalahan pencatatan dan mempercepat proses transaksi pada toko?\par
+\pard\fs24\b0 3) Bagaimana metode pengujian dilakukan untuk memastikan fungsi aplikasi berjalan sesuai kebutuhan pengguna?\par
+\page
+
+\pard\qc\fs28\b BAB V. TUJUAN PENELITIAN/PROYEK\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Tujuan proyek ini adalah:\par
+\pard\fs24\b0 1) Menghasilkan aplikasi Store berbasis desktop untuk transaksi penjualan dan manajemen persediaan.\par
+\pard\fs24\b0 2) Mempermudah pengelolaan data barang dan stok dengan pencatatan yang akurat.\par
+\pard\fs24\b0 3) Menyediakan laporan penjualan berdasarkan periode tertentu sebagai bahan evaluasi pemilik toko.\par
+\pard\fs24\b0 4) Memastikan aplikasi memenuhi kebutuhan pengguna melalui proses pengujian fungsional.\par
+\page
+
+\pard\qc\fs28\b BAB VI. METODOLOGI\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 6.1 Metode Pengembangan\par
+\pard\fs24\b0 Metode pengembangan yang digunakan adalah \b SDLC Waterfall\b0 dengan tahapan berikut:\par
+\pard\fs24\b0 1) \b Requirement\b0: pengumpulan kebutuhan pengguna.\par
+\pard\fs24\b0 2) \b Analysis\b0: analisis proses bisnis, data, dan aturan transaksi.\par
+\pard\fs24\b0 3) \b Design\b0: perancangan database, arsitektur aplikasi, dan antarmuka.\par
+\pard\fs24\b0 4) \b Implementation\b0: pembuatan modul-modul sesuai desain.\par
+\pard\fs24\b0 5) \b Testing\b0: pengujian fungsional dengan black-box dan perbaikan bug.\par
+\pard\fs24\b0 6) \b Result/Evaluation\b0: evaluasi hasil dan penyusunan laporan.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 6.2 Teknik Pengumpulan Data\par
+\pard\fs24\b0 Teknik yang digunakan untuk memperoleh kebutuhan sistem (dapat disesuaikan) adalah:\par
+\pard\fs24\b0 1) \b Observasi\b0: mengamati alur transaksi penjualan dan pencatatan stok di toko.\par
+\pard\fs24\b0 2) \b Wawancara\b0: menggali kebutuhan pemilik/kasir terkait fitur dan laporan.\par
+\pard\fs24\b0 3) \b Studi Literatur\b0: mempelajari konsep POS, database, dan metodologi pengembangan perangkat lunak.\par
+\page
+
+\pard\qc\fs28\b BAB VII. USER REQUIREMENT\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 7.1 Kebutuhan Fungsional\par
+\pard\fs24\b0 Kebutuhan fungsional disusun sesuai modul yang ada pada project \i StoreProgram\i0 (berbasis .NET MAUI) yang memiliki beberapa halaman (Pages) dan layanan (Services).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b A. Autentikasi & Manajemen Sesi\b0\par
+\pard\fs24\b0 - Pengguna melakukan login melalui \i LoginPage\i0.\par
+\pard\fs24\b0 - Sistem menyimpan sesi pengguna (mis. Username & Role) agar akses menu sesuai hak pengguna (Owner/Employee).\par
+\pard\fs24\b0 - Tersedia fitur bantuan lupa password melalui \i ForgotPasswordPopupPage\i0 (sesuai implementasi).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b B. Dashboard Berdasarkan Role\b0\par
+\pard\fs24\b0 - \i OwnerDashboardPage\i0 untuk pemilik (melihat ringkasan bisnis).\par
+\pard\fs24\b0 - \i EmployeeDashboardPage\i0 untuk pegawai/kasir (akses operasional harian).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b C. Manajemen Produk (Master Data)\b0\par
+\pard\fs24\b0 - Menambah produk baru melalui \i AddProductPopupPage\i0.\par
+\pard\fs24\b0 - Mengelola informasi produk: nama, kategori, barcode (opsional), satuan, harga jual (sell price), harga modal (cost price).\par
+\pard\fs24\b0 - Pencarian/penyaringan produk (nama/kategori/barcode) pada modul manajemen stok.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b D. Manajemen Persediaan (Stok)\b0\par
+\pard\fs24\b0 - Melihat & mengelola stok pada \i StockManagementPage\i0.\par
+\pard\fs24\b0 - Pembelian/penambahan stok per batch melalui \i PurchaseStockPage\i0 dan \i PurchaseStockPopupPage\i0, termasuk pencatatan tanggal pembelian, expiry date, dan unit cost.\par
+\pard\fs24\b0 - Penyesuaian stok (stock adjustment) melalui \i StockAdjustmentPopupPage\i0 dengan alasan penyesuaian.\par
+\pard\fs24\b0 - \i StockOpnamePage\i0 dan \i StockOpnamePopupPage\i0 untuk pencocokan stok fisik (stock opname).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b E. Diskon Produk\b0\par
+\pard\fs24\b0 - Pengelolaan diskon melalui \i DiscountsPage\i0 dan \i DiscountPopupPage\i0 (discount persen pada produk/batch sesuai implementasi).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b F. Transaksi Penjualan\b0\par
+\pard\fs24\b0 - Membuat transaksi melalui \i NewTransactionPopupPage\i0.\par
+\pard\fs24\b0 - Mendukung metode pembayaran (mis. Tunai, QRIS) sesuai data transaksi.\par
+\pard\fs24\b0 - Sistem menyimpan transaksi dan item penjualan, serta memperbarui stok (sale out) sesuai aturan stok/batch yang diterapkan.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b G. Notifikasi\b0\par
+\pard\fs24\b0 - Menampilkan pemberitahuan (mis. stok mendekati kadaluarsa/expired) melalui \i NotificationsPage\i0.\par
+\pard\fs24\b0 - Pengaturan ambang notifikasi (mis. H-14) melalui konfigurasi sistem (sesuai implementasi).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b H. Keuangan (Expense & Prive)\b0\par
+\pard\fs24\b0 - Mencatat pengeluaran melalui \i ExpensePopupPage\i0.\par
+\pard\fs24\b0 - Mencatat prive pemilik melalui \i PrivePopupPage\i0.\par
+\pard\fs24\b0 - Menampilkan ringkasan keuangan pada \i FinancialPage\i0.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b I. Laporan\b0\par
+\pard\fs24\b0 - Menampilkan laporan pada \i ReportsPage\i0.\par
+\pard\fs24\b0 - Ekspor laporan ke Excel/PDF (sesuai implementasi) menggunakan layanan export.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b J. Manajemen User\b0\par
+\pard\fs24\b0 - Mengelola akun pengguna melalui \i UserManagementPage\i0 dan \i UserFormPopupPage\i0 (tambah/ubah role, kontak, dll.).\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 7.2 Kebutuhan Non-Fungsional\par
+\pard\fs24\b0 - \b Usability\b0: antarmuka mudah digunakan kasir.\par
+\pard\fs24\b0 - \b Performance\b0: proses input barang dan transaksi responsif.\par
+\pard\fs24\b0 - \b Reliability\b0: penyimpanan transaksi konsisten dan tidak mudah corrupt.\par
+\pard\fs24\b0 - \b Security\b0: login dan pembatasan akses (jika digunakan).\par
+\page
+
+\pard\qc\fs28\b BAB VIII. ANALYSIS\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 8.1 Analisis Proses Bisnis\par
+\pard\fs24\b0 Alur proses bisnis yang didukung oleh sistem (berdasarkan modul yang ada pada aplikasi) adalah:\par
+\pard\fs24\b0 1) \b Owner\b0 melakukan pengelolaan user, memantau dashboard, serta mengevaluasi laporan dan kondisi keuangan.\par
+\pard\fs24\b0 2) \b Employee/Kasir\b0 melakukan transaksi penjualan, serta membantu pengelolaan stok (pembelian stok, penyesuaian stok, dan stock opname) sesuai hak akses.\par
+\pard\fs24\b0 3) Sistem mencatat pergerakan stok berdasarkan batch (purchase in, sale out, adjustment) untuk histori dan audit sederhana.\par
+\pard\fs24\b0 4) Sistem menampilkan notifikasi stok mendekati kadaluarsa/expired berdasarkan tanggal expiry batch.\par
+\pard\fs24\b0 5) Sistem menyediakan laporan penjualan serta export laporan (Excel/PDF) untuk kebutuhan dokumentasi dan evaluasi.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 8.2 Analisis Kebutuhan Data\par
+\pard\fs24\b0 Entitas data utama (disesuaikan dengan database pada project) adalah:\par
+\pard\fs24\b0 - \b AppUser\b0 (Username, Password, Role, Email, Phone)\par
+\pard\fs24\b0 - \b Product\b0 (Id, Name, Category, Barcode, Unit, SellPrice, CostPrice, DiscountPercent)\par
+\pard\fs24\b0 - \b StockBatch\b0 (Id, ProductId, Quantity, PurchaseDate, ExpiryDate, UnitCost, DiscountPercent)\par
+\pard\fs24\b0 - \b StockMovement\b0 (Id, ProductId, Timestamp, Type, Quantity, Reason, UnitCost, TotalCost)\par
+\pard\fs24\b0 - \b SaleTransaction\b0 (Id, Timestamp, PaymentMethod, GrossAmount, TotalCost)\par
+\pard\fs24\b0 - \b SaleItem\b0 (Id, SaleId, ProductId, ProductName, Quantity, UnitPrice)\par
+\pard\fs24\b0 - \b Expense\b0 (Id, Timestamp, Description, Amount, Type)\par
+\pard\fs24\b0 - \b ExpiryAlertSetting\b0 (pengaturan ambang notifikasi expiry; sesuai implementasi)\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 8.3 Analisis Aturan Bisnis\par
+\pard\fs24\b0 Aturan bisnis yang diterapkan (contoh):\par
+\pard\fs24\b0 1) Qty tidak boleh melebihi stok.\par
+\pard\fs24\b0 2) Pembayaran (bayar) harus \u8805? total transaksi.\par
+\pard\fs24\b0 3) Kembalian = bayar - total.\par
+\pard\fs24\b0 4) Setelah transaksi tersimpan, stok barang berkurang sesuai qty.\par
+\page
+
+\pard\qc\fs28\b BAB IX. DESIGN\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 9.1 Desain Arsitektur Aplikasi\par
+\pard\fs24\b0 Aplikasi dibagi menjadi beberapa lapisan (layer) untuk memudahkan pemeliharaan:\par
+\pard\fs24\b0 1) \b Presentation Layer\b0: form UI (login, barang, transaksi, laporan).\par
+\pard\fs24\b0 2) \b Business Logic Layer\b0: validasi, perhitungan transaksi, aturan stok.\par
+\pard\fs24\b0 3) \b Data Access Layer\b0: akses database untuk CRUD dan query laporan.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 9.2 Desain Database (Konseptual)\par
+\pard\fs24\b0 Relasi dasar (contoh):\par
+\pard\fs24\b0 - Transaksi (1) --- (N) DetailTransaksi\par
+\pard\fs24\b0 - Barang (1) --- (N) DetailTransaksi\par
+\pard\fs24\b0 - User (1) --- (N) Transaksi\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 9.3 Desain Antarmuka (UI)\par
+\pard\fs24\b0 1) \b Form Login\b0: input username dan password, tombol masuk, pesan error.\par
+\pard\fs24\b0 2) \b Form Master Barang\b0: tabel daftar barang, input form (kode, nama, harga, stok), tombol tambah/ubah/hapus, pencarian.\par
+\pard\fs24\b0 3) \b Form Transaksi\b0: input barang (cari), qty, tombol tambah ke keranjang, tabel keranjang, total, bayar, kembalian, simpan transaksi.\par
+\pard\fs24\b0 4) \b Form Laporan\b0: filter tanggal awal/akhir, tabel transaksi, total omzet, (opsional) cetak/export.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 9.4 Desain Proses (Ringkas)\par
+\pard\fs24\b0 \b Proses Transaksi\b0: pilih barang \u8594? input qty \u8594? validasi stok \u8594? masukkan ke keranjang \u8594? hitung total \u8594? input bayar \u8594? hitung kembalian \u8594? simpan header transaksi \u8594? simpan detail \u8594? kurangi stok \u8594? tampilkan notifikasi berhasil.\par
+\page
+
+\pard\qc\fs28\b BAB X. SCHEDULE (WORK FOR EACH PERSON)\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Pembagian tugas berikut disusun untuk \b 4 orang\b0 dan diselaraskan dengan modul yang ada pada project \i StoreProgram\i0 (Pages/Services/Models). Silakan ganti nama Person 1\~4 dengan nama anggota kelompok.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 10.1 Pembagian Tugas (Rinci Kelompok 4 Orang)\par
+\pard\fs24\b0 \b Person 1 (Frontend/Pages & Navigasi)\b0\par
+\pard\fs24\b0 - Mengembangkan struktur navigasi aplikasi (Shell/route) dan alur halaman: \i LoginPage\i0 \u8594? dashboard (Owner/Employee) \u8594? modul-modul lainnya.\par
+\pard\fs24\b0 - Implementasi dan penyempurnaan UI pada halaman: \i OwnerDashboardPage\i0, \i EmployeeDashboardPage\i0, \i StockManagementPage\i0.\par
+\pard\fs24\b0 - Membuat/menyempurnakan komponen popup UI: \i ConfirmPopupPage\i0, \i InfoPopupPage\i0, \i SelectOptionPopupPage\i0.\par
+\pard\fs24\b0 - Validasi input di sisi UI (angka, tanggal, required field) dan peningkatan UX (loading, error message).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Person 2 (Database & Services)\b0\par
+\pard\fs24\b0 - Menyiapkan koneksi database dan utilitas akses data (mis. \i DatabaseService\i0 / \i DataStore\i0).\par
+\pard\fs24\b0 - Membuat query/operasi CRUD untuk entitas: \i Product\i0, \i StockBatch\i0, \i StockMovement\i0, \i SaleTransaction\i0, \i SaleItem\i0, \i Expense\i0, \i AppUser\i0.\par
+\pard\fs24\b0 - Menyediakan service autentikasi dan manajemen sesi (\i AuthService\i0, \i SessionManager\i0).\par
+\pard\fs24\b0 - Menangani aturan bisnis inti: pengurangan stok saat penjualan, pencatatan movement, validasi stok tidak minus, dan konsistensi data transaksi.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Person 3 (Fitur Operasional: Stok, Diskon, Notifikasi)\b0\par
+\pard\fs24\b0 - Modul pembelian stok: \i PurchaseStockPage\i0 dan \i PurchaseStockPopupPage\i0 (input purchase date, expiry date, unit cost, quantity).\par
+\pard\fs24\b0 - Modul penyesuaian stok: \i StockAdjustmentPopupPage\i0 (alasan penyesuaian, type movement).\par
+\pard\fs24\b0 - Modul stock opname: \i StockOpnamePage\i0 dan \i StockOpnamePopupPage\i0 (pencocokan stok fisik dan pencatatan selisih).\par
+\pard\fs24\b0 - Modul diskon: \i DiscountsPage\i0 dan \i DiscountPopupPage\i0 (set discount percent dan dampaknya pada harga jual).\par
+\pard\fs24\b0 - Modul notifikasi expiry: \i NotificationsPage\i0 dan pengaturan ambang expiry (\i ExpiryAlertSetting\i0) sesuai implementasi.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Person 4 (Laporan, Export, Testing, Dokumentasi)\b0\par
+\pard\fs24\b0 - Modul laporan: \i ReportsPage\i0 (rekap harian/mingguan/bulanan, ringkasan transaksi).\par
+\pard\fs24\b0 - Ekspor laporan: implementasi dan uji \i ReportExportService\i0 + path penyimpanan (\i ExportPathService\i0) untuk output Excel (ClosedXML) dan PDF (QuestPDF) sesuai implementasi.\par
+\pard\fs24\b0 - Modul keuangan: \i FinancialPage\i0, \i ExpensePopupPage\i0, \i PrivePopupPage\i0 (rekap expense dan prive).\par
+\pard\fs24\b0 - Menyusun test case black-box, menguji alur utama (login, transaksi, purchase stock, stock opname, laporan, export), dan mencatat bug serta perbaikannya.\par
+\pard\fs24\b0 - Menyusun laporan akhir (dokumen) dan materi presentasi/demo.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 10.2 Timeline (Contoh 4 Minggu - Rinci)\par
+\pard\fs24\b0 \b Minggu 1 (Requirement & Design)\b0\par
+\pard\fs24\b0 - Person 1: rancangan alur navigasi, wireframe halaman, konsistensi UI.\par
+\pard\fs24\b0 - Person 2: desain database, koneksi DB, skema & seed untuk testing.\par
+\pard\fs24\b0 - Person 3: spesifikasi modul stok (batch, expiry), diskon, notifikasi.\par
+\pard\fs24\b0 - Person 4: spesifikasi laporan/keuangan dan rancangan format export.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Minggu 2 (Implementasi Core)\b0\par
+\pard\fs24\b0 - Person 1: implementasi halaman login + dashboard + navigasi inti.\par
+\pard\fs24\b0 - Person 2: implementasi service CRUD produk, transaksi, stok movement.\par
+\pard\fs24\b0 - Person 3: implementasi purchase stock dan stock management (tampilan + integrasi).\par
+\pard\fs24\b0 - Person 4: implementasi laporan dasar dan persiapan export path.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Minggu 3 (Fitur Lanjutan & Integrasi)\b0\par
+\pard\fs24\b0 - Person 1: penyempurnaan UI/UX dan popup global.\par
+\pard\fs24\b0 - Person 2: autentikasi + role, konsistensi transaksi (header/detail), perbaikan query.\par
+\pard\fs24\b0 - Person 3: stock opname, stock adjustment, discounts, notifications.\par
+\pard\fs24\b0 - Person 4: export Excel/PDF, modul keuangan (expense/prive).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 \b Minggu 4 (Testing & Finalisasi)\b0\par
+\pard\fs24\b0 - Semua: black-box testing, perbaikan bug, validasi data, polishing UI.\par
+\pard\fs24\b0 - Person 4: finalisasi laporan & dokumentasi, kumpulkan bukti hasil testing, persiapan demo.\par
+\page
+
+\pard\qc\fs28\b BAB XI. TESTING\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 11.1 Metode Pengujian\par
+\pard\fs24\b0 Pengujian dilakukan menggunakan metode \b Black-Box Testing\b0, yaitu menguji setiap fungsi berdasarkan input dan output yang diharapkan tanpa melihat kode program.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 11.2 Skenario dan Test Case (Contoh)\par
+\pard\fs24\b0 1) \b Login\b0\par
+\pard\fs24\b0 - Input valid \u8594? berhasil masuk ke menu utama (Expected: PASS).\par
+\pard\fs24\b0 - Input invalid \u8594? pesan error muncul (Expected: PASS).\par
+\pard\fs24\b0\par
+\pard\fs24\b0 2) \b Master Barang\b0\par
+\pard\fs24\b0 - Tambah barang dengan data lengkap \u8594? data tersimpan & tampil di tabel.\par
+\pard\fs24\b0 - Tambah barang dengan field kosong \u8594? validasi menolak & tampil pesan.\par
+\pard\fs24\b0 - Ubah barang \u8594? data berubah sesuai input.\par
+\pard\fs24\b0 - Hapus barang \u8594? data hilang dari tabel dan database.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 3) \b Transaksi\b0\par
+\pard\fs24\b0 - Qty melebihi stok \u8594? sistem menolak & tampil peringatan.\par
+\pard\fs24\b0 - Proses transaksi normal \u8594? total benar, transaksi tersimpan, stok berkurang.\par
+\pard\fs24\b0 - Bayar kurang dari total \u8594? sistem menolak atau meminta input valid.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 4) \b Laporan\b0\par
+\pard\fs24\b0 - Filter tanggal \u8594? menampilkan transaksi sesuai rentang.\par
+\pard\fs24\b0 - Hitung omzet \u8594? total omzet sesuai akumulasi transaksi.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 11.3 Dokumentasi Hasil Uji\par
+\pard\fs24\b0 Hasil uji dicatat pada lembar pengujian berisi: nama test case, langkah uji, hasil yang diharapkan, hasil aktual, status (PASS/FAIL), serta catatan perbaikan bila ada.\par
+\page
+
+\pard\qc\fs28\b BAB XII. RESULT (HASIL)\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Hasil implementasi aplikasi \i Store \i0 (sesuaikan dengan aplikasi yang dibuat) adalah:\par
+\pard\fs24\b0 1) Modul master barang dapat melakukan CRUD dan pencarian barang.\par
+\pard\fs24\b0 2) Modul transaksi mampu menambahkan item ke keranjang dan menghitung total otomatis.\par
+\pard\fs24\b0 3) Data transaksi tersimpan ke database beserta detail transaksi.\par
+\pard\fs24\b0 4) Stok berkurang otomatis setelah transaksi berhasil disimpan.\par
+\pard\fs24\b0 5) Modul laporan menampilkan transaksi berdasarkan periode dan rekap omzet.\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Berdasarkan pengujian black-box, fungsi utama berjalan sesuai kebutuhan. Jika terdapat perbaikan, biasanya berupa validasi input, penanganan error database, dan penyempurnaan tampilan UI.\par
+\page
+
+\pard\qc\fs28\b BAB XIII. KESIMPULAN DAN SARAN\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 13.1 Kesimpulan\par
+\pard\fs24\b0 Aplikasi \i Store \i0 berbasis desktop berhasil dibangun untuk mendukung transaksi penjualan dan manajemen persediaan. Aplikasi ini membantu mempercepat proses transaksi, meminimalkan kesalahan perhitungan, serta memudahkan penyusunan laporan penjualan berdasarkan periode.\par
+\pard\fs24\b0\par
+
+\pard\fs26\b 13.2 Saran Pengembangan\par
+\pard\fs24\b0 Beberapa saran untuk pengembangan lanjutan:\par
+\pard\fs24\b0 1) Penambahan fitur barcode scanner dan cetak struk.\par
+\pard\fs24\b0 2) Penambahan fitur pembelian/stock-in dan supplier.\par
+\pard\fs24\b0 3) Export laporan ke PDF/Excel.\par
+\pard\fs24\b0 4) Peningkatan keamanan: password hashing, audit log, dan backup otomatis.\par
+\page
+
+\pard\qc\fs28\b DAFTAR PUSTAKA\par
+\pard\fs24\b0\par
+\pard\fs24\b0 (Gunakan format yang diminta dosen; berikut contoh format APA sederhana)\par
+\pard\fs24\b0\par
+\pard\fs24\b0 Elmasri, R., & Navathe, S. B. (2016). \i Fundamentals of Database Systems\i0 (7th ed.). Pearson.\par
+\pard\fs24\b0 Pressman, R. S., & Maxim, B. R. (2019). \i Software Engineering: A Practitioner’s Approach\i0 (9th ed.). McGraw-Hill Education.\par
+\pard\fs24\b0 Sommerville, I. (2016). \i Software Engineering\i0 (10th ed.). Pearson.\par
+\pard\fs24\b0 Laudon, K. C., & Laudon, J. P. (2020). \i Management Information Systems: Managing the Digital Firm\i0 (16th ed.). Pearson.\par
+\pard\fs24\b0 Connolly, T., & Begg, C. (2015). \i Database Systems: A Practical Approach to Design, Implementation, and Management\i0 (6th ed.). Pearson.\par
+\pard\fs24\b0 Myers, G. J., Sandler, C., & Badgett, T. (2011). \i The Art of Software Testing\i0 (3rd ed.). Wiley.\par
+\pard\fs24\b0 Dokumentasi Microsoft. (n.d.). \i .NET Desktop Development Documentation\i0.\par
+\pard\fs24\b0 (Tambahkan dokumentasi framework/bahasa/DB yang benar-benar Anda gunakan: WinForms/WPF/VB.NET/SQL Server/MySQL/SQLite, dll.)\par
+
+}

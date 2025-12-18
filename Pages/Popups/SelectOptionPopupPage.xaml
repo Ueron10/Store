@@ -29,7 +29,7 @@
                                 SelectionMode="Single"
                                 MaximumHeightRequest="360">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="x:String">
                             <Frame Padding="12"
                                    BackgroundColor="{StaticResource Gray100}"
                                    CornerRadius="10"

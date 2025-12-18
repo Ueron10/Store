@@ -8,26 +8,39 @@ public partial class NewTransactionPopupPage : ContentPage
     private readonly TaskCompletionSource<SaleTransaction?> _tcs = new();
     private readonly List<Product> _products;
     private readonly List<StockBatch> _batchesForSelectedProduct = new();
+    private INavigation? _hostNav;
+    private bool _closing;
+
+    private Product? _selectedProduct;
 
     public NewTransactionPopupPage(IEnumerable<Product> products)
     {
         InitializeComponent();
 
         _products = products.OrderBy(p => p.Name).ToList();
-        ProductPicker.ItemsSource = _products.Select(p => $"{p.Name} - Rp {p.SellPrice:N0}").ToList();
+
+        // default state
+        _selectedProduct = null;
+        SelectedProductEntry.Text = string.Empty;
+        BatchPicker.ItemsSource = new List<string> { "Otomatis (FIFO)" };
+        BatchPicker.SelectedIndex = 0;
 
         UpdateTotal();
     }
 
     public Task<SaleTransaction?> Result => _tcs.Task;
 
-    private Product? SelectedProduct =>
-        ProductPicker.SelectedIndex >= 0 && ProductPicker.SelectedIndex < _products.Count
-            ? _products[ProductPicker.SelectedIndex]
-            : null;
+    private Product? SelectedProduct => _selectedProduct;
 
-    private void OnProductChanged(object? sender, EventArgs e)
+    private async void OnSelectProductClicked(object sender, EventArgs e)
     {
+        var p = await ProductSearchPopupPage.ShowAsync(_products);
+        if (p == null)
+            return;
+
+        _selectedProduct = p;
+        SelectedProductEntry.Text = $"{p.Name} - Rp {p.SellPrice:N0}";
+
         LoadBatches();
         UpdateTotal();
     }
@@ -55,7 +68,11 @@ public partial class NewTransactionPopupPage : ContentPage
 
         var product = SelectedProduct;
         if (product == null)
+        {
+            BatchPicker.ItemsSource = new List<string> { "Otomatis (FIFO)" };
+            BatchPicker.SelectedIndex = 0;
             return;
+        }
 
         var labels = new List<string> { "Otomatis (FIFO)" };
 
@@ -115,11 +132,27 @@ public partial class NewTransactionPopupPage : ContentPage
         }
     }
 
-    private async void OnCancelClicked(object sender, EventArgs e)
+    private async Task SafeCloseAsync(SaleTransaction? result)
     {
-        _tcs.TrySetResult(null);
-        await Navigation.PopModalAsync(animated: false);
+        if (_closing)
+            return;
+
+        _closing = true;
+        _tcs.TrySetResult(result);
+
+        try
+        {
+            var nav = _hostNav ?? Navigation;
+            await nav.PopModalAsync(animated: false);
+        }
+        catch
+        {
+            // ignore
+        }
     }
+
+    private async void OnCancelClicked(object sender, EventArgs e)
+        => await SafeCloseAsync(result: null);
 
     private async void OnConfirmClicked(object sender, EventArgs e)
     {
@@ -151,19 +184,29 @@ public partial class NewTransactionPopupPage : ContentPage
 
         try
         {
-            var sale = DataStore.ProcessSingleItemSale(product.Id, qty, paymentMethod, GetSelectedBatchIdOrNull());
-
-            if (paymentMethod == "QRIS")
+            // Cegah double submit + beri feedback sederhana
+            if (ConfirmButton != null)
             {
-                await InfoPopupPage.ShowAsync("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).", okText: "OK");
+                ConfirmButton.IsEnabled = false;
+                ConfirmButton.Text = "Memproses...";
             }
 
-            _tcs.TrySetResult(sale);
-            await Navigation.PopModalAsync(animated: false);
+            var sale = DataStore.ProcessSingleItemSale(product.Id, qty, paymentMethod, GetSelectedBatchIdOrNull());
+
+            // Tutup popup transaksi langsung setelah proses (biar tidak stuck).
+            await SafeCloseAsync(sale);
         }
         catch (Exception ex)
         {
             ShowError(ex.Message);
+        }
+        finally
+        {
+            if (ConfirmButton != null)
+            {
+                ConfirmButton.IsEnabled = true;
+                ConfirmButton.Text = "Konfirmasi";
+            }
         }
     }
 
@@ -176,8 +219,12 @@ public partial class NewTransactionPopupPage : ContentPage
     public static async Task<SaleTransaction?> ShowAsync(IEnumerable<Product> products)
     {
         var page = new NewTransactionPopupPage(products);
-        var nav = Shell.Current?.Navigation ?? Application.Current?.MainPage?.Navigation;
+
+        var hostPage = Shell.Current?.CurrentPage ?? Application.Current?.MainPage;
+        var nav = hostPage?.Navigation;
         if (nav == null) return null;
+
+        page._hostNav = nav;
 
         await nav.PushModalAsync(page, animated: false);
         return await page.Result;

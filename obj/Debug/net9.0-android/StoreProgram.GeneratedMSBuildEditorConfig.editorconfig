@@ -120,6 +120,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.
 build_metadata.AdditionalFiles.TargetPath = Pages\Popups\PrivePopupPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Pages\Popups\PrivePopupPage.xaml
 
+[D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/ProductSearchPopupPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.ProductSearchPopupPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\Popups\ProductSearchPopupPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\Popups\ProductSearchPopupPage.xaml
+
 [D:/Matkul Kuliah/Semester 5/Pemograman Visual/UAS/Store/Pages/Popups/PurchaseStockPopupPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = StoreProgram.Pages.Popups.PurchaseStockPopupPage.xaml
