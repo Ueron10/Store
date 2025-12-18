@@ -23,13 +23,13 @@
                 <ScrollView MaximumHeightRequest="360">
                     <Label x:Name="MessageLabel"
                            FontSize="13"
-                           TextColor="{StaticResource TextSecondary}" />
+                           TextColor="{StaticResource TextPrimary}" />
                 </ScrollView>
 
                 <Button x:Name="OkButton"
                         Text="OK"
                         BackgroundColor="{StaticResource Primary}"
-                        TextColor="White"
+                        TextColor="{StaticResource TextPrimary}"
                         CornerRadius="10"
                         HeightRequest="44"
                         Clicked="OnOkClicked" />

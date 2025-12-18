@@ -49,10 +49,18 @@ public partial class FinancialPage : ContentPage
         // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
         if (sale.PaymentMethod == "QRIS")
         {
-            await InfoPopupPage.ShowAsync("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).", okText: "OK");
+            await InfoPopupPage.ShowAsync(
+                "QRIS",
+                "Tampilkan kode QR ke pelanggan (simulasi).",
+                okText: "OK",
+                autoCloseAfter: TimeSpan.FromSeconds(2));
         }
 
-        await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}", okText: "OK");
+        await InfoPopupPage.ShowAsync(
+            "Sukses",
+            $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}",
+            okText: "OK",
+            autoCloseAfter: TimeSpan.FromSeconds(2));
 
         UpdateSummary();
         BuildRecentTransactions();
@@ -223,10 +231,18 @@ public partial class FinancialPage : ContentPage
                 // Simulasi integrasi QRIS: tampilkan info tambahan jika metode QRIS
                 if (paymentMethod == "QRIS")
                 {
-                    await InfoPopupPage.ShowAsync("QRIS", "Tampilkan kode QR ke pelanggan (simulasi).");
+                    await InfoPopupPage.ShowAsync(
+                        "QRIS",
+                        "Tampilkan kode QR ke pelanggan (simulasi).",
+                        okText: "OK",
+                        autoCloseAfter: TimeSpan.FromSeconds(2));
                 }
 
-                await InfoPopupPage.ShowAsync("Sukses", $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}");
+                await InfoPopupPage.ShowAsync(
+                    "Sukses",
+                    $"Transaksi berhasil diproses! Total: Rp {sale.GrossAmount:N0}",
+                    okText: "OK",
+                    autoCloseAfter: TimeSpan.FromSeconds(2));
             }
             catch (Exception ex)
             {

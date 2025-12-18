@@ -55,7 +55,7 @@
                     <Button Grid.Column="1"
                             Text="Konfirmasi"
                             BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
+                            TextColor="{StaticResource TextPrimary}"
                             CornerRadius="10"
                             HeightRequest="44"
                             Clicked="OnConfirmClicked" />

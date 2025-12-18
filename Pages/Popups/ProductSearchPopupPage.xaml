@@ -24,7 +24,7 @@
                     <Button Grid.Column="1"
                             Text="✕"
                             BackgroundColor="Transparent"
-                            TextColor="{StaticResource TextSecondary}"
+                            TextColor="{StaticResource TextPrimary}"
                             FontSize="18"
                             Clicked="OnCancelClicked" />
                 </Grid>
@@ -65,7 +65,7 @@
                 <Label x:Name="EmptyLabel"
                        Text="Produk tidak ditemukan."
                        IsVisible="False"
-                       TextColor="{StaticResource TextSecondary}"
+                       TextColor="{StaticResource TextPrimary}"
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Frame>

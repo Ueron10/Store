@@ -1554,11 +1554,6 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\splashSplashScreen.scale-400.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\OpenSans-Regular.ttf
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\OpenSans-Semibold.ttf
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-400.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-200.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-150.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-125.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appiconLargeTile.scale-400.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appiconLargeTile.scale-200.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appiconLargeTile.scale-150.png
@@ -1605,6 +1600,11 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appiconLogo.scale-125.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appiconLogo.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\appicon.ico
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-400.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-200.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-150.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-125.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dotnet_bot.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\CoreMessagingXP.dll
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dcompi.dll
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\dwmcorei.dll
@@ -2015,11 +2015,6 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\mauifont.stamp
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\f\OpenSans-Regular.ttf
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\f\OpenSans-Semibold.ttf
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-400.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-200.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-150.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-125.png
-D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-400.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-200.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLargeTile.scale-150.png
@@ -2066,6 +2061,11 @@ D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-125.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appiconLogo.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\appicon.ico
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-400.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-200.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-150.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-125.png
+D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\resizetizer\r\dotnet_bot.scale-100.png
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\mauiimage.stamp
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\mauiimage.outputs
 D:\Matkul Kuliah\Semester 5\Pemograman Visual\UAS\Store\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\StoreProgram.AssemblyInfoInputs.cache

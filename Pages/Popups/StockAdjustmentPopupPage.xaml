@@ -22,7 +22,7 @@
 
                 <Label x:Name="SubtitleLabel"
                        FontSize="12"
-                       TextColor="{StaticResource TextSecondary}" />
+                       TextColor="{StaticResource TextPrimary}" />
 
                 <VerticalStackLayout Spacing="6">
                     <Label Text="Alasan" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
@@ -52,7 +52,7 @@
                     <Button Grid.Column="1"
                             Text="Konfirmasi"
                             BackgroundColor="{StaticResource Primary}"
-                            TextColor="White"
+                            TextColor="{StaticResource TextPrimary}"
                             CornerRadius="10"
                             HeightRequest="44"
                             Clicked="OnConfirmClicked" />
